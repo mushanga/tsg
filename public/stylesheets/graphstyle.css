@@ -49,13 +49,13 @@ circle {
 }
 
 text {
-  font: 16px sans-serif;
+  font: 16px sans-serif bold;
   pointer-events: none;
 }
 
 text.shadow {
   stroke: #fff;
-  stroke-width: 3px;
+  stroke-width: 5px;
   stroke-opacity: .8;
 }
 
