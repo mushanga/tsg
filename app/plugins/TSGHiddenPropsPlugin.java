@@ -28,8 +28,9 @@ public class TSGHiddenPropsPlugin extends PlayPlugin {
 	@Override
 	public void onConfigurationRead() {
 		super.onConfigurationRead();
-Logger.info(" AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 	     Play.configuration.setProperty("db.user", props.getDbUserName());
+
+	     Logger.info("TSGHiddenPropsPlugin: props.getDbUserName(): "+props.getDbUserName());
 	     Play.configuration.setProperty("db.pass", props.getDbPassword());
 	     Play.configuration.setProperty("consumerKey", props.getApiKey());
 	     Play.configuration.setProperty("consumerSecret", props.getApiSecret());
