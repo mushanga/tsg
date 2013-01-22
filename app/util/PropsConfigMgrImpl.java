@@ -32,7 +32,7 @@ public class PropsConfigMgrImpl {
 	public static final String TWITSTREET_API_SECRET = "twitstreetApiSecret";
 	private static final String GRAPH_DB_PATH = "graphdb";
 	
-	public static final String AMAZONBIRD_PROPERTIES = System
+	public static final String APP_PROPERTIES = System
 			.getenv("HOME") + "/.tsg/tsg.properties";
 	
 	private static  PropsConfigMgrImpl instance = null;
@@ -42,7 +42,7 @@ public class PropsConfigMgrImpl {
 	public void init(){
 		Properties properties = new Properties();
 		try {
-			properties.load(new FileReader(new File(AMAZONBIRD_PROPERTIES)));
+			properties.load(new FileReader(new File(APP_PROPERTIES)));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
