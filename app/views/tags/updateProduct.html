@@ -1,0 +1,41 @@
+#{if _user}
+<div class="modal hide" id="updateProductModal" tabindex="-1" role="dialog"
+	aria-labelledby="Add Product" aria-hidden="true">
+
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal"
+			aria-hidden="true">x</button>
+		<h3 id="updateProductModal">Add Product</h3>
+	</div>
+
+	<div data-role="modal-body">
+		<div style="margin-left: 10px;">
+		  #{form @Application.updateItem(), enctype:'multipart/form-data'}
+		  	    <input type="hidden" name="id" id="product-id">
+				<fieldset>
+					<div data-role="fieldcontain"
+						class="ui-field-contain ui-body ui-br">
+						<label for="message">Product Description</label>
+						<textarea name="description" id="product-description" rows="8" style="width: 90%;"></textarea>
+					</div>
+					<div data-role="fieldcontain"
+						class="ui-field-contain ui-body ui-br">
+						<label for="keyword">Keywords</label> <input type="text"
+							name="keyword" id="product-keywords" />
+					</div>
+					<div data-role="fieldcontain">
+						<label for="image">Picture</label> <input type="file"
+							id="picture" name="picture" id="product-picture" value="Upload" />
+					</div>
+					<div data-role="fieldcontain"
+						class="ui-field-contain ui-body ui-br">
+						<button class="btn btn-primary" type="submit" data-theme="a"
+							class="ui-btn-hidden">Update Product</button>
+					</div>
+				</fieldset>
+			#{/form}
+		</div>
+	</div>
+	<div class="modal-footer"></div>
+</div>
+#{/if}

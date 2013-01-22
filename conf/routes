@@ -1,0 +1,28 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET     /                                       Application.index
+
+# Ignore favicon requests
+GET     /favicon.ico                            404
+
+# Map static resources from the /app/public folder to the /public path
+GET     /public/                                staticDir:public
+
+GET  /twitter/{tokenKey}/						Auth.twitterCallback
+
+GET /image/{imageName}                          Application.displayImage
+GET /graphdata/{ownerId}                        Application.displayJson
+
+GET /item/{itemId}								Application.showItem
+
+GET /profile/{profileId}						Application.profile
+
+GET /customers								    Application.showCustomers
+
+POST /addComment								Application.addComment
+
+# Catch all
+*       /{controller}/{action}                  {controller}.{action}

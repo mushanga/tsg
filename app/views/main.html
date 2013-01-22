@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<title>#{get 'title' /}</title>
+<meta charset="${_response_encoding}">
+<link href='http://fonts.googleapis.com/css?family=Fjalla+One|Open+Sans' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" media="screen"
+	href="@{'/public/stylesheets/bootstrap.min.css'}">
+<link rel="stylesheet" media="screen"
+	href="@{'/public/stylesheets/main.css'}">
+<link rel="stylesheet" media="screen"
+	href="@{'/public/stylesheets/graphstyle.css'}">
+
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css" />
+#{get 'moreStyles' /}
+<link rel="shortcut icon" type="image/png"
+	href="@{'/public/images/favicon.png'}">
+<script src="@{'/public/javascripts/jquery-1.7.1.min.js'}"
+	type="text/javascript" charset="${_response_encoding}"></script>
+<script src="@{'/public/javascripts/bootstrap.min.js'}"
+	type="text/javascript" charset="${_response_encoding}"></script>
+<script src="@{'/public/javascripts/template.js'}"
+	type="text/javascript" charset="${_response_encoding}"></script>
+<script src="@{'/public/javascripts/tcommerce.js'}"
+	type="text/javascript" charset="${_response_encoding}"></script>
+#{get 'moreScripts' /}
+</head>
+<body background="@{'/public/images/paper.jpg'}">
+	<div class="container-fluid">
+		#{navbar user:user/}
+		<div class="row-fluid">
+			<div class="span1">
+				<!--Sidebar content-->
+			</div>
+			<div class="span10">#{doLayout user:user/}</div>
+			         <div class="span1">
+                <!--Sidebar content-->
+            </div>
+		</div>
+	</div>
+    #{addProduct user:user/} 
+</body>
+</html>

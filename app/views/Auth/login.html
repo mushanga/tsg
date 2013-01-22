@@ -1,0 +1,16 @@
+#{extends 'main.html' /}
+#{set title:'tcommerce login' /}
+<div>
+	<form action="@{Auth.authenticate}" method="POST" accept-charset="${_response_encoding}">
+		 <label>Email</label>
+	       <input type="text" name="user.name" placeholder="Email or username" id="email" /> &nbsp;#{error 'emailOrUserName' /}<br>
+	       <label>Password</label>
+	       <input type="password" name="user.password" placeholder="Password" id="password" /> &nbsp;#{error 'password' /}<br>		         
+	       <div style="width:220px;float:left;">
+			<input type="submit" value="Login" class="btn btn-primary btn-medium" />
+		</div>				
+	</form>	
+</div>
+<div>
+	<a href="/auth/twitterAuthentication"><img style="cursor:pointer;" src="/public/images/twitterlogo.png" /></a>
+</div>

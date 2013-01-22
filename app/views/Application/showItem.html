@@ -1,0 +1,132 @@
+#{extends 'main.html' /}
+#{set title:'Item Details' /}
+
+<!-- Show Reply Modal Body -->
+<div class="modal hide fade showReplyModal" id="showReplyModal"  tabindex="-1" role="dialog" aria-labelledby="showReplies" aria-hidden="true">
+	<div class="modal-body"></div>
+</div>
+
+<div style="background:white;width:500px;margin:0 auto">
+	<ul id="itemDetailTab" class="nav nav-pills" style="margin-bottom: 10px;">
+		<li class="active"><a href="#detail" data-toggle="tab" id="detailsTab">Description</a></li>
+		#{if user?.id == product.owner.id}
+			<li ><a href="#customers" data-toggle="tab" id="customersTab">Customers</a></li>
+		#{/if}
+		<li ><a href="#comments" data-toggle="tab" id="commentsTab">Comments</a></li>	
+		<li class=""><a href="#visits" data-toggle="tab" id="visitsTab">Visits</a></li>
+	</ul>
+	<div class="tab-content">
+		<div id="detail" class="tab-pane active" style="overflow: hidden;">
+				<div style = "padding:10px;border-bottom:1px solid gray" class="productDetail">
+					<span style="font-weight:bold">Description:</span>
+					<div>${product.description}</div>
+				</div>
+				#{if user?.id == product.owner.id}
+				<div style ="padding:10px">
+					<span style="font-weight:bold">Keywords:</span>
+					#{list product.searchKeys, as: 'key'}
+						${key.keyName},
+					#{/list}
+				</div>
+				#{/if}
+				<div style="width:400px;margin:20px auto">
+				<img src="${product.picture}" alt="announcement image" style="max-width:400px;"/>
+				</div>
+				<div>
+					<p style="text-align: right; margin-right: 10px;">
+						<span class="comment">${product.getUniqueVisitorCount(product.id)} View</span>
+						<span class="comment">&#8226;</span> <span class="comment">${product.comments.size()} Comment</span>
+					</p>
+				</div>
+				<div style="both:clear"></div>
+				<div style="cursor: pointer;float:left;width:100%;border-top:1px solid gray" onclick="window.location='<%=request.getContextPath()+"/user.jsp?user="+product.getAnnouncerId()%>'" >
+					<div style="float:left;margin:10px">
+						<img src="${product.owner.picture}" alt="foto" style="width:48px"/> <span class="name">${product.owner.screenName}</span>
+					</div>
+					%{ like = (int)(Math.random() * 30); }%
+					%{ trust = 100 - like}%
+					<span style="float:right" class="comment">Seller Rating ${trust}%</span>
+				</div>
+			</div>
+		<div id="comments" class="tab-pane" style="overflow: hidden;">
+			<div class = "commentContainer" style="margin:10px">
+				#{list items:product.comments, as: 'comment'}
+					<div class = "commentElement" style="margin-bottom:10px;position:relative">
+						<a href = "@{Application.profile(comment.owner.id)}"><img src="${comment.owner.picture}"></a> 
+						<span>${comment.commentText}</span>
+						#{if comment.owner == user}
+						<a class = "btn btn-danger deleteComment" href = "@{Application.deleteComment(comment.id)}" style="position:absolute;top:0px;right:0px">X</a>
+						#{/if}
+						<div style="position:absolute;bottom:0px;right:0px">${comment.getTime()}</div>
+					</div>					
+				#{/list}
+				#{else}
+	            	<div id="noComment" class="alert alert-error">No comments yet</div>
+	        	#{/else}
+			</div>
+			#{if user}
+			<div style="margin:10px">
+				<img width="48px" height="48px" src="${user.picture}">
+				<textarea id="commentText" rows="2" placeholder="Add comment"></textarea>
+				<div style="clear:both;"></div>
+				<input style="margin-left:50px" value="Comment" type="button" class="addCommentButton" data-item = "${product.id}" onclick="addComment(${product.id})"/>
+			</div>
+			#{/if}
+			#{else}
+	        	<div style = "margin:10px" class="alert alert-error">Login to comment</div>
+	        #{/else}
+		</div>
+		<div id="visits" class="tab-pane" style="overflow: hidden;">
+			<div class = "visitorContainer" style="margin:10px">
+				#{list items:product.getVisitors(), as: 'visitor'}
+					<div class = "commentElement" style="margin-bottom:10px;position:relative">
+						<a href = "@{Application.profile(visitor.id)}"><img src="${visitor.picture}"></a> 
+						<span>${visitor.screenName}</span>
+						<div style="position:absolute;right:0px;bottom:0px">${visitor.visitCount(product)} visits. Latest ${visitor.latestVisit(product)}</div>
+					</div>
+					
+				#{/list}
+				#{else}
+	            	<div class="alert alert-error">No visits yet</div>
+	        	#{/else}
+			</div>
+		</div>
+#{if user?.id == product.owner.id}
+		<div id="customers" class="tab-pane" style="overflow: hidden;">
+			<div class="rounded" id="tweetList">
+	       	 	#{list  product.tweets, as:'tweet'}
+	       	 		<div style="display: block; border-bottom: 1px solid; border-bottom-color: #E8E8E8; padding-top: 3px; padding-bottom: 3px; padding-left: 3px;">
+	       	 		   <div>
+	       	 		       <p><a href="@{Application.profile(tweet.owner.id)}" target="_blank"> @${tweet.owner.screenName}: </a>
+	       	 		       <p>${tweet.tweet}</p>
+	       	 		   </div>
+	       	 		   <div>
+	       	 		       <div style="float:left">
+	       	 		       		#{if tweet.replyList.size() > 0}
+	       	 		       		<button class="btn btn-link" id="viewReplyBtn" type="button" href="@{Application.showReplies}" onclick="showHideReplies(${tweet.id});"><span id="replyStateTriange_${tweet.id}">&#9658;</span> View Replies (${tweet.replyList.size()})</button>
+	       	 		      		#{/if}
+	       	 		       </div>
+	       	 		       <div style="text-align: right;">
+	                                  <button class="btn btn-success btn-small" onclick="openReplyTweetDialog('${tweet.tweetId}', '${tweet.owner.screenName}', '${tweet.owner.id}');">Reply</button>
+	                                  <a class="btn btn-info btn-small" href="https://twitter.com/${tweet.owner.screenName}/status/${tweet.tweetId}" target="_blank">Show on Twitter</a>
+	                             </div>
+	       	 		   </div>
+	       	 		   <div id="replyList_${tweet.id}" class="replyList" style="display: none; margin-top: 10px; margin-left: 40px; margin-right: 5px;">
+	       	 		   		#{list tweet.replyList, as:'reply'}
+	       	 		   			<div>
+	       	 		   				${reply.tweet}
+	       	 		   			</div>
+	       	 		   		#{/list}
+	       	 		   </div>
+	       	 		</div>
+	       	 	#{/list}
+	       	 	#{else}
+	           		<div style = "margin:10px" class="alert alert-error">We could not find any tweet yet</div>
+	       	 	#{/else}
+	       	 </div>
+	       	 #{/if}
+		</div><!-- end tab content -->
+	</div>
+</div>
+#{commentTemplate /}
+#{replyTweet /}

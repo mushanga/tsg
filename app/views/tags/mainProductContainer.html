@@ -1,0 +1,50 @@
+<div id="productContainer" style="overflow: hidden;">
+#{if _items==null || _items.size() == 0}
+    <div>
+        No item found
+    </div>
+#{/if}
+#{list _items, as:'product'}
+    <div class="productWindow">
+        <div class="productCard"
+            onclick="window.location='/item/${product.id}'"
+            style='cursor: pointer;'>
+            <div class="productImg">
+                <img src="${product.picture}" alt="foto" />
+            </div>
+
+            <div class="productDetail">
+                ${product.description}
+            </div>
+
+        </div>
+        <div class="clear"></div>
+        <div>
+            <p style="text-align: right; margin-right: 10px;">
+                <span class="comment">${product.getUniqueVisitorCount(product.id)} View</span>
+                <span class="comment">&#8226;</span> <span class="comment">${product.comments.size()} Comment</span>
+            </p>
+        </div>
+        <div class="clear"></div>
+        <div class="cardUser"
+            onclick="window.location='@{Application.profile(product.owner.id)}'"
+            style='cursor: pointer;'>
+            <div>
+            <img src="${product.owner.picture}" alt="foto" /> <span class="name">${product.owner.screenName}</span>
+            </div>
+            %{ like = (int)(Math.random() * 30); }%
+            %{ trust = 100 - like}%
+            <div>
+                <p style="text-align: right; margin-bottom: 1px; padding-bottom: 1px;"><span class="comment">User Rating ${trust}%</span></p>
+            </div>
+            <div class="video-extras-sparkbars" style="margin-bottom: 2px;">
+                <div class="video-extras-sparkbar-likes"
+                    style="width: ${100 - like}%"></div>
+                <div class="video-extras-sparkbar-dislikes"
+                    style="width: ${like}%"></div>
+            </div>
+        </div>
+    </div>
+#{/list}
+</div>
+<div class="clear"></div>

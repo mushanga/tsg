@@ -1,0 +1,65 @@
+#{extends 'main.html' /}
+#{set title: 'Profile' /}
+
+<script src="@{'/public/javascripts/jquery.imagesloaded.min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+<script src="@{'/public/javascripts/jquery.masonry.min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+
+<div class="container-fluid">
+	<div class="row-fluid" id="profile-content-wrap">
+		<div class="span12" style="height: 40px"></div>
+	</div>
+	<div class="row-fluid">
+		<div class="profile-user">
+			<span class="avatar-container"> <img style="width: 100px;"
+				src="${profile.picture}">
+			</span>
+			<div style="margin-left: 120px;" class="profileCard">#{profileCard
+				profile:profile/}</div>
+
+
+		</div>
+		<div class="profile-section">
+			<ul id="myTab" class="nav nav-pills" style="margin-bottom: 10px;">
+				<li class="active"><a href="#products" data-toggle="tab" id="productsTab" onclick="window.location='@{Application.profile(profile.id)}'">Products</a></li>
+				#{if user!= null && user.id == profile.id}
+					<li class=""><a href="#settings" data-toggle="tab" id="settingsTab">Settings</a></li>
+				#{/if}
+			</ul>
+			<div class="tab-content">
+			     <div id="products" class="tab-pane active" style="overflow: hidden;">
+                    #{profileProductContainer items:items/}
+                  </div>
+                  #{if user!= null && user.id == profile.id}
+                    <div id="settings" class="tab-pane">
+                        #{settings user:profile/}
+                    </div>
+                  #{/if}
+			</div>
+		</div>
+	</div>
+</div>
+<div class="span2"></div>
+<script language="javascript">
+$(function() { 
+	  $('a[data-toggle="tab"]').on('shown', function (e) {
+	    //save the latest tab; use cookies if you like 'em better:
+	    localStorage.setItem('lastTab', $(e.target).attr('id'));
+	  });
+
+	  //go to the latest tab, if it exists:
+	  var lastTab = localStorage.getItem('lastTab');
+	  if (lastTab) {
+	      $('#'+lastTab).tab('show');
+	  }
+	});
+    #{if user!= null && user.id == profile.id}
+	    $(".productWindow").hover(function(e){
+	    	   $(this).children(".actions").show();
+	    });
+	    $(".productWindow").mouseleave(function(e){
+	    	   $(this).children(".actions").hide();
+	    });
+    #{/if}
+</script>
+#{updateProduct user:user/}
+#{masonary /}

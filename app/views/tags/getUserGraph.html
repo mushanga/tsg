@@ -1,0 +1,92 @@
+<script type="text/javascript">
+$(function() {
+    $("#slider").slider({ min:50, max: 500, value:50, step: 50, stop: function(event, ui) { 
+    	
+    	graph.update();
+    	
+    	
+    }});
+
+    graph = new Graph("#screen");
+    tw = new TwitterClient();
+    util = new Util(); 
+    var slider;
+  });
+
+$(function() {
+	$(function() {
+	    $("#progressbar").progressbar({ value: 0 });
+	});
+})
+function getUserGraph(){
+	
+	var listAction = #{jsAction @get(':query') /}
+// 	   $('#result').load(
+// 	       listAction({search: 'x', size: '10', page: '1'}), 
+// 	       function() {
+// 	           $('#content').css('visibility', 'visible')
+// 	       }
+// 	   )
+	   
+	   
+	var userName = $('#graphSearchId').val();
+// 	if(lastUser!=userName){
+		graph.clear();
+// 	}
+// 	setProgressBarMessage('Loading the graph of '+userName+'...');
+	$.ajax({
+
+		url : listAction({query: userName}),
+		dataType : "json",
+		success :  function(data)
+		{
+			
+// 			if(data.reloadTimeInSecs && data.reloadTimeInSecs>0){
+
+// 				window.setTimeout(getUserGraph,data.reloadTimeInSecs * 1000);
+// 			}
+
+// 			if(data.version <= graphVersion){
+// 				return;
+// 			}else{
+// 				graphVersion = data.version;
+// 			}
+// 			lastUser = userName;
+			
+			graph.centerNodeId = data.ownerId;
+			
+			var srcIdList = new Array();
+			var trgIdList = new Array();
+			for ( var i = 0; i < data.users.length; i++) {
+				
+				var newNode = data.users[i];
+					newNode.id = parseInt(newNode.twitterId);
+				graph.addNode(newNode);
+
+			}
+
+			graph.addLinks(data.links);
+			
+			var val = parseInt((data.completed/data.total)*100);
+			var msg = val + '% of '+userName+'\'s friends are revealed. The graph will be completed soon. Please wait...';
+			if(val==100){
+				msg = 'Completed';
+			}else if(data.protectedGraph){
+				val = 0;
+				msg = userName+'\'s account is protected...';
+			}
+// 			setProgressBarMessage(msg);
+// 			setProgressBarValue(val);
+			graph.update();
+		
+		},
+		error : function(er)
+		{
+			expanding = false;
+
+// 			setProgressBarMessage('The account of '+userName+' is protected. ');
+		},
+
+	});
+}
+</script>

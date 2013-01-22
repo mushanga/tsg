@@ -1,0 +1,11 @@
+#{form @Application.updateSettings(), enctype:'multipart/form-data'}
+ <fieldset>
+    <legend>Settings</legend>
+    <label>Send Tweets to</label>
+    <label></label>
+    <label>
+	#{tc.user.adslevel _user /}
+	</label>
+	<button type="submit" class="btn btn-primary">Save Settings</button>
+</fieldset>
+#{/form}

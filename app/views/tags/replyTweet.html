@@ -1,0 +1,33 @@
+
+<div class="modal hide" id="replyTweetModal" tabindex="-1" role="dialog"
+	aria-labelledby="Add Product" aria-hidden="true">
+
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal"
+			aria-hidden="true">x</button>
+		<h3 id="replyTweetModalHeader"></h3>
+	</div>
+
+	<div data-role="modal-body">
+		<div style="margin-left: 10px; margin-right: 10px;">
+		  #{form @Application.addItem(), enctype:'multipart/form-data'}
+		  		<input type="hidden" name="tweetId" id="replyTweetModal_tweetId">
+				<fieldset>
+					<div data-role="fieldcontain"
+						class="ui-field-contain ui-body ui-br">
+						<label for="tweet">Type your response here <span id="tweetLengthLabel" class="pull-right">(110/110 characters left)</span></label>
+						<textarea name="tweet" rows="8" style="width: 524px;" id="replyTweetTextArea"></textarea>
+					</div>
+					<div data-role="fieldcontain"
+						class="ui-field-contain ui-body ui-br">
+						<button class="btn btn-success" type="button" data-theme="a"
+							class="ui-btn-hidden" onclick="sendReply();">Send Reply</button>
+					</div>
+				</fieldset>
+			#{/form}
+		</div>
+
+	</div>
+	<div class="modal-footer"></div>
+</div>
+

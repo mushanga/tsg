@@ -1,0 +1,53 @@
+<div class="navbar" style="margin-top:33px">
+	<div class="navbar-inner">
+
+		<!-- Your site name for the upper left corner of the site -->
+		
+		<ul class="nav" id="topNav">
+<!-- 			#{if _user} -->
+<!-- 			<li class="divider-vertical"></li> -->
+<!-- 			<li class="dropdown"><a class="dropdown-toggle" href="#" -->
+<!-- 				data-toggle="dropdown">#{tc.user.name _user /}<strong class="caret"></strong> -->
+<!-- 			</a> -->
+<!-- 				<ul class="dropdown-menu"> -->
+<!-- 					<li><a href="@{Application.profile(_user.id)}">Profile</a></li> -->
+<!-- 					<li><a href="@{Auth.logout()}">Log out</a></li> -->
+<!-- 				</ul> -->
+<!-- 			</li>  -->
+<!-- 			#{/if}  -->
+<!-- 			#{else} -->
+<!-- 				<li class="divider-vertical"></li> -->
+<!-- 				<li><a class="noPad" href="/auth/twitterAuthentication"><img -->
+<!-- 								title="Sign in with Twitter" alt="Sign in with Twitter" -->
+<!-- 								src="https://dev.twitter.com/sites/default/files/images_documentation/sign-in-with-twitter-gray.png"> -->
+<!-- 					</a> -->
+<!-- 				</li> -->
+<!-- 			#{/else} -->
+<!-- 			<li><a href="/">Home</a></li>  -->
+<!-- 			#{if _user} -->
+<!-- 				<li><a onclick="showAddProductModal();" style="cursor: pointer;">Add Product</a></li>  -->
+<!-- 			#{/if} -->
+		</ul>
+		<div class="navbar-search pull-center" style="margin-left: 40%;">
+			<div class="input-append">
+				<input id="graphSearchId" type="text" class="search-query" placeholder="Search" name="query"> 
+				<span class="add-on"><i onclick="getUserGraph()" class="icon-search"> </i> </span>
+				<script>
+					$('#graphSearchId').keypress(function (e) {
+						  if (e.which == 13) {
+						    getUserGraph();
+						  }
+						});
+					</script>
+			</div>
+		</div>
+		<div class="pull-right">
+			<div id="slider" style="padding-left:23px;width: 200px; height: 15px">
+			
+			</div>
+		</div>
+	</div>
+</div>
+<!-- <a href="@{Application.index()}"> -->
+<!-- 	<img src = "/public/images/logo_bird.png" style="position:absolute;height:150px;right:0;top:-25px"> -->
+<!-- </a> -->

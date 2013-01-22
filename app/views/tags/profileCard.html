@@ -1,0 +1,19 @@
+#{if _profile.fullName}
+<h1 class="fullname">${_profile.fullName}</h1>
+<h2 class="username">
+	<span class="screen-name"><s>@</s>${_profile.screenName}</span>
+</h2>
+<p class="bio ">${_profile.description}</p>
+<p class="location-url">
+
+	#{if _profile.location} <span class="location"><a
+		href="http://maps.google.com/maps?q=${_profile.webSite}"
+		target="_blank">${_profile.location}</a> </span> <span class="divider">&middot;</span>
+	#{/if} 
+	#{if _profile.webSite} 
+	   <span class="url"> 
+	       <a href="${_profile.webSite}" target="_blank">${_profile.webSite}</a>
+	   </span> 
+	#{/if}
+</p>
+#{/if}

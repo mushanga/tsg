@@ -1,0 +1,7 @@
+{
+	"item": "${comment?.item?.id}",
+    "text": "${comment?.commentText}",
+    "id": "${comment?.id}",
+    "ownerPic": "${comment?.owner?.picture}",
+    "error": "${error}"
+}

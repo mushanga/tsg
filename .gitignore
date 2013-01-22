@@ -1,0 +1,14 @@
+.classpath
+.project
+eclipse
+.settings
+tmp
+*.class
+
+# Package Files #
+*.jar
+*.war
+*.ear
+/t-commerce.iws
+/t-commerce.ipr
+/t-commerce.iml

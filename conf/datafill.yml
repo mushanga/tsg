@@ -1,0 +1,144 @@
+User(engin):
+    twitterId: 392768645
+    screenName: "eguller"
+    picture: "https://si0.twimg.com/profile_images/1763539464/eguller_reasonably_small.jpeg"
+    fullName: "Engin Guller"
+    adsTweetLevel: NONE
+    authToken: "392768645-qcQFDPwP7043rYyTpcYmZDs6rmVOdZvMH6dSccDh"
+    authTokenSecret: "icacvgwvTqpikhAGaCU3VTrd9JcolZokJ5YK5jw3n4"
+
+User(erman):
+    twitterId: 467241262
+    screenName: "ErmanCagiral"
+    picture: "https://si0.twimg.com/profile_images/1797496474/linked_reasonably_small.jpg"
+    fullName: "Erman Cagiral"
+    adsTweetLevel: NONE
+
+User(kutyar):
+    twitterId: 41789693
+    screenName: "kutyaroztas"
+    picture: "https://si0.twimg.com/profile_images/1201695717/b_img1.jpg"
+    fullName: "Kutyar Oztas"
+    adsTweetLevel: NONE
+    
+User(MerveMercan10):
+    twitterId: 1039687974
+    screenName: "MerveMercan10"
+    picture: "http://a0.twimg.com/sticky/default_profile_images/default_profile_3_normal.png"
+    fullName: "Merve Mercan"
+    adsTweetLevel: NONE
+    
+    
+SearchKey(new_guitar):
+    keyName: need new guitar
+
+SearchKey(new_bicycle):
+    keyName: new bicycle
+    
+SearchKey(new_house):
+    keyName: new house
+
+SearchKey(new_car):
+    keyName: new car
+
+SearchKey(new_piano):
+    keyName: new piano
+    
+SearchKey(vintage_table):
+    keyName: vintage table
+    
+SearchKey(startup_turkey):
+    keyName: startup
+
+Item(item1):
+    description: "i am selling my bike. It is a 40 years old without any major problem."
+    picture: "http://ecx.images-amazon.com/images/I/31nc9OHB7OL._SL500_AA300_.jpg"
+    owner: erman
+    searchKey: [new_bicycle]
+    shortLink: "http://announce4.me/item/1"
+    
+Item(item2):
+    description: "i am selling my guitar"
+    picture: "http://ecx.images-amazon.com/images/I/31be5LRX8-L.jpg"
+    owner: engin
+    searchKey: [new_guitar]
+    shortLink: "http://announce4.me/item/2"
+    
+Item(item3):
+    description: "i am selling my car."
+    picture: "http://image.motortrend.com/f/oftheyear/car/1301_2013_motor_trend_car_of_the_year_tesla_model_s/41007734+w644+h0/2013-Tesla-Model-S-front-1.jpg"
+    owner: MerveMercan10
+    searchKey: [new_car]
+    shortLink: "http://announce4.me/item/3"    
+  
+Item(item4):
+    description: "i am selling my house"
+    picture: "http://www.plu.edu/~allenka/img/House_Front.jpg"
+    owner: MerveMercan10
+    searchKey: [new_house]
+    shortLink: "http://announce4.me/item/4"
+
+Item(item5):
+    description: "i am selling my piano"
+    picture: "http://www.steinway.com/img/hero_boston.png"
+    owner: MerveMercan10
+    searchKey: [new_piano]
+    shortLink: "http://announce4.me/item/5"
+    
+Item(item6):
+    description: "i am selling my vintage table from world war 2"
+    picture: "http://photos.weddingbycolor-nocookie.com/p000010204-m122409-p-photo-321519/Red-Ask-a-Question-Vintage-Table.jpg"
+    owner: erman
+    searchKeys: [vintage_table]
+    
+Item(item6):
+    description: "Very best of Turkey's Internet startups and Investors are gathering at Startup Turkey. Leading event where startup founders, business angels, investors network with each other establish new business relationships."
+    owner: erman
+    picture: "/public/images/etohum1.jpg"
+    searchKeys: [startup_turkey]
+
+Tweet(fake1):
+    tweetId: 274527182267748352
+    tweet: "i need a new guitar. or an electric one. whichever works."
+    owner: engin
+    item: item2
+    responded: false
+    created: "2010-02-02"
+
+Tweet(fake2):
+    tweetId: 239702511320182784
+    tweet: "i need a new guitar. or an electric one. whichever works."
+    owner: kutyar
+    item: item2
+    responded: false
+    created: "2010-02-02"  
+    
+Tweet(fake3):
+    tweetId: 239702511320182785
+    tweet: "customer test page."
+    owner: engin
+    item: item3
+    responded: false
+    created: "2010-02-02"  
+
+Reply(reply1):
+    tweetId: 284315428308791296
+    tweet: "@SNSD_TY_Sk hello world"
+    source: fake3    
+    
+Reply(reply2):
+    tweetId: 284315428308791297
+    tweet: "@SNSD_TY_Sk hello world test2"
+    source: fake3
+
+Reply(reply3):
+    tweetId: 284315428308791298
+    tweet: "@SNSD_TY_Sk hello world test3"
+    source: fake3
+    
+Reply(reply4):
+    tweetId: 284315428308791299
+    tweet: "@SNSD_TY_Sk hello world test4"
+    source: fake3
+    
+
