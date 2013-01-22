@@ -1,18 +1,18 @@
 PLAY_HOME=/home/play-1.2.5
 PLAY=$PLAY_HOME/play
-TCOMMERCE_SRC=/home/tsg/tsg
-TCOMMERCE_PROD=/home/tsg/tsg_prod
+TSG_SRC=/home/tsg/tsg
+TSG_PROD=/home/tsg/tsg_prod
 
-git pull
+git pull origin master
 
-cd $TCOMMERCE_PROD
-$PLAY stop $TCOMMERCE_PROD
+cd $TSG_PROD
+$PLAY stop $TSG_PROD
 
-rm -Rf $TCOMMERCE_PROD
-mkdir $TCOMMERCE_PROD
-cp -R $TCOMMERCE_SRC/* $TCOMMERCE_PROD/
-rm $TCOMMERCE_PROD/README.md
-rm $TCOMMERCE_PROD/build.sh
-cd $TCOMMERCE_PROD
+rm -Rf $TSG_PROD
+mkdir $TSG_PROD
+cp -R $TSG_SRC/* $TSG_PROD/
+rm $TSG_PROD/README.md
+rm $TSG_PROD/build.sh
+cd $TSG_PROD
 $PLAY deps --sync
-$PLAY start -Dpidfile.path=$TCOMMERCE_PROD/server.pid --%prod
+$PLAY start
