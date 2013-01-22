@@ -143,15 +143,11 @@ public class Application extends Controller {
 		File file = new File(Start.getImagePath() + imageName);
 		renderBinary(file);
 	}
-
-	public static void renderGraphDataJSON(String ownerId) {
-		File file = new File(Start.getGraphJSONDataPath() + ownerId);
-		try {
-			renderJSON(readFileAsString(Start.getGraphJSONDataPath() + ownerId+".json"));
-		} catch (IOException e) {
-			Logger.error(e, e.getMessage());
-		}
+	public static void displayGraphData(String ownerId) {
+		File file = new File(Start.getGraphJSONDataPath() + ownerId+".json");
+		renderJSON(file);
 	}
+	
 	public static String readFileAsString(String filePath) throws java.io.IOException
 	{
 	    BufferedReader reader = new BufferedReader(new FileReader(filePath));
@@ -190,7 +186,7 @@ public class Application extends Controller {
 			ug.save();
 			renderJSON(constructBasicGraphJSON(user.twitterId));
 		}else{
-			renderGraphDataJSON(String.valueOf(user.twitterId));
+			displayGraphData(String.valueOf(user.twitterId));
 		}
 	    
 	}

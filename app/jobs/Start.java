@@ -32,7 +32,7 @@ public class Start extends Job {
 	
 	private void createImageFolder(){
 		String home = System.getenv("HOME");
-    	String imagePath = home + FS + ".tcommerce" + FS + "images" + FS;
+    	String imagePath = home + FS + ".tsg" + FS + "images" + FS;
     	File file = new File(imagePath);
     	if(!file.exists()){
     		file.mkdirs();
@@ -40,7 +40,7 @@ public class Start extends Job {
     	IMAGE_PATH = imagePath;
     	
 
-    	String gdPath = home + FS + ".tcommerce" + FS + "graphdata" + FS;
+    	String gdPath = home + FS + ".tsg" + FS + "graphdata" + FS;
     	file = new File(gdPath);
     	if(!file.exists()){
     		file.mkdirs();

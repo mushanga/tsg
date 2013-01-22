@@ -14,7 +14,7 @@ GET     /public/                                staticDir:public
 GET  /twitter/{tokenKey}/						Auth.twitterCallback
 
 GET /image/{imageName}                          Application.displayImage
-GET /graphdata/{ownerId}                        Application.displayJson
+GET /graphdata/{ownerId}                        Application.displayGraphData
 
 GET /item/{itemId}								Application.showItem
 
