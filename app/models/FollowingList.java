@@ -20,6 +20,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.JoinColumn;
 import javax.persistence.UniqueConstraint;
@@ -35,6 +37,11 @@ import util.Common;
 @Entity
 @Table(uniqueConstraints={@UniqueConstraint(columnNames = { "ownerId" })})
 public class FollowingList extends Model {
+	public FollowingList(Long ownerId) {
+		super();
+		this.ownerId = ownerId;
+		this.status = WAITING;
+	}
 	
 	public String ownerScreenName;
 	
@@ -44,13 +51,18 @@ public class FollowingList extends Model {
 
 	@Version
 	public Long version;
+	public Date createdAt;
+	public Date updatedAt;
 
-	public FollowingList(Long ownerId) {
-		super();
-		this.ownerId = ownerId;
-		this.status = WAITING;
+	@PrePersist
+	void createdAt() {
+		this.createdAt = this.updatedAt = new Date();
 	}
 
+	@PreUpdate
+	void updatedAt() {
+		this.updatedAt = new Date();
+	}
 //	@ManyToMany(cascade={CascadeType.ALL})
 //	@JoinTable(name = "followingLink", joinColumns = { @JoinColumn(name = "ownerId") }, inverseJoinColumns = { @JoinColumn(name = "id")})
 //	public Set<Link> links = new HashSet<Link>();
@@ -61,6 +73,7 @@ public class FollowingList extends Model {
 	public static String COMPLETED = "Completed";
 	public static String PROTECTED = "Protected";
 
+	
 	public static FollowingList getByOwnerId(Long ownerId){
 		return FollowingList.find("byOwnerId", ownerId).first();
 	}

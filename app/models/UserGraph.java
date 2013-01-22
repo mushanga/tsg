@@ -20,6 +20,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.JoinColumn;
 import javax.persistence.Transient;
@@ -51,12 +53,19 @@ public class UserGraph extends Model {
 		this.ownerId = ownerId;
 		this.status = WAITING;
 	}
+	public Date createdAt;
+	public Date updatedAt;
 
+	@PrePersist
+	void createdAt() {
+		this.createdAt = this.updatedAt = new Date();
+	}
+
+	@PreUpdate
+	void updatedAt() {
+		this.updatedAt = new Date();
+	}
 	
-//	@ManyToMany(cascade={CascadeType.ALL})
-//	@JoinTable(name = "graphLink", joinColumns = { @JoinColumn(name = "ownerId") }, inverseJoinColumns = { @JoinColumn(name = "id")})
-//	public Set<Link> links = new HashSet<Link>();
-
 	@Transient
 	public Set<User> visibleUsers = new HashSet<User>();
 

@@ -520,10 +520,9 @@ function Graph(el) {
 		
 		.on("click",  function(ele) {
 			
-		thisObj.nodeClicked(ele.id);
+		  thisObj.nodeClicked(ele.id);
 		})
 		.on("mouseover",function(ele){
-			
 			vis.selectAll(".text"+ele.id).style("display","block");
 			
 		})
