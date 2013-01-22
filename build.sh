@@ -3,6 +3,7 @@ PLAY=$PLAY_HOME/play
 TSG_SRC=/home/tsg/tsg
 TSG_PROD=/home/tsg/tsg_prod
 
+cd $TSG_SRC
 git pull origin master
 
 cd $TSG_PROD
