@@ -7,6 +7,8 @@ $(function() {
     	
     }});
 
+	$("#slider").hide();
+	
     graph = new Graph("#screen");
     tw = new TwitterClient();
     util = new Util(); 
@@ -53,6 +55,7 @@ function getUserGraph(){
 // 			}
 // 			lastUser = userName;
 			
+			
 			graph.centerNodeId = data.ownerId;
 			
 			var srcIdList = new Array();
@@ -78,7 +81,16 @@ function getUserGraph(){
 // 			setProgressBarMessage(msg);
 // 			setProgressBarValue(val);
 			graph.update();
-		
+			if(data.users.length<=50){
+				 $("#slider").slider({ min:50, max: 500, value:50,step:10});
+				$("#slider").hide();
+			}else{
+				$("#slider").slider({ min:50, max: data.users.length, step:data.users.length/50});
+			
+				$("#slider").show();
+				
+			}
+			  
 		},
 		error : function(er)
 		{

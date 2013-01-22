@@ -109,6 +109,7 @@ function Graph(el) {
 	}
 
 	this.clear = function () {
+		 $("#slider").slider({value:50});
 		thisObj.centerNodeId = -1;
 		nodes.length = 0;
 		links.length = 0;
