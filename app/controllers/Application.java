@@ -145,7 +145,7 @@ public class Application extends Controller {
 	}
 	public static void displayGraphData(String ownerId) {
 		File file = new File(Start.getGraphJSONDataPath() + ownerId+".json");
-		renderJSON(file);
+		renderBinary(file);
 	}
 	
 	public static String readFileAsString(String filePath) throws java.io.IOException
