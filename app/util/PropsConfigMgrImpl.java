@@ -33,7 +33,7 @@ public class PropsConfigMgrImpl {
 	private static final String GRAPH_DB_PATH = "graphdb";
 	
 	public static final String AMAZONBIRD_PROPERTIES = System
-			.getenv("home") + "/.tsg/tsg.properties";
+			.getenv("HOME") + "/.tsg/tsg.properties";
 	
 	private static  PropsConfigMgrImpl instance = null;
 	
