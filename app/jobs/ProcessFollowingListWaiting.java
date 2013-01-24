@@ -9,7 +9,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -29,6 +32,7 @@ import play.Logger;
 import play.Play;
 import play.cache.Cache;
 import play.db.jpa.JPA;
+import play.db.jpa.NoTransaction;
 import play.jobs.Every;
 import play.jobs.Job;
 import twitter.TwitterProxy;
@@ -36,21 +40,26 @@ import twitter.TwitterProxyFactory;
 import util.LinkShortener;
 import util.UserLookup;
 
-public class ConstructGraph extends GraphOperationsBase {
+@Every("1s")
+public class ProcessFollowingListWaiting extends GraphOperationsBase {
 
-
+	private static int BATCH_OP_SIZE = 50;
 	@Override
 	public void doJob() {
 		try {
-			UserGraph graph = UserGraph.getInProgress();
-			if (graph != null) {
-			//	createGraphForUser(graph);
+			for(int i = 0; i<BATCH_OP_SIZE; i++){
+
+				FollowingList fl = FollowingList.getWaiting();
+				if (fl != null) {
+					
+
+					getFollowings(fl.ownerId, true);
+				}
 			}
 		} catch (Exception e) {
 			Logger.error(e.getMessage());
 		}
 		
 	}
-	
 
 }

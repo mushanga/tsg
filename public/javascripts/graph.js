@@ -236,22 +236,22 @@ function Graph(el) {
 		}
 	})
 	.linkStrength(function(d){
-		if(mLinks.indexOf(d)>-1){
-			return 1;
-		}	else{
+//		if(mLinks.indexOf(d)>-1){
+//			return 1;
+//		}	else{
 			return 0.1;
-		}
+//		}
 	})
-	.charge(function(d){
-		if(d.id == thisObj.centerNodeId){
-			return -800;
-		}	else{
-			return -200
-		}
-	})
+	.gravity(0.1);
+//	.charge(function(d){
+//		if(d.id == thisObj.centerNodeId){
+//			return -800;
+//		}	else{
+//			return -200
+//		}
+//	})
 //	.friction(0.1)
 	
-	.gravity(0.1);
 
 	var vis = this.vis = d3.select(el).append("svg:svg")
 	.attr("width", w)
@@ -420,11 +420,12 @@ function Graph(el) {
 		
 
 		force.charge(function(d){
-			if (d.id == thisObj.centerNodeId) {
-				return 30 * -imageHeight;
-			} else {
-				return 20*(-(nodeIncomingMap[d.id]  + imageHeight)/2);				
-			}
+			return -100;
+//			if (d.id == thisObj.centerNodeId) {
+//				return 30 * -imageHeight;
+//			} else {
+//				return 20*(-(nodeIncomingMap[d.id]  + imageHeight)/2);				
+//			}
 		})
 		
 		var roundedRects= circleGroup.selectAll("rect")
@@ -505,16 +506,20 @@ function Graph(el) {
 		})
 	    .attr("width", function(d) {
 	    	if (d.id == thisObj.centerNodeId) {
-				return 2 * imageWidth;
+	    		d.radius =  imageWidth;
+				return 2*d.radius;
 			} else {
-				return nodeIncomingMap[d.id] + imageWidth;				
+	    		d.radius =   (nodeIncomingMap[d.id] + imageWidth)/2;
+				return 2*d.radius; 			
 			}
 		})
 		.attr("height", function(d) {
 			if (d.id == thisObj.centerNodeId) {
-				return 2 * imageHeight
+			   d.radius = imageHeight
+				return  2 *d.radius 
 			} else {
-				return nodeIncomingMap[d.id] + imageHeight;
+				d.radius = (nodeIncomingMap[d.id] + imageHeight)/2;
+				return 2*d.radius;
 			}
 		})		
 		
@@ -604,6 +609,15 @@ function Graph(el) {
 				return "translate(" + d.x + "," + d.y + ")";
 			});
 
+
+			  var q = d3.geom.quadtree(activeNodes),
+		      i = 0,
+		      n = activeNodes.length;
+
+		  while (++i < n) {
+		    q.visit(collide(activeNodes[i]));
+		  }
+		  
 			images.attr("transform", function(d) {
 				d.x = Math.max(imageWidth/2, Math.min(w - imageWidth/2, d.x));
 				d.y = Math.max(imageHeight/2, Math.min(thirdViewBottomLeft.y - imageHeight/2, d.y)); 
@@ -613,8 +627,6 @@ function Graph(el) {
 				return "translate(" + d.x + "," + d.y + ")";
 			});
 
-			
-			
 			
 //			cursorTxt.attr("transform", function(d) {
 //				return "translate(" + d.x + "," + d.y + ")";
@@ -738,3 +750,30 @@ function Graph(el) {
 //	Use elliptical arc path segments to doubly-encode directionality.
 
 }
+	
+	function collide(node) {
+		  var r = node.radius + 16,
+		      nx1 = node.x - r,
+		      nx2 = node.x + r,
+		      ny1 = node.y - r,
+		      ny2 = node.y + r;
+		  return function(quad, x1, y1, x2, y2) {
+		    if (quad.point && (quad.point !== node)) {
+		      var x = node.x - quad.point.x,
+		          y = node.y - quad.point.y,
+		          l = Math.sqrt(x * x + y * y),
+		          r = node.radius + quad.point.radius;
+		      if (l < r) {
+		        l = (l - r) / l * .5;
+		        node.x -= x *= l;
+		        node.y -= y *= l;
+		        quad.point.x += x;
+		        quad.point.y += y;
+		      }
+		    }
+		    return x1 > nx2
+		        || x2 < nx1
+		        || y1 > ny2
+		        || y2 < ny1;
+		  };
+		}

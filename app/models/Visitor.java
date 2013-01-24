@@ -10,7 +10,7 @@ import javax.persistence.TemporalType;
 import play.db.jpa.Model;
 
 @Entity
-public class Visitor extends Model {
+public class Visitor extends TSGModel {
 	
 	@ManyToOne
 	public Item item;

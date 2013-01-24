@@ -11,7 +11,7 @@ import play.db.jpa.Model;
 
 @Entity
 @Table(uniqueConstraints = { @UniqueConstraint( columnNames = { "ownerId" } ) })
-public class UserToken extends Model{
+public class UserToken extends TSGModel{
 
 	public static String IN_USE = "In Use";
 	public static String FREE = "Free";

@@ -1,6 +1,5 @@
 package controllers;
 
-import java.lang.System.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -13,6 +12,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import jobs.ClientGraph;
+import jobs.GraphOperationsBase;
 import jobs.Start;
 import models.Comment;
 import models.Item;
@@ -36,7 +36,6 @@ import util.UserLookup;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.ning.http.client.websocket.WebSocket;
 
 import exception.NoAvailableTokenException;
 import exception.TSEException;
@@ -143,8 +142,8 @@ public class Application extends Controller {
 		File file = new File(Start.getImagePath() + imageName);
 		renderBinary(file);
 	}
-	public static void displayGraphData(String ownerId) {
-		File file = new File(Start.getGraphJSONDataPath() + ownerId+".json");
+	public static void displayGraphData(String name) {
+		File file = new File(Start.getGraphJSONDataPath() + name+".json");
 		renderBinary(file);
 	}
 	
@@ -178,20 +177,22 @@ public class Application extends Controller {
 		render("application/index.html", items);
 	}
 	
-	public static void get(String query) {
+	public static void get(String query, String page) {
 		User user = UserLookup.getUser(query);
 		UserGraph ug = UserGraph.getByOwnerId(user.twitterId);
 		if(ug==null){
 			ug = new UserGraph(user.twitterId);
 			ug.save();
-			renderJSON(constructBasicGraphJSON(user.twitterId));
+			renderBinary(constructBasicGraphJSON(user.twitterId));
+		}else if(ug.isCompleted()){
+			displayGraphData(String.valueOf(ug.ownerId)+"-"+page);
 		}else{
-			displayGraphData(String.valueOf(user.twitterId));
+			displayGraphData(String.valueOf(ug.ownerId)+"-temp");
 		}
 	    
 	}
 
-	public static String constructBasicGraphJSON(Long ownerId){
+	public static File constructBasicGraphJSON(Long ownerId){
 		Set<String> visibleLinks = new HashSet<String>();
 		TwitterProxy twitter = null;
 		try {
@@ -223,11 +224,14 @@ public class Application extends Controller {
 		
 		Set<User> visibleUsers = UserLookup.getUsers(new HashSet(ownerAndFollowings));
 		
-		ClientGraph cg = new ClientGraph(ownerId, followings.size(), 0, visibleLinks, new ArrayList<User>(visibleUsers) );
+		ClientGraph cg = new ClientGraph(ownerId, followings.size(), 0, visibleLinks, new ArrayList<User>(visibleUsers), 0 );
+		cg.needsReload = true;
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		String content = gson.toJson(cg, ClientGraph.class);
 			
-		return content;
+		GraphOperationsBase.saveGraphJson(String.valueOf(ownerId)+"-temp", content);
+		return GraphOperationsBase.getGraphJson(String.valueOf(ownerId)+"-temp");
+		
 	}
 	public static void profile(Long profileId) {
 		Long userId = Cache.get(session.getId(), Long.class);

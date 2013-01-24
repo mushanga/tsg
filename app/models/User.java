@@ -23,7 +23,7 @@ import play.db.jpa.Model;
 import util.Common;
 
 @Entity
-public class User extends Model {
+public class User extends TSGModel {
 
 	public String screenName;
 	public Long twitterId;
@@ -69,11 +69,11 @@ public class User extends Model {
 	public void updateTwData(twitter4j.User twUser, String authToken,
 			String authTokenSecret) {
 		this.screenName = twUser.getScreenName();
-		this.picture = twUser.getProfileImageURL().toExternalForm();
+		this.picture = twUser.getProfileImageURLHttps();
 		this.fullName = twUser.getName();
 		this.authToken = authToken;
 		this.authTokenSecret = authTokenSecret;
-		this.webSite = twUser.getURL() == null ? "" : twUser.getURL().toExternalForm();
+		this.webSite = twUser.getURL() == null ? "" : twUser.getURL();
 		this.location = twUser.getLocation();
 		this.description = twUser.getDescription();
 		this.twitterId = twUser.getId();

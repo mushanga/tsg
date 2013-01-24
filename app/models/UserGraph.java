@@ -38,9 +38,10 @@ import util.Common;
 
 @Entity
 @Table(uniqueConstraints={@UniqueConstraint(columnNames = { "ownerId" })})
-public class UserGraph extends Model {
+public class UserGraph extends TSGModel {
 	
-	
+	public int total;
+	public int completed;
 	public Long ownerId;	
 
 	public String status;
@@ -76,10 +77,13 @@ public class UserGraph extends Model {
 	public static String WAITING = "Waiting...";
 	public static String IN_PROGRESS = "In Progress...";
 	public static String ERROR = "Error";
-	public static String READY_TO_CONSTRUCT = "Ready to Construct";
+	public static String CONTRUCTING = "Constructing...";
 	public static String COMPLETED = "Completed";
 	public static String PROTECTED = "Protected";
 
+	public static UserGraph getReadyToBeFinalized(){
+		return UserGraph.find("select ug from UserGraph ug where completed = total and total>0 and status = ?", IN_PROGRESS).first();
+	}
 	public static UserGraph getWaiting(){
 		return UserGraph.find("byStatus", WAITING).first();
 	}
@@ -89,8 +93,8 @@ public class UserGraph extends Model {
 	public static List<UserGraph> getInProgressList(){
 		return UserGraph.find("byStatus", IN_PROGRESS).fetch();
 	}
-	public static UserGraph getReadyToContruct(){
-		return UserGraph.find("byStatus", READY_TO_CONSTRUCT).first();
+	public static UserGraph getConstructing(){
+		return UserGraph.find("byStatus", CONTRUCTING).first();
 	}
 
 	public static UserGraph getByOwnerId(long ownerId){
@@ -101,37 +105,34 @@ public class UserGraph extends Model {
 		return this.status.equals(PROTECTED);
 	}
 
+	private void setStatus(String status) {
+		this.version--;
+		this.status = status;
+		this.saveImmediately();
+		
+	}
+
+
 	public void setStatusInProgress() {
-		this.status = IN_PROGRESS;
+		setStatus(IN_PROGRESS);
 	}
 
 	public void setStatusCompleted() {
-		this.status = COMPLETED;
+		setStatus(COMPLETED);
 	}
-	public void setStatusReadyToConstruct() {
-		this.status = READY_TO_CONSTRUCT;
+	public void setStatusConstructing() {
+		setStatus(CONTRUCTING);
 	}
 	public void setStatusProtected() {
-		this.status = PROTECTED;
+		setStatus(PROTECTED);
 	}
 
 	public void setStatusWaiting() {
-		this.status = WAITING;
+		setStatus(WAITING);	
 	}
-	public void saveImmediately() {
-		boolean noExistingTx=!JPA.em().getTransaction().isActive();
-		if(noExistingTx){
 
-		    JPA.em().getTransaction().begin();
-		}
-		this.save();
-	    JPA.em().flush();
-	    JPA.em().getTransaction().commit();
-		if(!noExistingTx){
-
-		    JPA.em().getTransaction().begin();
-		}
+	public boolean isCompleted(){
+		return COMPLETED.equalsIgnoreCase(this.status);
 	}
-	
 	
 }

@@ -1,12 +1,23 @@
 <script type="text/javascript">
-$(function() {
-    $("#slider").slider({ min:50, max: 500, value:50, step: 50, stop: function(event, ui) { 
-    	
-    	graph.update();
-    	
-    	
-    }});
 
+var recPerPage = 50;
+var currPage = 1;
+
+$(function() {
+	
+    $("#slider").slider({ min:recPerPage, value:recPerPage, step: 1, stop: function(event, ui) {
+    	
+    	var page = ui.value / 50;
+    	
+    	
+    	if(page>currPage){
+    		currPage++;
+    		getUserGraph();
+    	}else{
+        	graph.update(); 
+    	}  	
+    }});
+    
 	$("#slider").hide();
 	
     graph = new Graph("#screen");
@@ -18,11 +29,15 @@ $(function() {
 $(function() {
 	$(function() {
 	    $("#progressbar").progressbar({ value: 0 });
+	    $("#progressbar").hide();
 	});
 })
+
+var lastUserId = '';
+
 function getUserGraph(){
 	
-	var listAction = #{jsAction @get(':query') /}
+	var listAction = #{jsAction @get(':query', ':page') /}
 // 	   $('#result').load(
 // 	       listAction({search: 'x', size: '10', page: '1'}), 
 // 	       function() {
@@ -32,17 +47,44 @@ function getUserGraph(){
 	   
 	   
 	var userName = $('#graphSearchId').val();
-// 	if(lastUser!=userName){
-		graph.clear();
+ 	
+		
+	$("#slider").slider({ disabled: true });
+	currPage = Math.max(currPage,1);
 // 	}
 // 	setProgressBarMessage('Loading the graph of '+userName+'...');
 	$.ajax({
 
-		url : listAction({query: userName}),
+		url : listAction({query: userName, page: currPage}),
 		dataType : "json",
 		success :  function(data)
 		{
+// 			if(data.needsReload){
+// 				window.setTimeout(getUserGraph,5 * 1000 + Math.sqrt(data.total));
+// 			}
+			if(data.ownerId!=lastUserId){
+				graph.clear();
+			}
+
+			lastUserId = data.ownerId;
+			currPage = data.page;
 			
+			if(data.completed<data.total){
+				window.setTimeout(getUserGraph,5 * 1000 + Math.sqrt(data.total));
+				$("#progressbar").progressbar({ value: (data.completed/data.total) * 100 });	
+				$("#progressbar").show();	
+				$("#slider").hide();
+			}else{	
+				$("#progressbar").hide();
+				if(data.total>recPerPage){
+					$("#slider").slider({max: data.total, value:Math.min(data.total, (recPerPage*currPage)+1)});
+					$("#slider").slider({ disabled: false });
+					$("#slider").show();
+				}
+			}
+			
+			
+
 // 			if(data.reloadTimeInSecs && data.reloadTimeInSecs>0){
 
 // 				window.setTimeout(getUserGraph,data.reloadTimeInSecs * 1000);
@@ -55,7 +97,6 @@ function getUserGraph(){
 // 			}
 // 			lastUser = userName;
 			
-			
 			graph.centerNodeId = data.ownerId;
 			
 			var srcIdList = new Array();
@@ -63,7 +104,12 @@ function getUserGraph(){
 			for ( var i = 0; i < data.users.length; i++) {
 				
 				var newNode = data.users[i];
+				
 					newNode.id = parseInt(newNode.twitterId);
+					if(newNode.id == data.ownerId){
+
+						$('#graphSearchId').val(newNode.screenName);
+					}
 				graph.addNode(newNode);
 
 			}
@@ -81,15 +127,14 @@ function getUserGraph(){
 // 			setProgressBarMessage(msg);
 // 			setProgressBarValue(val);
 			graph.update();
-			if(data.users.length<=50){
-				 $("#slider").slider({ min:50, max: 500, value:50,step:10});
-				$("#slider").hide();
-			}else{
-				$("#slider").slider({ min:50, max: data.users.length, step:50});
-			
-				$("#slider").show();
+// 			if(data.total<=recPerPage){
+// // 				 $("#slider").slider({ min:recPerPage, max: 500, value:50,step:50});
+// 				$("#slider").hide();
+// 			}else{
 				
-			}
+// 				$("#slider").hide();
+				
+// 			}
 			  
 		},
 		error : function(er)

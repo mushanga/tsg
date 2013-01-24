@@ -11,7 +11,7 @@ import play.db.jpa.Model;
 import util.Common;
 
 @Entity
-public class Comment extends Model{
+public class Comment extends TSGModel{
 	
 	public String commentText;
 	

@@ -3,6 +3,10 @@ package jobs;
 import graph.GraphDatabase;
 
 import java.io.File;
+import java.util.List;
+
+import models.FollowingList;
+import models.UserGraph;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.BasicAWSCredentials;
@@ -22,7 +26,8 @@ public class Start extends Job {
 	private static final String FS = System.getProperty("file.separator");
 	public void doJob(){
 		GraphDatabase.startGraphDatabase();
-		createImageFolder();
+		createFileFolders();
+		fixStuckInProgressObjects();
 //	    configS3();
 //		createImageFolder();
 //		if(!Play.configuration.get("application.mode").equals("dev")){
@@ -30,7 +35,7 @@ public class Start extends Job {
 //		}
 	}
 	
-	private void createImageFolder(){
+	private void createFileFolders(){
 		String home = System.getenv("HOME");
     	String imagePath = home + FS + ".tsg" + FS + "images" + FS;
     	File file = new File(imagePath);
@@ -69,6 +74,32 @@ public class Start extends Job {
         String secretKey = Play.configuration.getProperty("aws.secret.key");
         AWSCredentials awsCredentials = new BasicAWSCredentials(accessKey, secretKey);
         S3Config.s3Client = new AmazonS3Client(awsCredentials); 
+	}
+	
+	private void fixStuckInProgressObjects(){
+		try {
+			List<FollowingList> stuckFollowingLists = FollowingList.getInProgressList();
+			
+			for(FollowingList graph : stuckFollowingLists){
+				graph.setStatusWaiting();
+				graph.save();
+			}
+			
+		} catch (Exception e) {
+			Logger.error(e.getMessage());
+		}
+		
+		try {
+			List<UserGraph> stuckGraphs = UserGraph.getInProgressList();
+			
+			for(UserGraph graph : stuckGraphs){
+				graph.setStatusWaiting();
+				graph.save();
+			}
+			
+		} catch (Exception e) {
+			Logger.error(e.getMessage());
+		}
 	}
 
 }

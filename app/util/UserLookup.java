@@ -27,6 +27,7 @@ public class UserLookup {
 	public static User getUser(long id) {
 		return getUser(id, TWITTER);
 	}
+	
 	private static User getUser(long id, int maxDepth) {
 	    User user = Cache.get("user_id_" + id, User.class);
 	    if(user == null && maxDepth> MEM) {
@@ -109,12 +110,7 @@ public class UserLookup {
 				for(User user : newUsers){
 					user.save();
 					
-					if(notFlushed>50){
-						 JPA.em().flush();
-						 notFlushed = 0;
-					}else{
-						notFlushed++;
-					}
+				
 				}
 				
 				users.addAll(newUsers);

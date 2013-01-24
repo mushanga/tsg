@@ -24,7 +24,7 @@ import play.data.validation.Required;
 import play.db.jpa.Model;
 
 @Entity
-public class Item extends Model{
+public class Item extends TSGModel{
 	
 	@Required
 	@Column(length=4096)

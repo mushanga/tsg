@@ -231,6 +231,7 @@ public class GraphDatabase {
 		ArrayList<String> links = new ArrayList<String>();
 		if (rels != null) {
 			for (Relationship rel : rels) {
+				
 				long id1 = (Long) rel.getStartNode().getProperty(USER_ID);
 				long id2 = (Long) rel.getEndNode().getProperty(USER_ID);
 				if (!Util.isSetValid(userAndAllFollowings) || (userAndAllFollowings.contains(id1) && userAndAllFollowings.contains(id2))) {
@@ -267,5 +268,44 @@ public class GraphDatabase {
 	public static Set<Long> getMutualFriends(long srcId) {
 		return getMutualFriendsIncluding(srcId, null);
 
+	}
+	private static void clearRelations(long srcId, Direction direction, List<Long> including, List<Long> exluding) {
+		Set<Long> friends = new HashSet<Long>();
+
+		Transaction tx = graphDatabase.beginTx();
+		try {
+
+			Index<Node> usersIndex = graphDatabase.index().forNodes(USER_ID);
+			Node node = usersIndex.get(USER_ID, srcId).getSingle();
+			if (node != null) {
+
+				Iterable<Relationship> rels = node.getRelationships(direction);
+
+				if (rels != null) {
+					for (Relationship rel : rels) {
+						Node otherNode = rel.getOtherNode(node);
+						long otherNodeId = (Long) otherNode.getProperty(USER_ID);
+
+						if (!util.Util.isListValid(including) || (including.contains(otherNodeId))) {
+							if (!Util.isListValid(exluding) || (!exluding.contains(otherNodeId))) {
+
+								rel.delete();
+							}
+						}
+					}
+				}
+			}
+
+			tx.success();
+
+		} finally {
+			tx.finish();
+		}
+		
+
+	
+	}
+	public static void clearFollowings(long id) {
+		clearRelations(id, Direction.OUTGOING, null, null);
 	}
 }

@@ -36,7 +36,7 @@ import util.Common;
 
 @Entity
 @Table(uniqueConstraints={@UniqueConstraint(columnNames = { "ownerId" })})
-public class FollowingList extends Model {
+public class FollowingList extends TSGModel {
 	public FollowingList(Long ownerId) {
 		super();
 		this.ownerId = ownerId;
@@ -74,12 +74,19 @@ public class FollowingList extends Model {
 	public static String PROTECTED = "Protected";
 
 	
+	
+	public static Long getCompletedFollowingListCount(Set<Long> followings){
+		return FollowingList.find("select count(*) from FollowingList fl where (status =? OR status = ?) and ownerId in (:ids)", COMPLETED,PROTECTED).bind("ids", followings).first();
+	}
 	public static FollowingList getByOwnerId(Long ownerId){
 		return FollowingList.find("byOwnerId", ownerId).first();
 	}
 
 	public static FollowingList getWaiting(){
 		return FollowingList.find("byStatus", WAITING).first();
+	}
+	public static List<FollowingList> getWaitingList(){
+		return FollowingList.find("byStatus", WAITING).fetch();
 	}
 
 	public static List<FollowingList> getInProgressList(){
@@ -97,22 +104,28 @@ public class FollowingList extends Model {
 		return this.status.equals(WAITING);
 	}
 
+	private void setStatus(String status) {
+		this.status = status;
+		this.saveImmediately();
+		
+	}
+	
+
+
 	public void setStatusInProgress() {
-		this.status = IN_PROGRESS;
+		setStatus(IN_PROGRESS);
 	}
 
 	public void setStatusCompleted() {
-		this.status = COMPLETED;
+		setStatus(COMPLETED);
+	}
+	
+	public void setStatusProtected() {
+		setStatus(PROTECTED);
 	}
 
 	public void setStatusWaiting() {
-		this.status = WAITING;
-	}
-	public void setStatusProtected() {
-		this.status = PROTECTED;
-	}
-	public void setStatusError() {
-		this.status = ERROR;
+		setStatus(WAITING);	
 	}
 	
 //	public List<Long> getTargetIds(){

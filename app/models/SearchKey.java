@@ -14,7 +14,7 @@ import play.data.validation.Required;
 import play.db.jpa.Model;
 
 @Entity
-public class SearchKey extends Model{
+public class SearchKey extends TSGModel{
 	
 	@Required 
 	public String keyName;

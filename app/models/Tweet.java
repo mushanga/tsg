@@ -14,7 +14,7 @@ import javax.persistence.UniqueConstraint;
 import play.db.jpa.Model;
 
 @Entity @Table(uniqueConstraints = {@UniqueConstraint(columnNames={"tweetId"})})
-public class Tweet extends Model{
+public class Tweet extends TSGModel{
 	private static final int MAX_DAY_DIFF = 2;
 	public long tweetId;
 	public String tweet;
