@@ -72,14 +72,18 @@ public class GetFollowingsJob extends GraphJobBase {
 		try {
 
 			TwitterProxy twitter = TwitterProxyFactory.defaultInstance();
+			List<Long> fwings = twitter.getFollowingIds(ownerId);
+			//Do not replace with 'isValid'... null means error here
+			if(null != fwings){
+	         for (Long followingId : fwings) {
 
-			for (Long followingId : twitter.getFollowingIds(ownerId)) {
-
-				followingList.add(followingId);
+	            followingList.add(followingId);
+	         }
+	         GraphDatabase.addFriendships(ownerId,followingList);
+	         fl.setStatusSuccessful();
+			}else{
+			   fl.setStatusWaiting();
 			}
-			GraphDatabase.addFriendships(ownerId,followingList);
-
-			fl.setStatusSuccessful();
 
 		} catch (NoAvailableTokenException e) {	
 			fl.setStatusWaiting();

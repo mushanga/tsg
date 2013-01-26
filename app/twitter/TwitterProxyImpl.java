@@ -69,11 +69,10 @@ public class TwitterProxyImpl implements TwitterProxy {
 			boolean repeat = handleTwitterException(e1, id);
 			if(repeat){
 				getFollowingIds(id);
+			}else{
+			   followingList=null;
 			}
-		} catch (Exception e1) {
-			Logger.error(e1, e1.getMessage());
-
-		}
+		} 
 		return followingList;
 	}
 
