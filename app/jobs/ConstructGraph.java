@@ -36,7 +36,7 @@ import twitter.TwitterProxyFactory;
 import util.LinkShortener;
 import util.UserLookup;
 
-public class ConstructGraph extends GraphOperationsBase {
+public class ConstructGraph extends GraphJobBase {
 
 
 	@Override

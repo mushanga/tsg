@@ -1,24 +1,24 @@
 package exception;
 
-public class TSEException extends Exception {
+public class TSGException extends Exception {
 
 	private boolean tryAgain;
 
-	public TSEException() {
+	public TSGException() {
 
 	}
 
-	public TSEException(Exception ex, boolean repeat) {
+	public TSGException(Exception ex, boolean repeat) {
 
 		super(ex);
 		this.setTryAgain(repeat);
 	}
 
-	public TSEException(String message, boolean repeat) {
+	public TSGException(String message, boolean repeat) {
 		super(message);
 	}
 
-	public TSEException(String message) {
+	public TSGException(String message) {
 		super(message);
 	}
 

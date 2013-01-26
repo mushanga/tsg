@@ -1,7 +1,7 @@
 package twitter;
 
 import play.Logger;
-import exception.TSEException;
+import exception.TSGException;
 import models.User;
 
 public class TwitterProxyFactory {
@@ -12,10 +12,10 @@ public class TwitterProxyFactory {
 	public static TwitterProxy newInstance(User user){
 		return new TwitterProxyImpl(user);
 	}
-	public static TwitterProxy newInstance(Long tokenOwnerId) throws TSEException{
+	public static TwitterProxy newInstance(Long tokenOwnerId) throws TSGException{
 		return new TwitterProxyImpl(tokenOwnerId);
 	}
-	public static TwitterProxy defaultInstance() throws TSEException{
+	public static TwitterProxy defaultInstance() throws TSGException{
 		return  new TwitterProxyImpl();
 	}
 }

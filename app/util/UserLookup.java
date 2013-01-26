@@ -1,6 +1,7 @@
 package util;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -12,7 +13,7 @@ import play.db.jpa.JPA;
 import twitter.TwitterProxy;
 import twitter.TwitterProxyFactory;
 import exception.NoAvailableTokenException;
-import exception.TSEException;
+import exception.TSGException;
 import exception.UserProtectedException;
 
 public class UserLookup {
@@ -45,7 +46,7 @@ public class UserLookup {
 					Logger.error(e, e.getMessage());
 				} catch (UserProtectedException e) {
 					Logger.error(e, e.getMessage());
-				} catch (TSEException e) {
+				} catch (TSGException e) {
 					Logger.error(e, e.getMessage());
 				}
 	        }
@@ -75,9 +76,11 @@ public class UserLookup {
 					Logger.error(e, e.getMessage());
 				} catch (UserProtectedException e) {
 					Logger.error(e, e.getMessage());
-				} catch (TSEException e) {
-					Logger.error(e, e.getMessage());
-				}
+				} catch (TSGException e) {
+               Logger.error(e, e.getMessage());
+            } catch (Exception e) {
+               Logger.error(e, e.getMessage());
+            }
 	        }
 	        if(user!=null){
 		        Cache.set("user_name_" + screenName, user, "30mn");	        	
@@ -87,7 +90,7 @@ public class UserLookup {
 		return user;
 	}
 
-	public static Set<User> getUsers(Set<Long> userIdList){
+	public static Set<User> getUsers(Collection<Long> userIdList){
 	   List<Long> missingUserIds =new ArrayList<Long>();
 	   Set<User> users = new HashSet<User>();
 	   for(Long userId : userIdList){
@@ -117,7 +120,7 @@ public class UserLookup {
 				
 			} catch (NumberFormatException e) {
 				Logger.error(e, e.getMessage());
-			} catch (TSEException e) {
+			} catch (TSGException e) {
 				Logger.error(e, e.getMessage());
 			}
 	   }

@@ -15,7 +15,7 @@ import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
 import exception.NoAvailableTokenException;
-import exception.TSEException;
+import exception.TSGException;
 import exception.UserProtectedException;
 
 public class TwitterProxyImpl implements TwitterProxy {
@@ -39,7 +39,7 @@ public class TwitterProxyImpl implements TwitterProxy {
 		twitter.setOAuthConsumer(OAuthSettings.getConsumerKey(), OAuthSettings.getConsumerSecret());
 		twitter.setOAuthAccessToken(new AccessToken(authToken, authTokenSecret));
 	}
-	public TwitterProxyImpl(Long tokenOwnerId) throws TSEException {
+	public TwitterProxyImpl(Long tokenOwnerId) throws TSGException {
 		
 		token = UserToken.getByOwnerId(tokenOwnerId);
 		
@@ -47,7 +47,7 @@ public class TwitterProxyImpl implements TwitterProxy {
 		twitter.setOAuthConsumer(OAuthSettings.getConsumerKey(), OAuthSettings.getConsumerSecret());
 		twitter.setOAuthAccessToken(new AccessToken(token.accessToken, token.accessTokenSecret));
 	}
-	public TwitterProxyImpl() throws TSEException {
+	public TwitterProxyImpl() throws TSGException {
 		
 		twitter = new TwitterFactory().getInstance();
 		twitter.setOAuthConsumer(Play.configuration.getProperty("twitstreetConsumerKey"), Play.configuration.getProperty("twitstreetConsumerSecret"));
@@ -206,10 +206,14 @@ public class TwitterProxyImpl implements TwitterProxy {
 		} else if (e1.getMessage().contains("Not authorized")) {
 			throw new UserProtectedException(ownerOfFollowingList);
 		} else if (e1.getMessage().contains("connect timed out")) {
-			Logger.info("Connect timed out: " + token.ownerScreenName);
-			repeat = true;		
-			findAvailableToken();
-		} else {
+         Logger.info("Connect timed out: " + token.ownerScreenName);
+         repeat = true;    
+         findAvailableToken();
+      }else if (e1.getMessage().contains("Read-only application cannot POST")) {
+         Logger.info("Read-only application cannot POST: " + token.ownerScreenName);
+         repeat = true;    
+         findAvailableToken();
+      } else {
 			Logger.info("UNKNOWN ERROR: " + token.ownerScreenName);
 			Logger.error(e1.getMessage(), e1);
 

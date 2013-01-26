@@ -1,5 +1,8 @@
+var cliqueColor = ["black","black","black"];
+
+
 function Graph(el) {
-	var mLinks = [];
+	var uLinks = [];
 	var dLinks = [];
 	var thisObj = this;
 	var clickedImageId;
@@ -15,6 +18,8 @@ function Graph(el) {
 	this.activeNode = {};
 	this.maxIncoming = 2;
 	this.threshold = 2;
+	
+	this.cliques = [];
 	// Add and remove elements on the graph object
 	this.addToPathNodes = function (obj) {
 	
@@ -113,7 +118,7 @@ function Graph(el) {
 		thisObj.centerNodeId = -1;
 		nodes.length = 0;
 		links.length = 0;
-		mLinks.length = 0;
+		uLinks.length = 0;
 		dLinks.length = 0;
 //		cursors.length = 0;
 		nodeIncomingMap = {};
@@ -229,18 +234,36 @@ function Graph(el) {
 	var force = d3.layout.force()
 	.size([w, h])
 	.linkDistance(function(d){
-		if(mLinks.indexOf(d)>-1){
-			return 150;
+		for(var i in thisObj.cliques){
+			var clique = thisObj.cliques[i];
+			if(clique.indexOf(d.source.id)>-1 &&
+					clique.indexOf(d.target.id)>-1 ){
+				return 100;
+			}
+			
+		}
+		var revLink = thisObj.getLinkBySrcTrgId(d.target.id,d.source.id);
+		if(uLinks.indexOf(d)>-1 || uLinks.indexOf(revLink)>-1){
+			return 300;
 		}	else{
-			return 350;
+			return 500;
 		}
 	})
 	.linkStrength(function(d){
-//		if(mLinks.indexOf(d)>-1){
-//			return 1;
-//		}	else{
+		for(var i in thisObj.cliques){
+			var clique = thisObj.cliques[i];
+			if(clique.indexOf(d.source.id)>-1 &&
+					clique.indexOf(d.target.id)>-1 ){
+				return 0.1;
+			}
+			
+		}
+		var revLink = thisObj.getLinkBySrcTrgId(d.target.id,d.source.id);
+		if(uLinks.indexOf(d)>-1 || uLinks.indexOf(revLink)>-1){
 			return 0.1;
-//		}
+		}	else{
+			return 1;
+		}
 	})
 	.gravity(0.1);
 //	.charge(function(d){
@@ -336,17 +359,17 @@ function Graph(el) {
 
 	this.separateLinks = function separateLinks(visibleLinks){
 		
-		
-		mLinks.length = 0;
+
+		uLinks.length = 0;
 		dLinks.length = 0;
 		for(var i in visibleLinks){
 			var ln = visibleLinks[i];
 			
 			var reverseLn = this.getLinkBySrcTrgId(ln.target.id, ln.source.id);
 			if(visibleLinks.indexOf(reverseLn)>-1){
-				if(mLinks.indexOf(reverseLn)<0){
+				if(uLinks.indexOf(reverseLn)<0){
 
-					mLinks.push(ln);
+					uLinks.push(ln);
 				}
 			}
 			else{
@@ -420,7 +443,7 @@ function Graph(el) {
 		
 
 		force.charge(function(d){
-			return -100;
+			return -300;
 //			if (d.id == thisObj.centerNodeId) {
 //				return 30 * -imageHeight;
 //			} else {
@@ -434,6 +457,18 @@ function Graph(el) {
 		var roundedRectsEnter = roundedRects.enter();
 		var defs = roundedRectsEnter.append("defs");
 		defs.append("svg:rect")
+	    .style("fill","none")
+	    .style("stroke",function(d){
+			for(var i in thisObj.cliques){
+				var clique = thisObj.cliques[i];
+				if(clique.indexOf(d.id)>-1 ){
+					return cliqueColor[i];
+				}
+				
+			}
+			return "black"
+		})
+	    .style("stroke-width","3")
 	    .attr("id",function(d) { return 'image-clip-'+d.id;})	 
 	    .attr("x", function(d) {
 	    	if (d.id == thisObj.centerNodeId) {
@@ -478,64 +513,74 @@ function Graph(el) {
 	    .attr("id", function(d) { return 'image-clip-path-'+d.id;})
 	    .append("svg:use")
 	    .attr("xlink:href", function(d) { return '#image-clip-'+d.id;})
+	   
 	    
-		var images = circleGroup.selectAll("image")
+		var images = circleGroup.selectAll("g")
 		.data(activeNodes, function(d) { return d.id;});
 
 		images.exit().remove();
-		var imagesEnter = images.enter();
+		var imagesEnterc = images.enter();
 		
-		
-		imagesEnter.append("image")
+
+		var imagesEnterg = imagesEnterc.append("svg:g")
+		  
+			
+			.on("click",  function(ele) {
+				
+			  thisObj.nodeClicked(ele.id);
+			})
+			.on("mouseover",function(ele){
+				vis.selectAll(".text"+ele.id).style("display","block");
+				
+			})
+			.on("mouseout",function(ele){
+				vis.selectAll(".text"+ele.id).style("display","none");
+			})
+			.call(force.drag)
+			.style("cursor","pointer")
+		imagesEnterg.append("use")
+	    .attr("xlink:href", function(d) { return '#image-clip-'+d.id;})
+	    .attr("stroke","black")
+	    .attr("stroke-width","3")
+	    
+		imagesEnterg.append("image")
+		.style("border-color","black").style("border-width","5px")
 		.attr("clip-path",function(d) { return 'url(#image-clip-path-'+d.id+')';})
 	    .attr("xlink:href", function(d) { return d.picture;})
-	    
 	    .attr("x", function(d) {
-	    	if (d.id == thisObj.centerNodeId) {
-				return - imageWidth;
-			} else {
-				return -(nodeIncomingMap[d.id] + imageWidth)/2;				
-			}
-		})
-	    .attr("y",function(d) {
-	    	if (d.id == thisObj.centerNodeId) {
-				return -imageHeight;
-			} else {
-				return -(nodeIncomingMap[d.id]  + imageHeight)/2;				
-			}
-		})
-	    .attr("width", function(d) {
-	    	if (d.id == thisObj.centerNodeId) {
-	    		d.radius =  imageWidth;
-				return 2*d.radius;
-			} else {
-	    		d.radius =   (nodeIncomingMap[d.id] + imageWidth)/2;
-				return 2*d.radius; 			
-			}
-		})
-		.attr("height", function(d) {
-			if (d.id == thisObj.centerNodeId) {
-			   d.radius = imageHeight
-				return  2 *d.radius 
-			} else {
-				d.radius = (nodeIncomingMap[d.id] + imageHeight)/2;
-				return 2*d.radius;
-			}
-		})		
-		
-		.on("click",  function(ele) {
-			
-		  thisObj.nodeClicked(ele.id);
-		})
-		.on("mouseover",function(ele){
-			vis.selectAll(".text"+ele.id).style("display","block");
-			
-		})
-		.on("mouseout",function(ele){
-			vis.selectAll(".text"+ele.id).style("display","none");
-		})
-		.call(force.drag)
-		.style("cursor","pointer");
+		    	if (d.id == thisObj.centerNodeId) {
+					return - imageWidth;
+				} else {
+					return -(nodeIncomingMap[d.id] + imageWidth)/2;				
+				}
+			})
+		    .attr("y",function(d) {
+		    	if (d.id == thisObj.centerNodeId) {
+					return -imageHeight;
+				} else {
+					return -(nodeIncomingMap[d.id]  + imageHeight)/2;				
+				}
+			})
+		    .attr("width", function(d) {
+		    	if (d.id == thisObj.centerNodeId) {
+		    		d.radius =  imageWidth;
+					return 2*d.radius;
+				} else {
+		    		d.radius =   (nodeIncomingMap[d.id] + imageWidth)/2;
+					return 2*d.radius; 			
+				}
+			})
+			.attr("height", function(d) {
+				if (d.id == thisObj.centerNodeId) {
+				   d.radius = imageHeight
+					return  2 *d.radius 
+				} else {
+					d.radius = (nodeIncomingMap[d.id] + imageHeight)/2;
+					return 2*d.radius;
+				}
+			})		
+	  ;
+
 
 		if(thisObj.centerNodeId>0){
 
@@ -547,7 +592,7 @@ function Graph(el) {
 		}
 	
 		var pth = pathGroup.selectAll(".link")
-		.data(mLinks, function(d) { return d.source.id + "-" + d.target.id; });
+		.data(uLinks, function(d) { return d.source.id + "-" + d.target.id; });
 
 		pth.exit().remove();
 		pth.enter().append("svg:path")
@@ -644,7 +689,7 @@ function Graph(el) {
 	
 	this.nodeClicked = function(id){
 		if(id == clickedImageId){
-			circleGroup.selectAll("image").each(function(d,i){
+			circleGroup.selectAll("g").each(function(d,i){
 				this.style.visibility = "visible";
 				this.style.display = "block";
 			
@@ -660,7 +705,7 @@ function Graph(el) {
 			var tempVisibleArr = new Array();
 		
 			clickedImageId = id;
-			circleGroup.selectAll("image").each(function(d,i){
+			circleGroup.selectAll("g").each(function(d,i){
 				if(id == d.id || nodesHaveARelation(id, d.id) || thisObj.activeNode && d.id == thisObj.activeNode.id){
 					this.style.visibility = "visible";
 					this.style.display = "block";

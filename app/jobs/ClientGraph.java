@@ -20,6 +20,8 @@ public class ClientGraph{
 		this.users = visibleUsers;
 		this.page = page;
 	}
+	
+	public List<HashSet<Long>> cliques;
 	public Long ownerId;
 
 	public int total;

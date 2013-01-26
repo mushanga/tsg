@@ -71,6 +71,7 @@ public class FollowingList extends TSGModel {
 	public static String IN_PROGRESS = "In Progress...";
 	public static String ERROR = "Error";
 	public static String COMPLETED = "Completed";
+   public static String SUCCESSFUL = "Successful";
 	public static String PROTECTED = "Protected";
 
 	
@@ -79,7 +80,12 @@ public class FollowingList extends TSGModel {
 		return FollowingList.find("select count(*) from FollowingList fl where (status =? OR status = ?) and ownerId in (:ids)", COMPLETED,PROTECTED).bind("ids", followings).first();
 	}
 	public static FollowingList getByOwnerId(Long ownerId){
-		return FollowingList.find("byOwnerId", ownerId).first();
+		FollowingList fl = FollowingList.find("byOwnerId", ownerId).first();
+		if(fl==null){
+			fl = new FollowingList(ownerId);
+			fl.save();
+		}
+		return fl;
 	}
 
 	public static FollowingList getWaiting(){
@@ -97,16 +103,19 @@ public class FollowingList extends TSGModel {
 		return this.status.equals(PROTECTED);
 	}
 
-	public boolean isCompleted(){
-		return this.status.equals(COMPLETED);
-	}
+   public boolean isCompleted(){
+      return SUCCESSFUL.equalsIgnoreCase(this.status) || PROTECTED.equalsIgnoreCase(this.status);
+   }
+   public boolean isSuccessful(){
+      return this.status.equals(SUCCESSFUL);
+   }
 	public boolean isWaiting(){
 		return this.status.equals(WAITING);
 	}
 
 	private void setStatus(String status) {
 		this.status = status;
-		this.saveImmediately();
+		//this.saveImmediately();
 		
 	}
 	
@@ -119,7 +128,10 @@ public class FollowingList extends TSGModel {
 	public void setStatusCompleted() {
 		setStatus(COMPLETED);
 	}
-	
+
+   public void setStatusSuccessful() {
+      setStatus(SUCCESSFUL);
+   }
 	public void setStatusProtected() {
 		setStatus(PROTECTED);
 	}

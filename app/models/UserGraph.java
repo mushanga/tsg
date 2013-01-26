@@ -46,8 +46,8 @@ public class UserGraph extends TSGModel {
 
 	public String status;
 
-	@Version
-	public Long version;
+	
+	public Long version = 0L;
 
 	public UserGraph(Long ownerId) {
 		super();
@@ -77,9 +77,10 @@ public class UserGraph extends TSGModel {
 	public static String WAITING = "Waiting...";
 	public static String IN_PROGRESS = "In Progress...";
 	public static String ERROR = "Error";
-	public static String CONTRUCTING = "Constructing...";
-	public static String COMPLETED = "Completed";
-	public static String PROTECTED = "Protected";
+   public static String CONTRUCTING = "Constructing...";
+   public static String PROTECTED = "Protected";
+   public static String SUCCESSFUL = "Successful";
+   public static String COMPLETED = "Completed";
 
 	public static UserGraph getReadyToBeFinalized(){
 		return UserGraph.find("select ug from UserGraph ug where completed = total and total>0 and status = ?", IN_PROGRESS).first();
@@ -100,15 +101,17 @@ public class UserGraph extends TSGModel {
 	public static UserGraph getByOwnerId(long ownerId){
 		return UserGraph.find("byOwnerId", ownerId).first();
 	}
-	
-	public boolean isProtected(){
-		return this.status.equals(PROTECTED);
-	}
+
+   public boolean isProtected(){
+      return this.status.equals(PROTECTED);
+   }
+   public boolean isSuccessful(){
+      return this.status.equals(SUCCESSFUL);
+   }
 
 	private void setStatus(String status) {
-		this.version--;
 		this.status = status;
-		this.saveImmediately();
+//		this.saveImmediately();
 		
 	}
 
@@ -117,9 +120,12 @@ public class UserGraph extends TSGModel {
 		setStatus(IN_PROGRESS);
 	}
 
-	public void setStatusCompleted() {
-		setStatus(COMPLETED);
-	}
+//   public void setStatusCompleted() {
+//      setStatus(COMPLETED);
+//   }
+   public void setStatusSuccessful() {
+      setStatus(SUCCESSFUL);
+   }
 	public void setStatusConstructing() {
 		setStatus(CONTRUCTING);
 	}
@@ -132,7 +138,7 @@ public class UserGraph extends TSGModel {
 	}
 
 	public boolean isCompleted(){
-		return COMPLETED.equalsIgnoreCase(this.status);
+		return SUCCESSFUL.equalsIgnoreCase(this.status) || PROTECTED.equalsIgnoreCase(this.status);
 	}
 	
 }

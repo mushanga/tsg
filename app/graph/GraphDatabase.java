@@ -1,6 +1,7 @@
 package graph;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -92,7 +93,7 @@ public class GraphDatabase {
 
 	}
 
-	private static void addFriendshipNoTx(long src, long trg) {
+	private  static void addFriendshipNoTx(long src, long trg) {
 		if (src < 0 || trg < 0) {
 			return;
 		}
@@ -221,7 +222,7 @@ public class GraphDatabase {
 		return friends;
 
 	}
-	public static Set<Long> getMutualFriendsIncluding(long srcId, Set<Long> userAndAllFollowings) {
+	public static Set<Long> getMutualFriendsIncluding(long srcId, Collection<Long> userAndAllFollowings) {
 		Set<Long> friends = new HashSet<Long>();
 
 		Index<Node> usersIndex = graphDatabase.index().forNodes(USER_ID);
@@ -234,7 +235,7 @@ public class GraphDatabase {
 				
 				long id1 = (Long) rel.getStartNode().getProperty(USER_ID);
 				long id2 = (Long) rel.getEndNode().getProperty(USER_ID);
-				if (!Util.isSetValid(userAndAllFollowings) || (userAndAllFollowings.contains(id1) && userAndAllFollowings.contains(id2))) {
+				if (!Util.isValid(userAndAllFollowings) || (userAndAllFollowings.contains(id1) && userAndAllFollowings.contains(id2))) {
 
 					String startId = String.valueOf(id1);
 					String endId = String.valueOf(id2);
@@ -269,7 +270,7 @@ public class GraphDatabase {
 		return getMutualFriendsIncluding(srcId, null);
 
 	}
-	private static void clearRelations(long srcId, Direction direction, List<Long> including, List<Long> exluding) {
+	private synchronized static void clearRelations(long srcId, Direction direction, List<Long> including, List<Long> exluding) {
 		Set<Long> friends = new HashSet<Long>();
 
 		Transaction tx = graphDatabase.beginTx();

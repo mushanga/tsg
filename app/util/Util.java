@@ -15,7 +15,7 @@ import org.apache.commons.codec.binary.Hex;
 import org.bouncycastle.util.encoders.Base64;
 
 import exception.NoAvailableTokenException;
-import exception.TSEException;
+import exception.TSGException;
 import exception.UserProtectedException;
 
 import play.Logger;
@@ -36,10 +36,14 @@ public class Util {
 		return coll != null && coll.size() > 0;
 
 	}
-	public static boolean isSetValid(Set<?> set) {
-		return isCollectionValid(set);
+   public static boolean isSetValid(Set<?> set) {
+      return isCollectionValid(set);
 
-	}
+   }
+   public static boolean isValid(Collection<?> col) {
+      return isCollectionValid(col);
+
+   }
 	
 	public static boolean isStringValid(String str) {
 

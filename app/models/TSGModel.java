@@ -1,23 +1,47 @@
 package models;
 
+import javax.persistence.OptimisticLockException;
+
+import play.Logger;
 import play.db.jpa.JPA;
+import play.db.jpa.JPABase;
+import play.db.jpa.JPAPlugin;
 import play.db.jpa.Model;
 
 public class TSGModel extends Model{
 	
+//	@Override
+//	public <T extends JPABase> T save() {
+//		JPAPlugin.startTx(false);
+//		T t = super.save();
+//		JPAPlugin.closeTx(false);
+//		
+//		
+//		return t;
+//		
+//	}
 	
 	public void saveImmediately() {
-		boolean noExistingTx=!JPA.em().getTransaction().isActive();
-		if(noExistingTx){
-
-		    JPA.em().getTransaction().begin();
-		}
+//		JPAPlugin.startTx(false);
 		this.save();
-	    JPA.em().flush();
-	    JPA.em().getTransaction().commit();
-		if(!noExistingTx){
 
-		    JPA.em().getTransaction().begin();
-		}
+//		JPAPlugin.closeTx(false);
+//		boolean noExistingTx=!em().getTransaction().isActive();
+//		if(noExistingTx){
+//
+//		    em().getTransaction().begin();
+//		}else{
+//		    em().getTransaction().commit();
+//		    em().getTransaction().begin();
+//			
+//		}
+//		this.save();
+//	    em().getTransaction().commit();
 	}
+	
+	public String getCacheName(){
+		return this.getClass().getSimpleName();
+	}
+	
+	
 }

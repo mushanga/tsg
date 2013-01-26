@@ -3,7 +3,7 @@ package twitter;
 import java.util.List;
 
 import exception.NoAvailableTokenException;
-import exception.TSEException;
+import exception.TSGException;
 import exception.UserProtectedException;
 
 import models.Reply;

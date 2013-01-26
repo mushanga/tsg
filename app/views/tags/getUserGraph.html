@@ -59,9 +59,9 @@ function getUserGraph(){
 		dataType : "json",
 		success :  function(data)
 		{
-// 			if(data.needsReload){
-// 				window.setTimeout(getUserGraph,5 * 1000 + Math.sqrt(data.total));
-// 			}
+			if(data.needsReload){
+				window.setTimeout(getUserGraph,5 * 1000 + Math.sqrt(data.total));
+			}
 			if(data.ownerId!=lastUserId){
 				graph.clear();
 			}
@@ -77,30 +77,16 @@ function getUserGraph(){
 			}else{	
 				$("#progressbar").hide();
 				if(data.total>recPerPage){
-					$("#slider").slider({max: data.total, value:Math.min(data.total, (recPerPage*currPage)+1)});
+					var currValue = $('#slider').slider("value");
+					$("#slider").slider({max: data.total, value:Math.min(currValue, (recPerPage*currPage)+1)});
 					$("#slider").slider({ disabled: false });
 					$("#slider").show();
 				}
 			}
 			
 			
-
-// 			if(data.reloadTimeInSecs && data.reloadTimeInSecs>0){
-
-// 				window.setTimeout(getUserGraph,data.reloadTimeInSecs * 1000);
-// 			}
-
-// 			if(data.version <= graphVersion){
-// 				return;
-// 			}else{
-// 				graphVersion = data.version;
-// 			}
-// 			lastUser = userName;
-			
 			graph.centerNodeId = data.ownerId;
 			
-			var srcIdList = new Array();
-			var trgIdList = new Array();
 			for ( var i = 0; i < data.users.length; i++) {
 				
 				var newNode = data.users[i];
@@ -115,7 +101,7 @@ function getUserGraph(){
 			}
 
 			graph.addLinks(data.links);
-			
+			graph.cliques = data.cliques;
 			var val = parseInt((data.completed/data.total)*100);
 			var msg = val + '% of '+userName+'\'s friends are revealed. The graph will be completed soon. Please wait...';
 			if(val==100){

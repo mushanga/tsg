@@ -12,9 +12,10 @@ import java.util.Set;
 import java.util.UUID;
 
 import jobs.ClientGraph;
-import jobs.GraphOperationsBase;
+import jobs.GraphJobBase;
 import jobs.Start;
 import models.Comment;
+import models.FollowingList;
 import models.Item;
 import models.Reply;
 import models.ReplyJson;
@@ -33,12 +34,13 @@ import twitter.TwitterProxyFactory;
 import util.FileUtils;
 import util.LinkShortener;
 import util.UserLookup;
+import util.Util;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import exception.NoAvailableTokenException;
-import exception.TSEException;
+import exception.TSGException;
 import exception.UserProtectedException;
 
 @With({ Auth.class })
@@ -178,6 +180,7 @@ public class Application extends Controller {
 	}
 	
 	public static void get(String query, String page) {
+	   response.setHeader("Cache-Control", "no-cache");
 		User user = UserLookup.getUser(query);
 		UserGraph ug = UserGraph.getByOwnerId(user.twitterId);
 		if(ug==null){
@@ -193,15 +196,23 @@ public class Application extends Controller {
 	}
 
 	public static File constructBasicGraphJSON(Long ownerId){
+
+	   FollowingList fl = FollowingList.getByOwnerId(ownerId);
+     
+	   TwitterProxy twitter = null;
+      
+      try {
+         twitter = TwitterProxyFactory.defaultInstance();
+      } catch (TSGException e1) {
+         Logger.error(e1, e1.getMessage());
+      }
+      
+	   
 		Set<String> visibleLinks = new HashSet<String>();
-		TwitterProxy twitter = null;
-		try {
-			twitter = TwitterProxyFactory.defaultInstance();
-		} catch (TSEException e1) {
-			Logger.error(e1, e1.getMessage());
-		}
-		
-		List<Long> followings = null;
+	
+
+      List<Long> followings = new ArrayList<Long>();
+      List<Long> visibleFollowings = new ArrayList<Long>();
 		try {
 			followings = twitter.getFollowingIds(ownerId);
 		} catch (NoAvailableTokenException e) {
@@ -209,28 +220,34 @@ public class Application extends Controller {
 		} catch (UserProtectedException e) {
 			Logger.error(e, e.getMessage());
 		}
-		if(followings.size()>0){
+		if(Util.isListValid(followings)){
+			int i = 0;
 			
 			for(Long following : followings){
+			   if(i>=49){
+			      break;
+			   }
+			   visibleFollowings.add(following);
 				visibleLinks.add(ownerId+"-"+following);
-				
+				i++;
 			}
 			
 		}
 		
 		List<Long> ownerAndFollowings = new ArrayList<Long>();
 		ownerAndFollowings.add(ownerId);
-		ownerAndFollowings.addAll(followings);
+		ownerAndFollowings.addAll(visibleFollowings);
 		
-		Set<User> visibleUsers = UserLookup.getUsers(new HashSet(ownerAndFollowings));
+		Set<User> visibleUsers = new HashSet<User>();
+		visibleUsers.addAll(UserLookup.getUsers(ownerAndFollowings));
 		
 		ClientGraph cg = new ClientGraph(ownerId, followings.size(), 0, visibleLinks, new ArrayList<User>(visibleUsers), 0 );
 		cg.needsReload = true;
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		String content = gson.toJson(cg, ClientGraph.class);
 			
-		GraphOperationsBase.saveGraphJson(String.valueOf(ownerId)+"-temp", content);
-		return GraphOperationsBase.getGraphJson(String.valueOf(ownerId)+"-temp");
+		GraphJobBase.saveGraphJson(String.valueOf(ownerId)+"-temp", content);
+		return GraphJobBase.getGraphJson(String.valueOf(ownerId)+"-temp");
 		
 	}
 	public static void profile(Long profileId) {

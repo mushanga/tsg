@@ -1,6 +1,6 @@
 package exception;
 
-public class UserProtectedException extends TSEException {
+public class UserProtectedException extends TSGException {
 
 	long protectedUserId;
 
