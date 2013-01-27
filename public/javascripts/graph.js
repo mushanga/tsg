@@ -780,6 +780,7 @@ function Graph(el) {
 	}
 //////////////////
 	function incomingCount(node){
+	
 		if(!nodeIncomingMap[node.id]){
 			nodeIncomingMap[node.id] = 0;
 		}
@@ -800,7 +801,11 @@ function Graph(el) {
 		}
 		return nodeOutgoingMap[node.id];
 	}
-	function increaseOutgoing(node){
+	function increaseOutgoing(node){	
+		if(!node){
+		var a = 3;
+		a++;
+	}
 		if(!nodeOutgoingMap[node.id]){
 			nodeOutgoingMap[node.id] = 0;
 		}

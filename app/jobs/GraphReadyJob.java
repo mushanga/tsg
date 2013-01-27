@@ -153,7 +153,7 @@ public class GraphReadyJob extends GraphJobBase {
 	   fillLinksAndNodesForUserSet(ug, graphIdList, visibleUsers, visibleLinks);
 
 	   Gson gson = new GsonBuilder().setPrettyPrinting().create();
-	   List<ClientGraph> graphs = paginateLinks(ug.ownerId, 50, visibleLinks, visibleUsers, ug.total, ug.completed);
+	   List<ClientGraph> graphs = paginateLinks(ug, 50, visibleLinks, visibleUsers);
 
 
 	   for(ClientGraph cg : graphs){
@@ -170,8 +170,10 @@ public class GraphReadyJob extends GraphJobBase {
 	   Logger.info("Created"+((temp)?" temp":"")+" graph for user: "+ user.screenName);
 
 	}
-	protected List<ClientGraph> paginateLinks(long ownerId, int recPerPage,List<String> visibleLinks, List<User> users, int total, int completed){
-
+	protected List<ClientGraph> paginateLinks(UserGraph ug, int recPerPage,List<String> visibleLinks, List<User> users){
+	    int total = ug.total;
+	    int completed= ug.completed;
+	   Long ownerId = ug.ownerId;
 	   LinksUtil lu = new LinksUtil(visibleLinks);
 	   List<HashSet<Long>> cliques = lu.findMaxCliques();
 
@@ -185,7 +187,7 @@ public class GraphReadyJob extends GraphJobBase {
 			
 			if(i%recPerPage == 0){
 				
-				cg = new ClientGraph(ownerId, total, completed, new HashSet() , new ArrayList(), (i/recPerPage) + 1);
+				cg = new ClientGraph(ug, total, completed, new HashSet() , new ArrayList(), (i/recPerPage) + 1);
 				cg.cliques = cliques;
 				graphs.add(cg);
 			}

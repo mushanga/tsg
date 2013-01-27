@@ -21,7 +21,7 @@ private static Long versionDiffToCreateNew = 20L;
          if (ug!=null) {
 //            for (UserGraph ug : graph) {
                if (!doneMap.containsKey(ug.ownerId)){
-                  doneMap.put(ug.ownerId, 0L);
+                  doneMap.put(ug.ownerId, -versionDiffToCreateNew);
                }
                if (ug.version - doneMap.get(ug.ownerId) > versionDiffToCreateNew){
                   FollowingList fl = FollowingList.getByOwnerId(ug.ownerId);

@@ -186,7 +186,7 @@ public class Application extends Controller {
 		if(ug==null){
 			ug = new UserGraph(user.twitterId);
 			ug.save();
-			renderBinary(constructBasicGraphJSON(user.twitterId));
+			renderBinary(constructBasicGraphJSON(ug));
 		}else if(ug.isCompleted()){
 			displayGraphData(String.valueOf(ug.ownerId)+"-"+page);
 		}else{
@@ -195,9 +195,9 @@ public class Application extends Controller {
 	    
 	}
 
-	public static File constructBasicGraphJSON(Long ownerId){
+	public static File constructBasicGraphJSON(UserGraph ug){
 
-	   FollowingList fl = FollowingList.getByOwnerId(ownerId);
+	   FollowingList fl = FollowingList.getByOwnerId(ug.ownerId);
      
 	   TwitterProxy twitter = null;
       
@@ -214,7 +214,7 @@ public class Application extends Controller {
       List<Long> followings = new ArrayList<Long>();
       List<Long> visibleFollowings = new ArrayList<Long>();
 		try {
-			followings = twitter.getFollowingIds(ownerId);
+			followings = twitter.getFollowingIds(ug.ownerId);
 		} catch (NoAvailableTokenException e) {
 			Logger.error(e, e.getMessage());
 		} catch (UserProtectedException e) {
@@ -228,26 +228,26 @@ public class Application extends Controller {
 			      break;
 			   }
 			   visibleFollowings.add(following);
-				visibleLinks.add(ownerId+"-"+following);
+				visibleLinks.add(ug.ownerId+"-"+following);
 				i++;
 			}
 			
 		}
 		
 		List<Long> ownerAndFollowings = new ArrayList<Long>();
-		ownerAndFollowings.add(ownerId);
+		ownerAndFollowings.add(ug.ownerId);
 		ownerAndFollowings.addAll(visibleFollowings);
 		
 		Set<User> visibleUsers = new HashSet<User>();
 		visibleUsers.addAll(UserLookup.getUsers(ownerAndFollowings));
 		
-		ClientGraph cg = new ClientGraph(ownerId, followings.size(), 0, visibleLinks, new ArrayList<User>(visibleUsers), 0 );
+		ClientGraph cg = new ClientGraph(ug, followings.size(), 0, visibleLinks, new ArrayList<User>(visibleUsers), 0 );
 		cg.needsReload = true;
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		String content = gson.toJson(cg, ClientGraph.class);
 			
-		GraphJobBase.saveGraphJson(String.valueOf(ownerId)+"-temp", content);
-		return GraphJobBase.getGraphJson(String.valueOf(ownerId)+"-temp");
+		GraphJobBase.saveGraphJson(ug.ownerId+"-temp", content);
+		return GraphJobBase.getGraphJson(ug.ownerId+"-temp");
 		
 	}
 	public static void profile(Long profileId) {

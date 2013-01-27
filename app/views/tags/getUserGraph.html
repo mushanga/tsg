@@ -1,17 +1,16 @@
 <script type="text/javascript">
 
-var recPerPage = 50;
-var currPage = 1;
+ 
 
 $(function() {
 	
-    $("#slider").slider({ min:recPerPage, value:recPerPage, step: 1, stop: function(event, ui) {
+    $("#slider").slider({ min:ginfo.recPerPage, value:ginfo.recPerPage, step: 1, stop: function(event, ui) {
     	
     	var page = ui.value / 50;
     	
     	
-    	if(page>currPage){
-    		currPage++;
+    	if(page>ginfo.getPage()){
+    		ginfo.incrementPage();
     		getUserGraph();
     	}else{
         	graph.update(); 
@@ -33,53 +32,68 @@ $(function() {
 	});
 })
 
-var lastUserId = '';
+function GraphInfo(){
+	
+	this.page = 1;
+	this.version = -1;
+	this.recPerPage = 50;
+	this.activeUserId = '';
+	this.needsReload = false;
+	this.getPage = function(){
+		return Math.max(this.page,1);
+	}
+	this.incrementPage = function(){
+		this.page = this.page + 1;
+	}
+}
 
+var ginfo = new GraphInfo();
 function getUserGraph(){
 	
 	var listAction = #{jsAction @get(':query', ':page') /}
-// 	   $('#result').load(
-// 	       listAction({search: 'x', size: '10', page: '1'}), 
-// 	       function() {
-// 	           $('#content').css('visibility', 'visible')
-// 	       }
-// 	   )
-	   
-	   
 	var userName = $('#graphSearchId').val();
  	
 		
 	$("#slider").slider({ disabled: true });
-	currPage = Math.max(currPage,1);
-// 	}
-// 	setProgressBarMessage('Loading the graph of '+userName+'...');
+	
 	$.ajax({
 
-		url : listAction({query: userName, page: currPage}),
+		url : listAction({query: userName, page: ginfo.getPage()}),
 		dataType : "json",
 		success :  function(data)
 		{
-			if(data.needsReload){
-				window.setTimeout(getUserGraph,5 * 1000 + Math.sqrt(data.total));
-				graph.retainNodes(data.users);
-			}
-			if(data.ownerId!=lastUserId){
+			
+			var switchedFromTempToPermanent = ginfo.needsReload && !data.needsReload;
+			ginfo.needsReload = data.needsReload;
+			
+			if(data.ownerId!=ginfo.activeUserId){
+				ginfo = new GraphInfo();
 				graph.clear();
 			}
-
-			lastUserId = data.ownerId;
-			currPage = data.page;
+			ginfo.activeUserId = data.ownerId;
+			
+		
+				
+			ginfo.page = data.page;
 			
 			if(data.completed<data.total){
-				window.setTimeout(getUserGraph,5 * 1000 + Math.sqrt(data.total));
+				graph.retainNodes(data.users);
+				window.setTimeout(getUserGraph,10 * 1000 + Math.sqrt(data.total));
 				$("#progressbar").progressbar({ value: (data.completed/data.total) * 100 });	
 				$("#progressbar").show();	
 				$("#slider").hide();
+				if(data.version==ginfo.version){
+					return;
+				}
+
 			}else{	
+				if(switchedFromTempToPermanent){
+					graph.clear();
+				}
 				$("#progressbar").hide();
-				if(data.total>recPerPage){
+				if(data.total>ginfo.recPerPage){
 					var currValue = $('#slider').slider("value");
-					$("#slider").slider({max: data.total, value:Math.min(currValue, (recPerPage*currPage)+1)});
+					$("#slider").slider({max: data.total, value:Math.min(currValue, (ginfo.recPerPage*ginfo.getPage())+1)});
 					$("#slider").slider({ disabled: false });
 					$("#slider").show();
 				}
@@ -100,35 +114,16 @@ function getUserGraph(){
 				graph.addNode(newNode);
 
 			}
-
 			graph.addLinks(data.links);
 			graph.cliques = data.cliques;
 			var val = parseInt((data.completed/data.total)*100);
-			var msg = val + '% of '+userName+'\'s friends are revealed. The graph will be completed soon. Please wait...';
-			if(val==100){
-				msg = 'Completed';
-			}else if(data.protectedGraph){
-				val = 0;
-				msg = userName+'\'s account is protected...';
-			}
-// 			setProgressBarMessage(msg);
-// 			setProgressBarValue(val);
+	
 			graph.update();
-// 			if(data.total<=recPerPage){
-// // 				 $("#slider").slider({ min:recPerPage, max: 500, value:50,step:50});
-// 				$("#slider").hide();
-// 			}else{
-				
-// 				$("#slider").hide();
-				
-// 			}
-			  
+ 
 		},
 		error : function(er)
 		{
 			expanding = false;
-
-// 			setProgressBarMessage('The account of '+userName+' is protected. ');
 		},
 
 	});
