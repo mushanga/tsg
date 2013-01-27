@@ -107,13 +107,14 @@ public class UserLookup {
 		   TwitterProxy twitter;
 			try {
 				twitter = TwitterProxyFactory.defaultInstance();
-				List<User> newUsers = twitter.getUsers(missingUserIds);
-				int notFlushed = 0;
-				
+				List<User> newUsers = twitter.getUsersSecondary(missingUserIds);
 				for(User user : newUsers){
-					user.save();
-					
-				
+				   
+					try {
+                  user.save();
+               } catch (Exception e) {
+                  Logger.error(e, e.getMessage());
+               }			
 				}
 				
 				users.addAll(newUsers);

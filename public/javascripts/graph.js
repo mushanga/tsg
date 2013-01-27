@@ -45,6 +45,27 @@ function Graph(el) {
 			existing.followers_count= obj.followers_count;
 		}
 	
+	}	
+	this.retainNodes = function (list) {
+		var missingList = [];
+		for(var i in nodes){
+			var missing = true;
+			for(var j in list){
+				if(nodes[i].id==list[j].twitterId){
+					missing = false;
+				}
+			}
+			if(missing){
+				missingList.push(nodes[i].id);
+			}
+		
+		}
+		for(var i in missingList){
+			this.removeNode(missingList[i]);
+		
+		}
+	
+	
 	}
 	this.getCursorByUserId = function(userId){
 		for(var i =0; i<cursors.length; i++){
@@ -96,10 +117,14 @@ function Graph(el) {
 	}
 
 	this.removeNode = function (id) {
-		var i = 0;
+		
 		var n = this.getNodeById(id);
 	
-		cursors.splice(findNodeIndex(id),1);
+		var linkArr = this.getLinksBySrcOrTrg(id);
+		for(var i in linkArr){
+			this.removeLink(linkArr[i].source.id, linkArr[i].target.id);
+		}
+		nodes.splice(findNodeIndex(id),1);
 	}
 
 
@@ -197,6 +222,17 @@ function Graph(el) {
 		for (var i in links) {
 			
 			if (links[i].target["id"] === trgId){
+				ls.push(links[i]);
+			}
+		}
+		return ls;
+	}
+	
+	this.getLinksBySrcOrTrg= function(id) {
+		var ls = [];
+		for (var i in links) {
+			
+			if (links[i].target["id"] === id || links[i].source["id"] === id ){
 				ls.push(links[i]);
 			}
 		}

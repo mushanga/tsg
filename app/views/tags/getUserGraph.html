@@ -61,6 +61,7 @@ function getUserGraph(){
 		{
 			if(data.needsReload){
 				window.setTimeout(getUserGraph,5 * 1000 + Math.sqrt(data.total));
+				graph.retainNodes(data.users);
 			}
 			if(data.ownerId!=lastUserId){
 				graph.clear();

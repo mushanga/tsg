@@ -1,5 +1,6 @@
 package twitter;
 
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,6 +8,9 @@ import java.util.List;
 import jobs.OAuthSettings;
 import models.User;
 import models.UserToken;
+
+import org.apache.http.message.BasicNameValuePair;
+
 import play.Logger;
 import play.Play;
 import twitter4j.ResponseList;
@@ -14,6 +18,11 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
+import util.Util;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import exception.NoAvailableTokenException;
 import exception.TSGException;
 import exception.UserProtectedException;
@@ -173,6 +182,47 @@ public class TwitterProxyImpl implements TwitterProxy {
 		return users;
 	
 	}
+	
+
+   public List<User> getUsersSecondary(List<Long> idList) {
+      List<User> users = new ArrayList<User>();
+
+      if (idList.size() > 100) {
+         int size = idList.size();
+         users.addAll(getUsersSecondary(idList.subList(0, size / 2)));
+         users.addAll(getUsersSecondary(idList.subList((size / 2), size)));
+
+      } else {
+
+         try {
+            ArrayList<BasicNameValuePair> nvps = new ArrayList<BasicNameValuePair>();
+            String ids = Util.getIdListAsCommaSeparatedString(idList);
+            nvps.add(new BasicNameValuePair("user_id", ids));
+
+            String resp = OAuth.getInstance().get(token.accessToken, token.accessTokenSecret, "users/lookup.json", nvps);
+
+            Type listOfTestObject = new TypeToken<List<UserJSONImpl>>() {
+            }.getType();
+
+            Gson gson = new Gson();
+
+            List<UserJSONImpl> tusers = ((List<UserJSONImpl>) gson.fromJson(resp, listOfTestObject));
+            
+            for(UserJSONImpl tu: tusers){
+               User user = new User(tu);
+               user.save();
+               users.add(user);
+            }
+           
+         } catch (Exception e) {
+            Logger.error(e.getMessage(), e);
+         }
+      }
+
+      return users;
+
+   }
+
 	private void findAvailableToken() throws NoAvailableTokenException{
 		token = UserToken.getAvailabeToken();
 		if (token != null) {

@@ -20,6 +20,7 @@ import org.bouncycastle.util.encoders.Base64;
 
 import play.data.validation.Required;
 import play.db.jpa.Model;
+import twitter.UserJSONImpl;
 import util.Common;
 
 @Entity
@@ -38,7 +39,9 @@ public class User extends TSGModel {
 	public Date lastAds = null;
 	public Date firstLogin = null;
 	public Date lastLogin = null;
-	public Date lastResponded = null;
+   public Date lastResponded = null;
+   public int friendsCount;
+   public int followersCount;
 	
 
 	
@@ -46,11 +49,28 @@ public class User extends TSGModel {
 		updateTwData(twUser,null,null);
 	}
 	
-	public User(twitter4j.User twUser, String authToken, String authTokenSecret){
+	public User(UserJSONImpl twUser){
+	
 		updateTwData(twUser, authToken, authTokenSecret);
 	}
+   public User(twitter4j.User twUser, String authToken, String authTokenSecret){
+      updateTwData(twUser, authToken, authTokenSecret);
+   }
 
-	public static User findByEmailOrUsername(String emailOrUserName) {
+	private void updateTwData(UserJSONImpl twUser, String authToken, String authTokenSecret) {
+	   
+
+      this.screenName = twUser.screenName;
+      this.picture = twUser.picUrl;
+      this.fullName = twUser.name;
+      this.authToken = authToken;
+      this.authTokenSecret = authTokenSecret;
+      this.followersCount = twUser.followersCount;
+      this.friendsCount = twUser.friendsCount;
+      this.twitterId = twUser.id;
+   }
+
+   public static User findByEmailOrUsername(String emailOrUserName) {
 		return User.find("email = ?1 or screenName = ?1", emailOrUserName)
 				.first();
 	}
@@ -77,15 +97,18 @@ public class User extends TSGModel {
 		this.location = twUser.getLocation();
 		this.description = twUser.getDescription();
 		this.twitterId = twUser.getId();
+		this.friendsCount = twUser.getFriendsCount();
+		this.followersCount = twUser.getFollowersCount();
 	}
 	
 	public String latestVisit(Item item){
 		Visitor visit = Visitor.find("item = ? and user = ? order by date desc", item,this).first();
 		return Common.dateSince(visit.date.getTime());
 	}
-	
-	public int visitCount(Item item){
-		Long visits = Visitor.count("item = ? and user = ?", item,this);
-		return visits.intValue();
-	}
+
+   public int visitCount(Item item){
+      Long visits = Visitor.count("item = ? and user = ?", item,this);
+      return visits.intValue();
+   }
+
 }

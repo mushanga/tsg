@@ -43,18 +43,20 @@ import util.Util;
 @Every("1s")
 public class GetFollowingsBootstrap extends GraphJobBase {
 
+   private static int MAX_THREAD = 25;
+   
    public static int threadCounter = 0;
    
    @Override
    public void doJob() {
       try {
 
-         if(threadCounter<50){
+         if(threadCounter<MAX_THREAD){
             List<FollowingList> waitingFls = FollowingList.getWaitingList();
             if(Util.isListValid(waitingFls)){
                
                for(FollowingList waitingFl:waitingFls){
-if(threadCounter>=50){
+if(threadCounter>=MAX_THREAD){
    break;
 }
                   waitingFl.setStatusInProgress();

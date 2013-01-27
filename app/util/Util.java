@@ -50,7 +50,16 @@ public class Util {
 		return str != null && str.length() > 0;
 
 	}
-
+   public static String getIdListAsCommaSeparatedString(List<Long> idList){
+      String idListStr = "";
+      for(int i= 0;i <idList.size(); i++){
+         if(i!=0){
+            idListStr = idListStr +",";
+         }
+         idListStr = idListStr + String.valueOf(idList.get(i) );
+      }
+      return idListStr;
+   }
 
 	
 	

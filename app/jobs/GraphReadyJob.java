@@ -132,9 +132,9 @@ public class GraphReadyJob extends GraphJobBase {
 	   
       List<Long> idList = new ArrayList<Long>(GraphDatabase.getFollowings(ug.ownerId));
       idList.add(0, ug.ownerId);
-      if(temp && idList.size()>50){
-         idList = idList.subList(0, 50);
-      }
+//      if(temp && idList.size()>50){
+//         idList = idList.subList(0, 50);
+//      }
       return idList;
       
 	}
@@ -163,6 +163,9 @@ public class GraphReadyJob extends GraphJobBase {
 
 	      String content = gson.toJson(cg, ClientGraph.class);
 	      saveGraphJson(ug.ownerId+((temp)?"-temp":"-"+ cg.page), content);
+	      if(temp){
+	         break;
+	      }
 	   }
 	   Logger.info("Created"+((temp)?" temp":"")+" graph for user: "+ user.screenName);
 
