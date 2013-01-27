@@ -280,9 +280,9 @@ function Graph(el) {
 		}
 		var revLink = thisObj.getLinkBySrcTrgId(d.target.id,d.source.id);
 		if(uLinks.indexOf(d)>-1 || uLinks.indexOf(revLink)>-1){
-			return 300;
+			return 150;
 		}	else{
-			return 500;
+			return 300;
 		}
 	})
 	.linkStrength(function(d){
