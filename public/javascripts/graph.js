@@ -21,6 +21,10 @@ function Graph(el) {
 	
 	this.cliques = [];
 	// Add and remove elements on the graph object
+	
+	this.addNodeSizeMap = function (nodeSizeMap){
+		
+	}
 	this.addToPathNodes = function (obj) {
 	
 		if(pathNodes.indexOf(obj)<0){
@@ -44,7 +48,9 @@ function Graph(el) {
 			existing.friends_count = obj.friends_count;
 			existing.followers_count= obj.followers_count;
 		}
-	
+		if(!nodeIncomingMap[obj.id]){
+			nodeIncomingMap[obj.id] = 0;
+		}
 	}	
 	this.retainNodes = function (list) {
 		var missingList = [];
@@ -130,10 +136,18 @@ function Graph(el) {
 
 	this.removeLink = function (sourceId,targetId) {
 		var i = 0;
-		var n = this.getNodeById(targetId);
+		var trg = this.getNodeById(targetId);
+		var src = this.getNodeById(sourceId);
 		while (i < links.length) {
-			if ((links[i]['source'] == n)||(links[i]['target'] == n)) links.splice(i,1);
-			else i++;
+			if ((links[i]['source'] == src) && (links[i]['target'] == trg)){
+				links.splice(i,1);
+				nodeIncomingMap[trg.id]--;
+				nodeOutgoingMap[src.id]--;
+				break;
+			}
+			else{
+				i++;
+			}
 		}
 		
 	}

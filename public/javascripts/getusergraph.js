@@ -1,6 +1,4 @@
-<script type="text/javascript">
 
- 
 
 $(function() {
 	
@@ -20,8 +18,7 @@ $(function() {
 	$("#slider").hide();
 	
     graph = new Graph("#screen");
-    tw = new TwitterClient();
-    util = new Util(); 
+//    util = new Util(); 
     var slider;
   });
 
@@ -50,7 +47,7 @@ function GraphInfo(){
 var ginfo = new GraphInfo();
 function getUserGraph(){
 	
-	var listAction = #{jsAction @get(':query', ':page') /}
+	var listAction = getAjaxUrlForUser();
 	var userName = $('#graphSearchId').val();
  	
 		
@@ -81,9 +78,12 @@ function getUserGraph(){
 				window.setTimeout(getUserGraph,10 * 1000 + Math.sqrt(data.total));
 				$("#progressbar").progressbar({ value: (data.completed/data.total) * 100 });	
 				$("#progressbar").show();	
+				$("#spinnerId").show();	
 				$("#slider").hide();
 				if(data.version==ginfo.version){
 					return;
+				}else{
+					ginfo.version = data.version;
 				}
 
 			}else{	
@@ -91,6 +91,7 @@ function getUserGraph(){
 					graph.clear();
 				}
 				$("#progressbar").hide();
+				$("#spinnerId").hide();	
 				if(data.total>ginfo.recPerPage){
 					var currValue = $('#slider').slider("value");
 					$("#slider").slider({max: data.total, value:Math.min(currValue, (ginfo.recPerPage*ginfo.getPage())+1)});
@@ -128,4 +129,3 @@ function getUserGraph(){
 
 	});
 }
-</script>

@@ -1,55 +1,38 @@
 <div class="navbar">
 	<div class="navbar-inner">
 
-		<!-- Your site name for the upper left corner of the site -->
-		
 		<ul class="nav" id="topNav">
-<!-- 			#{if _user} -->
-<!-- 			<li class="divider-vertical"></li> -->
-<!-- 			<li class="dropdown"><a class="dropdown-toggle" href="#" -->
-<!-- 				data-toggle="dropdown">#{tc.user.name _user /}<strong class="caret"></strong> -->
-<!-- 			</a> -->
-<!-- 				<ul class="dropdown-menu"> -->
-<!-- 					<li><a href="@{Application.profile(_user.id)}">Profile</a></li> -->
-<!-- 					<li><a href="@{Auth.logout()}">Log out</a></li> -->
-<!-- 				</ul> -->
-<!-- 			</li>  -->
-<!-- 			#{/if}  -->
-<!-- 			#{else} -->
-<!-- 				<li class="divider-vertical"></li> -->
-<!-- 				<li><a class="noPad" href="/auth/twitterAuthentication"><img -->
-<!-- 								title="Sign in with Twitter" alt="Sign in with Twitter" -->
-<!-- 								src="https://dev.twitter.com/sites/default/files/images_documentation/sign-in-with-twitter-gray.png"> -->
-<!-- 					</a> -->
-<!-- 				</li> -->
-<!-- 			#{/else} -->
-<!-- 			<li><a href="/">Home</a></li>  -->
-<!-- 			#{if _user} -->
-<!-- 				<li><a onclick="showAddProductModal();" style="cursor: pointer;">Add Product</a></li>  -->
-<!-- 			#{/if} -->
+
 		</ul>
 		<div class="navbar-search pull-center" style="margin-left: 40%;">
-			<div class="input-append">
-				<input id="graphSearchId" type="text" class="search-query" placeholder="Search" name="query"> 
-				<span class="add-on"><i onclick="getUserGraph()" class="icon-search"> </i> </span>
-				<script>
-					$('#graphSearchId').keypress(function (e) {
-						  if (e.which == 13) {
-						    getUserGraph();
-						  }
-						});
-					</script>
-			</div>
+			<form action="@{Application.user()}" style="margin-bottom:0" method="GET">
+				<div class="input-append">
+				
+					<input id="graphSearchId" type="text" class="search-query" placeholder="Search" name="screenName"> 
+					<span class="add-on"><i class="icon-search"> </i> </span>
+<!-- 					<script> 
+ 						$('#graphSearchId').keypress(function (e) {
+ 							  if (e.which == 13) {
+ 							    getUserGraph();
+ 							  }
+ 							});
+						</script> -->
+				</div>
+			</form>
 		</div>
-		<div class="pull-right"  style="margin-top: 15px;">
+		<div class="pull-right"  style="margin-top: 14px;">
 			<div id="slider" style="padding-left:23px;width: 200px; height: 10px">
 			
 			</div>
+		</div>
+		<div class="pull-right"  style="margin-top: 8px;margin-left: 10px">
+			<img id="spinnerId" height="20px" width="20px" src="https://si0.twimg.com/a/1359060104/images/bigger_spinner.gif" style="display:none;"/>
 		</div>
 		<div class="pull-right"  style="margin-top: 8px;">
 			<div id="progressbar" style="width: 400px; height: 20px">
 			
 			</div>
+			
 		</div>
 	</div>
 </div>

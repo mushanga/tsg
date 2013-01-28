@@ -1,0 +1,19 @@
+
+
+#{extends 'main.html' /}
+<!-- #{set title: user.screenName + '@TSG'/} -->
+
+			<script>
+			
+			function getAjaxUrlForUser(){
+				return #{jsAction @get(':query', ':page') /};
+			}
+			
+	#{if user!= null}
+			
+			 $('#graphSearchId').val('${user.screenName}');
+			getUserGraph();
+	#{/if}
+
+		</script>
+<div id="screen" style="width:100%; height:635px"></div>

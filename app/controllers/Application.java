@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -180,6 +181,9 @@ public class Application extends Controller {
 	}
 	
 	public static void get(String query, String page) {
+	   if(page==null){
+	      page="1";
+	   }
 	   response.setHeader("Cache-Control", "no-cache");
 		User user = UserLookup.getUser(query);
 		UserGraph ug = UserGraph.getByOwnerId(user.twitterId);
@@ -197,8 +201,7 @@ public class Application extends Controller {
 
 	public static File constructBasicGraphJSON(UserGraph ug){
 
-	   FollowingList fl = FollowingList.getByOwnerId(ug.ownerId);
-     
+	   
 	   TwitterProxy twitter = null;
       
       try {
@@ -220,17 +223,18 @@ public class Application extends Controller {
 		} catch (UserProtectedException e) {
 			Logger.error(e, e.getMessage());
 		}
-		if(Util.isListValid(followings)){
-			int i = 0;
+		if(Util.isListValid(followings) && followings.size()>=50){
+		   followings = followings.subList(0, 50);
+//			int i = 0;
 			
-			for(Long following : followings){
-			   if(i>=49){
-			      break;
-			   }
-			   visibleFollowings.add(following);
-				visibleLinks.add(ug.ownerId+"-"+following);
-				i++;
-			}
+//			for(Long following : followings){
+//			   if(i>=49){
+//			      break;
+//			   }
+//			   visibleFollowings.add(following);
+//				visibleLinks.add(ug.ownerId+"-"+following);
+//				i++;
+//			}
 			
 		}
 		
@@ -241,7 +245,7 @@ public class Application extends Controller {
 		Set<User> visibleUsers = new HashSet<User>();
 		visibleUsers.addAll(UserLookup.getUsers(ownerAndFollowings));
 		
-		ClientGraph cg = new ClientGraph(ug, followings.size(), 0, visibleLinks, new ArrayList<User>(visibleUsers), 0 );
+		ClientGraph cg = new ClientGraph(ug, followings.size(), 0, visibleLinks, new ArrayList<User>(visibleUsers), 0, new HashMap<Long, Double>() );
 		cg.needsReload = true;
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		String content = gson.toJson(cg, ClientGraph.class);
@@ -262,6 +266,12 @@ public class Application extends Controller {
 		List<Item> items = Item.findItemsByUser(profile);
 		render(profile, items);
 	}
+   public static void user(String screenName) {
+     
+      User user = UserLookup.getUser(screenName);
+      
+      render(user);
+   }
 
 	public static void deleteItem(Long itemId) {
 		Long userId = Cache.get(session.getId(), Long.class);

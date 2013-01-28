@@ -12,8 +12,9 @@ rect {
 path.link {
   fill: none;
 /*   //stroke: #666; */
-  stroke: green;
+  stroke: #008000;
   stroke-width: 1.5px;
+/*   stroke-dasharray: 0,2 1; */
 }
 
 .image-clip{
@@ -30,12 +31,12 @@ path.dlink {
   stroke-width: 1px;
 }
 
-path.dlink {
-  fill: none;
-/*   //stroke: #666; */
-  stroke: yellow;
-  stroke-width: 1px;
-}
+/* path.dlink { */
+/*   fill: none; */
+/* /*   //stroke: #666; */ */
+/*   stroke: yellow; */
+/*   stroke-width: 1px; */
+/* } */
 
 marker#licensing {
   fill: green;

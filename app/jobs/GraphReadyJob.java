@@ -66,7 +66,7 @@ public class GraphReadyJob extends GraphJobBase {
 		
 	}
 		
-	protected void fillLinksAndNodesForUserSet(UserGraph ug, List<Long> graphIdList,List<User> visibleUsers, List<String> visibleLinks){
+	protected void fillLinksAndNodesForUserSet(UserGraph ug, List<Long> graphContentIdList,List<User> visibleUsers, List<String> visibleLinks, HashMap<Long, Integer> userIncomingCountMap ){
 
 	   User user = UserLookup.getUser(ug.ownerId);
       Set<User> visibleUserSet = new HashSet();
@@ -74,36 +74,34 @@ public class GraphReadyJob extends GraphJobBase {
       
 	   visibleUserSet.add(user);
       
-	   HashMap<Long, Integer> userIncomingCountMap = new HashMap<Long, Integer>();
 
-	   for (Long following : graphIdList) {
-	      // graph.addLink(userId, following);
+	   for (Long following : graphContentIdList) {
+	   
 	      if(following==ug.ownerId){
 	         continue;
 	      }
-	      Set<Long> friendsOfFollowing = GraphDatabase.getMutualFriendsIncluding(following,graphIdList);
-	      if(!friendsOfFollowing.contains(ug.ownerId)){
+	      Set<Long> friendsOfFollowing = GraphDatabase.getMutualFriendsIncluding(following,graphContentIdList);
+//	      if(!friendsOfFollowing.contains(ug.ownerId)){
+//
+//	         boolean added = visibleLinkSet.add(ug.ownerId+"-"+following);
+//
+//	         if(added){
+//	            if(userIncomingCountMap.get(following) == null){
+//	               userIncomingCountMap.put(following, 0);
+//	            }
+//	            userIncomingCountMap.put(following, userIncomingCountMap.get(following)+1);
+//	         }
 
-	         boolean added = visibleLinkSet.add(ug.ownerId+"-"+following);
-
-	         if(added){
-	            if(userIncomingCountMap.get(following) == null){
-	               userIncomingCountMap.put(following, 0);
-	            }
-	            userIncomingCountMap.put(following, userIncomingCountMap.get(following)+1);
-	         }
-
-	         visibleUserSet.add(UserLookup.getUser(following));
-
-
+	      visibleUserSet.add(UserLookup.getUser(following));
+	      if(userIncomingCountMap.get(following) == null){
+	         userIncomingCountMap.put(following, 0);
 	      }
+
+//	      }
 	      for (Long friendOfFollowing : friendsOfFollowing) {
 
 	         boolean added = visibleLinkSet.add(friendOfFollowing+"-"+following);
 	         if(added){
-	            if(userIncomingCountMap.get(following) == null){
-	               userIncomingCountMap.put(following, 0);
-	            }
 	            userIncomingCountMap.put(following, userIncomingCountMap.get(following)+1);
 	         }
 	         added = visibleLinkSet.add(following+"-"+friendOfFollowing);
@@ -149,11 +147,15 @@ public class GraphReadyJob extends GraphJobBase {
 
 	   List<Long> graphIdList = getUserListForGraph(ug, temp);
 
+      HashMap<Long, Integer> userIncomingCountMap = new HashMap<Long, Integer>();
 
-	   fillLinksAndNodesForUserSet(ug, graphIdList, visibleUsers, visibleLinks);
+	   fillLinksAndNodesForUserSet(ug, graphIdList, visibleUsers, visibleLinks,userIncomingCountMap);
 
+	   HashMap<Long, Double> userNodeSizeMap = normalizeAndGetSizeCoefficient(userIncomingCountMap);
+	   
+	   
 	   Gson gson = new GsonBuilder().setPrettyPrinting().create();
-	   List<ClientGraph> graphs = paginateLinks(ug, 50, visibleLinks, visibleUsers);
+	   List<ClientGraph> graphs = paginateLinks(ug, 50, visibleLinks, visibleUsers,userNodeSizeMap);
 
 
 	   for(ClientGraph cg : graphs){
@@ -170,7 +172,28 @@ public class GraphReadyJob extends GraphJobBase {
 	   Logger.info("Created"+((temp)?" temp":"")+" graph for user: "+ user.screenName);
 
 	}
-	protected List<ClientGraph> paginateLinks(UserGraph ug, int recPerPage,List<String> visibleLinks, List<User> users){
+	
+	public HashMap<Long, Double> normalizeAndGetSizeCoefficient( HashMap<Long, Integer> userIncomingCountMap){
+	   
+	   HashMap<Long, Double> userNodeSizeMap = new HashMap<Long, Double>();
+	   int max = 0;
+	   for(Long userId: userIncomingCountMap.keySet()){
+	      Integer incomingCount = userIncomingCountMap.get(userId);
+	      if(incomingCount>max){
+	         max = incomingCount;
+	      }     
+	   }
+	   
+
+      for(Long userId: userIncomingCountMap.keySet()){
+         Integer incomingCount = userIncomingCountMap.get(userId);
+         Double coefficient = Double.valueOf(incomingCount) / (double) max;
+         userNodeSizeMap.put(userId, coefficient);
+      }
+	   
+	   return userNodeSizeMap;
+	}
+	protected List<ClientGraph> paginateLinks(UserGraph ug, int recPerPage,List<String> visibleLinks, List<User> users, HashMap<Long, Double> userNodeSizeMap){
 	    int total = ug.total;
 	    int completed= ug.completed;
 	   Long ownerId = ug.ownerId;
@@ -187,13 +210,14 @@ public class GraphReadyJob extends GraphJobBase {
 			
 			if(i%recPerPage == 0){
 				
-				cg = new ClientGraph(ug, total, completed, new HashSet() , new ArrayList(), (i/recPerPage) + 1);
+				cg = new ClientGraph(ug, total, completed, new HashSet() , new ArrayList(), (i/recPerPage) + 1,new HashMap<Long, Double>());
 				cg.cliques = cliques;
 				graphs.add(cg);
 			}
 			User user = users.get(i);
 			ids.add(String.valueOf(user.twitterId));
-			cg.users.add(user);
+         cg.users.add(user);
+         cg.userNodeSizeMap.put(user.twitterId,userNodeSizeMap.get(user.twitterId));
 			
 		}
 		

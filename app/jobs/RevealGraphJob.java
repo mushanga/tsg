@@ -48,10 +48,12 @@ public class RevealGraphJob extends GraphJobBase {
    @Override
    public void doJob() {
       try {
-         graph = UserGraph.getWaiting();
-         if (graph != null) {
-            graph.setStatusInProgress();
-            revealGraph(graph);
+         List<UserGraph> graphs = UserGraph.getWaitingList();
+         if (Util.isValid(graphs)) {
+            for(UserGraph graph : graphs){
+               graph.setStatusInProgress();
+               revealGraph(graph);
+            }
          }
       } catch (Exception e) {
          try {

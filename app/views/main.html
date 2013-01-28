@@ -16,8 +16,16 @@
 #{get 'moreStyles' /}
 <link rel="shortcut icon" type="image/png"
 	href="@{'/public/images/favicon.png'}">
-<script src="@{'/public/javascripts/jquery-1.7.1.min.js'}"
-	type="text/javascript" charset="${_response_encoding}"></script>
+	
+	 <script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script>    
+     <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script src="http://mbostock.github.com/d3/talk/20111018/d3/d3.geom.js"></script>
+    <script type="text/javascript" src="@{'/public/javascripts/graph.js'}"></script>
+    <script type="text/javascript" src="@{'/public/javascripts/getusergraph.js'}"></script>
+    <script type="text/javascript" src="@{'/public/javascripts/util.js'}"></script>
+    
+	
 <script src="@{'/public/javascripts/bootstrap.min.js'}"
 	type="text/javascript" charset="${_response_encoding}"></script>
 <script src="@{'/public/javascripts/template.js'}"
@@ -28,17 +36,20 @@
 </head>
 <body background="@{'/public/images/paper.jpg'}">
 	<div class="container-fluid">
-		#{navbar user:user/}
+	
+		#{navbar/}
 		<div class="row-fluid">
-			<div class="span1">
-				<!--Sidebar content-->
+<!-- 			<div class="span1"> -->
+<!-- 				Sidebar content -->
+<!-- 			</div> -->
+			<div>#{doLayout user:user/}
+			
 			</div>
-			<div class="span10">#{doLayout user:user/}</div>
-			         <div class="span1">
-                <!--Sidebar content-->
-            </div>
+<!-- 			<div class="span1"> -->
+<!--                 Sidebar content -->
+<!--             </div> -->
 		</div>
 	</div>
-    #{addProduct user:user/} 
+<!--     #{addProduct user:user/}  -->
 </body>
 </html>
