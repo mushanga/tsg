@@ -35,16 +35,17 @@
 #{get 'moreScripts' /}
 </head>
 <body background="@{'/public/images/paper.jpg'}">
-	<div class="container-fluid">
+	<div class="container-fluid" style="height:100%">
 	
 		#{navbar/}
-		<div class="row-fluid">
+		<div class="row-fluid" style="height:100%">
 <!-- 			<div class="span1"> -->
 <!-- 				Sidebar content -->
 <!-- 			</div> -->
-			<div>#{doLayout user:user/}
+<!-- 			<div> -->
+			#{doLayout user:user/}
 			
-			</div>
+<!-- 			</div> -->
 <!-- 			<div class="span1"> -->
 <!--                 Sidebar content -->
 <!--             </div> -->

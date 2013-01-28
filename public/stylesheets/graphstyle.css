@@ -71,8 +71,11 @@ body {
   font-family: "Helvetica Neue", Helvetica, sans-serif;
   margin: 1em auto 4em auto;
   position: relative;
+  height:100%;
 }
-
+html{
+  height:87%;
+}
 h1 {
   font-size: 64px;
   font-weight: 300;
