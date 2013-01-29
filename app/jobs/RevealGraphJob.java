@@ -51,6 +51,7 @@ public class RevealGraphJob extends GraphJobBase {
          List<UserGraph> graphs = UserGraph.getWaitingList();
          if (Util.isValid(graphs)) {
             for(UserGraph graph : graphs){
+               graph.setStatusInProgress();
                revealGraph(graph);
             }
          }
@@ -124,10 +125,7 @@ public class RevealGraphJob extends GraphJobBase {
 
          if(Util.isValid(followingIdSet)&& (graph.completed==0 || graph.completed<graph.total)){
             graph.setStatusWaiting();
-         }else{
-            graph.setStatusInProgress();
          }
-
       }finally{
 
          graph.save();
