@@ -13,7 +13,7 @@ import util.Util;
 @Every("10s")
 public class TempGraphJob extends GraphReadyJob {
 //private static Long versionDiffToCreateNew = 100L;
-private static double newVersionOverOldVersion = 5/4;
+private static double newVersionOverOldVersion = 1.2;
    private static Map<Long,Long> doneMap = new HashMap<Long,Long>();
 
    @Override

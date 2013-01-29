@@ -315,7 +315,7 @@ function Graph(el) {
 			return 1;
 		}
 	})
-	.gravity(0.1);
+	.gravity(0.03);
 //	.charge(function(d){
 //		if(d.id == thisObj.centerNodeId){
 //			return -800;
@@ -493,7 +493,7 @@ function Graph(el) {
 		
 
 		force.charge(function(d){
-			return -600;
+			return -300;
 //			if (d.id == thisObj.centerNodeId) {
 //				return 30 * -imageHeight;
 //			} else {

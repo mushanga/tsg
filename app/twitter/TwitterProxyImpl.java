@@ -391,6 +391,10 @@ public class TwitterProxyImpl implements TwitterProxy {
       
          retList =  UserLookup.getUsers(userSR.userIds);
       }
+      
+      if(Util.isValid(retList) && retList.size()>10){
+         retList = retList.subList(0, 10);
+      }
      return retList ;
   }
 }

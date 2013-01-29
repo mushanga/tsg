@@ -111,6 +111,7 @@ public class RevealGraphJob extends GraphJobBase {
                      if(completed>graph.completed){
                         graph.completed = completed;
                         graph.version++;
+                        graph.save();
                      }
                   }
                }

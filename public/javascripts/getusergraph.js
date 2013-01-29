@@ -2,21 +2,20 @@
 $(function() {
 	
 	$('#graphSearchId').autocomplete({
-//		  url: 'suggestions.php', //jQuery UI 1.6rc2
 	      source: "/application/autocomplete",
 	      select: function( event, ui ) {
-//		        $( "#graphSearchId" ).val( ui.item.screenName );
 		        window.location = getGraph(ui.item.value);
 		        return false;
-		      },
-			  search: function(event, ui) {
-				  
-				  $('#autocompleteSpinnerId').show();
-			  },
-			  open: function(event, ui) {
-				  
-				  $('#autocompleteSpinnerId').hide();
-			  },
+	      },
+		  search: function(event, ui) {
+			  
+			  $('#autocompleteSpinnerId').show();
+		  },
+		   response: function(event, ui) {
+			   $('#autocompleteSpinnerId').hide();
+		    },
+		  
+		  
 	      minChars: 2,
 		  width: 200,
 		  delay: 400,
@@ -30,47 +29,8 @@ $(function() {
 	        a.append( "<img class='ui-corner-all' width='48' height='48' src='"+ user.picture+"'></img>" )
 	        a.append("<span style=\"margin-left:10px;font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;font-size: 13px;font-weight: normal;line-height: 1;\">@<b>"+user.value+"</b> ("+user.fullName+")"+"</span>");		     
 	        return li.appendTo( ul );
-	      return retVal;
-//	      var li = $( "<li>" );
-//		     var a= li.append("<a>");
-//		     var img = a.append( "<img class='corner-all' width='48' height='48' src='"+ user.picture+"'></img>" );
-//		     var p = a.append("<p>").html(user.value+ " ("+user.fullName+")");
-//		     li.appendTo( ul );
-//		     return li;
 	    };
-//	$( "#graphSearchId" ).autocomplete({
-//	      minLength: 2,
-////	      source: "/application/autocomplete",
-//	      source: function(request,response) {
-//		         var url = getAutocompleteUrlForQuery($( "#graphSearchId" ).val());
-//		         $.ajax({
-//		             url: url,
-//		             dataType: "json",
-////		             data: {
-////		                 term: request.term
-////		             },
-//		             success: function( data ) {
-//		                 response( $.map( data, function( item ) {
-//		                     return {
-//		                         label: item.value + " - " + item.twitterId,
-//		                         value: item.twitterId
-//		                     }
-//		                 }));
-//		             }
-//		         });
-//		      },
-//	      dataType:"json",
-//	      focus: function( event, ui ) {
-////	        $( "#graphSearchId" ).val( ui.item.label );
-//	        return false;
-//	      },
-	     
-//	    })
-//	    .data( "autocomplete" )._renderItem = function( ul, user ) {
-//	      return $( "<li>" )
-//	        .append( "<a>" + user.value + "<br>" + user.twitterId + "</a>" )
-//	        .appendTo( ul );
-//	    };
+
 
     $("#slider").slider({ min:ginfo.recPerPage, value:ginfo.recPerPage, step: 1, stop: function(event, ui) {
     	
