@@ -1,5 +1,6 @@
 package twitter;
 
+import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -13,11 +14,13 @@ import org.apache.http.message.BasicNameValuePair;
 
 import play.Logger;
 import play.Play;
+import play.cache.Cache;
 import twitter4j.ResponseList;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
+import util.UserLookup;
 import util.Util;
 
 import com.google.gson.Gson;
@@ -230,6 +233,8 @@ public class TwitterProxyImpl implements TwitterProxy {
 			//token.setInUse();
 		
 		} else {
+		   Logger.info("Setting all tokens to valid");
+		   UserToken.setAllInvalidToValid();
 			throw new NoAvailableTokenException();
 
 		}
@@ -272,7 +277,120 @@ public class TwitterProxyImpl implements TwitterProxy {
 	
 	private boolean handleTwitterException(TwitterException e1) throws NoAvailableTokenException, UserProtectedException {
 		return handleTwitterException(e1, -1);
-		
+
+	}
+	public List<User> searchUserThroughTwitter(String query) throws NoAvailableTokenException {
+	   List<User> users = new ArrayList<User>();
+
+	   User exactMatch = UserLookup.getUser(query);
+	   if(exactMatch!=null){
+	      users.add(exactMatch);
+	   }
+	  
+	   ResponseList<twitter4j.User> t4jUsers = null;
+	   try {
+	      t4jUsers = twitter.searchUsers(query, 1);
+	   } catch (TwitterException e) {
+
+	      boolean repeat = false;
+	      try {
+	         repeat = handleTwitterException(e);
+	      } catch (UserProtectedException e1) {
+	         Logger.error(e1, "This method shouldn't have given 'user protected' error!\n"+e1.getMessage());
+	      }
+	      if(repeat){
+	         users = searchUserThroughTwitter(query);
+	      }
+	   }
+	   if(t4jUsers!=null){
+
+	      for(twitter4j.User tu : t4jUsers){
+	         if(exactMatch==null || tu.getId()!=exactMatch.twitterId){
+	            users.add(new User(tu));
+	            
+	         }
+
+	      }
+	   }
+
+
+      return users;
+   
+   
+   }
+	
+	private class UserSearchResult implements Serializable{
+	   
+	   List<Long> userIds = new ArrayList<Long>();
+	   String value = "";
+      
+	   public UserSearchResult(List<Long> users) {
+         super();
+         this.userIds = users;
+         if(Util.isValid(this.userIds)){
+            
+            for(Long us : this.userIds){
+               value = value+"-"+us;
+            }
+            value = value.substring(1);
+         }
+      }
+	   
+      
+      public UserSearchResult(String dashSeparated) {
+         super();
+         this.value = dashSeparated;
+         String[] userIdStrArr = this.value.split("-");
+         if(userIdStrArr.length>0){
+            
+            for(String us : userIdStrArr){
+               try{
+                  this.userIds.add(Long.valueOf(us));
+                  
+               }catch(NumberFormatException ex){
+                  
+               }
+            }
+         }
+      }
+
+
+      @Override
+	   public String toString() {
+	      
+	      return value;
+	   }
 	}
 
+   @Override
+	public List<User> searchUser(String query) throws NoAvailableTokenException {
+	   String cacheVal = (String) Cache.get("search_query_" + query);
+	   List<User> retList = new ArrayList<User>();
+      if(cacheVal == null) {
+         List<User> resultList = searchUserThroughTwitter(query);
+         if(resultList!=null){         
+            List<Long> idList = new ArrayList<Long>();
+            for(User us : resultList){
+               User userInDB = User.findByTwitterId(us.twitterId);
+               if(userInDB==null){
+                  us.save();
+               }
+               idList.add(us.twitterId);
+            }
+            
+
+            UserSearchResult userSR = new UserSearchResult(idList);   
+             Cache.set("search_query_"+query,userSR.toString(),"30mn");
+             cacheVal = (String) Cache.get("search_query_"+query);
+         }
+      }
+      
+      if(cacheVal!=null){
+
+         UserSearchResult userSR = new UserSearchResult(cacheVal);
+      
+         retList =  UserLookup.getUsers(userSR.userIds);
+      }
+     return retList ;
+  }
 }

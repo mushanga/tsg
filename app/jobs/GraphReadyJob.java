@@ -188,6 +188,9 @@ public class GraphReadyJob extends GraphJobBase {
       for(Long userId: userIncomingCountMap.keySet()){
          Integer incomingCount = userIncomingCountMap.get(userId);
          Double coefficient = Double.valueOf(incomingCount) / (double) max;
+         if(coefficient.isNaN()){
+            coefficient = 0D;
+         }
          userNodeSizeMap.put(userId, coefficient);
       }
 	   

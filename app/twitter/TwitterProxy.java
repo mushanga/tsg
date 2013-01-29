@@ -20,4 +20,6 @@ public interface TwitterProxy {
 
    List<User> getUsers(List<Long> userIdList) throws NoAvailableTokenException;
    List<User> getUsersSecondary(List<Long> userIdList) throws NoAvailableTokenException;
+  
+   List<User> searchUser(String query) throws NoAvailableTokenException;
 }

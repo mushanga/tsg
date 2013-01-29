@@ -80,6 +80,7 @@ public class GraphDatabase {
 	public static synchronized void addFriendships(long src, Set<Long> followingList) {
 		Transaction tx = graphDatabase.beginTx();
 		try {
+		   addNodeNoTx(src);
 			for (Long trg : followingList) {
 
 				addFriendshipNoTx(src, trg);
@@ -92,6 +93,19 @@ public class GraphDatabase {
 		}
 
 	}
+	private  static void addNodeNoTx(long nodeId) {
+	   Node node1 = graphDatabase.createNode();
+      // user.setDataToGDBNode(node1);
+	   Index<Node> usersIndex = graphDatabase.index().forNodes(USER_ID);
+
+      Node existing = usersIndex.putIfAbsent(node1, USER_ID, nodeId);
+      if (existing != null) {
+         node1 = existing;
+      }
+
+      node1.setProperty(USER_ID, nodeId);
+	}
+	   
 
 	private  static void addFriendshipNoTx(long src, long trg) {
 		if (src < 0 || trg < 0) {

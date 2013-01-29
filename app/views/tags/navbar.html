@@ -1,3 +1,22 @@
+						
+					<script type="text/javascript">
+					function getAutocompleteUrlForQuery(queryp){
+						var actionUrl = #{jsAction @autocomplete(':query') /};
+						return actionUrl({query: queryp});
+					}
+					function getGraphUrlForUser(queryp,pagep){
+						
+						var actionUrl = #{jsAction @get(':query', ':page') /};
+						return actionUrl({query: queryp, page: pagep});
+					}
+					function getGraph(screenNamep){
+						
+						var actionUrl = #{jsAction @user(':screenName') /};
+						return actionUrl({screenName: screenNamep});
+					}
+		
+					</script>	
+
 <div class="navbar">
 	<div class="navbar-inner">
 
@@ -8,17 +27,17 @@
 			<form action="@{Application.user()}" style="margin-bottom:0" method="GET">
 				<div class="input-append">
 				
-					<input id="graphSearchId" type="text" class="search-query" placeholder="Search" name="screenName"> 
+					<input id="graphSearchId" type="text" class="search-query" placeholder="Search" name="screenName"/>
+										 
 					<span class="add-on"><i class="icon-search"> </i> </span>
-<!-- 					<script> 
- 						$('#graphSearchId').keypress(function (e) {
- 							  if (e.which == 13) {
- 							    getUserGraph();
- 							  }
- 							});
-						</script> -->
-				</div>
+					
+					
+				</div>			
 			</form>
+		</div>
+		<div class="pull-center" style="margin-top:10px">
+			<img id="autocompleteSpinnerId" height="20px" width="20px" src="https://si0.twimg.com/a/1359060104/images/bigger_spinner.gif" style="display:none;"/>
+		
 		</div>
 		<div class="pull-right"  style="margin-top: 14px;">
 			<div id="slider" style="padding-left:23px;width: 200px; height: 10px">

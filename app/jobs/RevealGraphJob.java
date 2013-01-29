@@ -51,7 +51,6 @@ public class RevealGraphJob extends GraphJobBase {
          List<UserGraph> graphs = UserGraph.getWaitingList();
          if (Util.isValid(graphs)) {
             for(UserGraph graph : graphs){
-               graph.setStatusInProgress();
                revealGraph(graph);
             }
          }
@@ -75,19 +74,19 @@ public class RevealGraphJob extends GraphJobBase {
          if (graph.isProtected()) {
             return;
          }
+         Set<Long> followingIdSet = new HashSet<Long>();
 
          try {
-            Set<Long> followingIdSet = null;
-
+           
             FollowingList fl = FollowingList.getByOwnerId(ownerId);
 
             if(fl.isSuccessful()) {
-               followingIdSet = GraphDatabase.getFollowings(ownerId);			
+               followingIdSet = GraphDatabase.getFollowings(ownerId);	
+             
             } 
         
             if (fl.isProtected()) {
                graph.setStatusProtected();
-
                return;
             }
             if(Util.isSetValid(followingIdSet)&& graph.total==0 && graph.total != followingIdSet.size()){
@@ -112,7 +111,6 @@ public class RevealGraphJob extends GraphJobBase {
                      if(completed>graph.completed){
                         graph.completed = completed;
                         graph.version++;
-                        graph.save();
                      }
                   }
                }
@@ -123,8 +121,10 @@ public class RevealGraphJob extends GraphJobBase {
             graph.setStatusWaiting();
          }
 
-         if(graph.completed==0 || graph.completed<graph.total){
+         if(Util.isValid(followingIdSet)&& (graph.completed==0 || graph.completed<graph.total)){
             graph.setStatusWaiting();
+         }else{
+            graph.setStatusInProgress();
          }
 
       }finally{

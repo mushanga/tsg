@@ -1,7 +1,8 @@
 package util;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -9,7 +10,6 @@ import java.util.Set;
 import models.User;
 import play.Logger;
 import play.cache.Cache;
-import play.db.jpa.JPA;
 import twitter.TwitterProxy;
 import twitter.TwitterProxyFactory;
 import exception.NoAvailableTokenException;
@@ -59,7 +59,7 @@ public class UserLookup {
 	}
 	public static User getUser(String screenName, int maxDepth) {
 		screenName = screenName.toLowerCase();
-		
+		screenName = screenName.replace(" ", "");
 	    User user = Cache.get("user_name_" + screenName, User.class);
 	    if(user == null && maxDepth> MEM) {
 	        user = User.findByScreenName(screenName);
@@ -68,7 +68,10 @@ public class UserLookup {
 				try {
 					twitter = TwitterProxyFactory.defaultInstance();
 					user = twitter.getUser(screenName);
-					user.save();
+					if(user!=null){
+	               user.save();
+					   
+					}
 					
 				} catch (NumberFormatException e) {
 					Logger.error(e, e.getMessage());
@@ -89,8 +92,9 @@ public class UserLookup {
 	 
 		return user;
 	}
+	
 
-	public static Set<User> getUsers(Collection<Long> userIdList){
+	public static List<User> getUsers(List<Long> userIdList){
 	   List<Long> missingUserIds =new ArrayList<Long>();
 	   Set<User> users = new HashSet<User>();
 	   for(Long userId : userIdList){
@@ -125,8 +129,14 @@ public class UserLookup {
 				Logger.error(e, e.getMessage());
 			}
 	   }
-	return users;
+	   ArrayList<User> retUsers = new ArrayList<User>(users);
+	   UserOrderComparator userComparator = new UserOrderComparator(userIdList);
+	   Collections.sort(retUsers,userComparator);
+   
+	   return retUsers;
 	}
+
+  
 	 
 
 }

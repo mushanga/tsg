@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -16,7 +17,6 @@ import jobs.ClientGraph;
 import jobs.GraphJobBase;
 import jobs.Start;
 import models.Comment;
-import models.FollowingList;
 import models.Item;
 import models.Reply;
 import models.ReplyJson;
@@ -39,6 +39,7 @@ import util.Util;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 import exception.NoAvailableTokenException;
 import exception.TSGException;
@@ -179,25 +180,68 @@ public class Application extends Controller {
 		items = Item.searchTitle(query);
 		render("application/index.html", items);
 	}
-	
-	public static void get(String query, String page) {
-	   if(page==null){
-	      page="1";
-	   }
-	   response.setHeader("Cache-Control", "no-cache");
-		User user = UserLookup.getUser(query);
-		UserGraph ug = UserGraph.getByOwnerId(user.twitterId);
-		if(ug==null){
-			ug = new UserGraph(user.twitterId);
-			ug.save();
-			renderBinary(constructBasicGraphJSON(ug));
-		}else if(ug.isCompleted()){
-			displayGraphData(String.valueOf(ug.ownerId)+"-"+page);
-		}else{
-			displayGraphData(String.valueOf(ug.ownerId)+"-temp");
-		}
-	    
-	}
+
+   public static void get(String query, String page) {
+      if(page==null){
+         page="1";
+      }
+      Long id = -1L;
+      
+      try{
+          id = Long.valueOf(query);
+          User user = UserLookup.getUser(id);
+          if(user!=null){
+             showGraph(user.twitterId, page);
+          }
+      }catch(Exception ex){
+
+      }
+   }
+   public static void showGraph(Long twitterId, String page){
+      UserGraph ug = UserGraph.getByOwnerId(twitterId);
+
+      if(ug==null){
+         ug = new UserGraph(twitterId);
+         ug.save();
+         renderBinary(constructBasicGraphJSON(ug));
+      }else if(ug.isCompleted()){
+         displayGraphData(String.valueOf(ug.ownerId)+"-"+page);
+      }else{
+         displayGraphData(String.valueOf(ug.ownerId)+"-temp");
+      }
+   }
+//   public static void getById(String query, String page) {
+//      if(page==null){
+//         page="1";
+//      }
+//      Long id = -1L;
+//      
+//      try {
+//         id= Long.valueOf(query);
+//      } catch (NumberFormatException e) {
+//         Logger.error(e, e.getMessage());
+//      }
+//      
+//      User user = UserLookup.getUser(id);
+//      showGraph(id, page);
+//    
+//       
+//   }
+   public static void autocomplete(String term) throws TSGException {
+      TwitterProxy t = TwitterProxyFactory.defaultInstance();
+      
+      List<User> users=  t.searchUser(term);
+      
+      
+      Type listOfUsers = new TypeToken<List<User>>() {
+      }.getType();
+
+      Gson gson = new GsonBuilder().setPrettyPrinting().create();
+      String content = gson.toJson(users, listOfUsers);
+      content = content.replaceAll("\"screenName\"", "\"value\"");
+      renderJSON(content);
+       
+   }
 
 	public static File constructBasicGraphJSON(UserGraph ug){
 
@@ -242,10 +286,10 @@ public class Application extends Controller {
 		ownerAndFollowings.add(ug.ownerId);
 		ownerAndFollowings.addAll(visibleFollowings);
 		
-		Set<User> visibleUsers = new HashSet<User>();
+		List<User> visibleUsers = new ArrayList<User>();
 		visibleUsers.addAll(UserLookup.getUsers(ownerAndFollowings));
 		
-		ClientGraph cg = new ClientGraph(ug, followings.size(), 0, visibleLinks, new ArrayList<User>(visibleUsers), 0, new HashMap<Long, Double>() );
+		ClientGraph cg = new ClientGraph(ug, followings.size(), 0, visibleLinks, visibleUsers, 0, new HashMap<Long, Double>() );
 		cg.needsReload = true;
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		String content = gson.toJson(cg, ClientGraph.class);
@@ -269,7 +313,13 @@ public class Application extends Controller {
    public static void user(String screenName) {
      
       User user = UserLookup.getUser(screenName);
-      
+      if(user==null){
+         try{
+            user = TwitterProxyFactory.defaultInstance().searchUser(screenName).get(0);
+         }catch(Exception ex){
+            
+         }
+      }
       render(user);
    }
 

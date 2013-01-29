@@ -294,7 +294,7 @@ function Graph(el) {
 		}
 		var revLink = thisObj.getLinkBySrcTrgId(d.target.id,d.source.id);
 		if(uLinks.indexOf(d)>-1 || uLinks.indexOf(revLink)>-1){
-			return 150;
+			return 120;
 		}	else{
 			return 300;
 		}
@@ -493,7 +493,7 @@ function Graph(el) {
 		
 
 		force.charge(function(d){
-			return -300;
+			return -600;
 //			if (d.id == thisObj.centerNodeId) {
 //				return 30 * -imageHeight;
 //			} else {

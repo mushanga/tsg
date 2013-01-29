@@ -12,7 +12,8 @@ import util.Util;
 
 @Every("10s")
 public class TempGraphJob extends GraphReadyJob {
-private static Long versionDiffToCreateNew = 20L;
+//private static Long versionDiffToCreateNew = 100L;
+private static double newVersionOverOldVersion = 5/4;
    private static Map<Long,Long> doneMap = new HashMap<Long,Long>();
 
    @Override
@@ -22,9 +23,9 @@ private static Long versionDiffToCreateNew = 20L;
          if (Util.isValid(graphs)) {
             for(UserGraph ug : graphs){
                if (!doneMap.containsKey(ug.ownerId)){
-                  doneMap.put(ug.ownerId, -versionDiffToCreateNew);
+                  doneMap.put(ug.ownerId, 1L);
                }
-               if (ug.version - doneMap.get(ug.ownerId) > versionDiffToCreateNew){
+               if ((double) ug.version / (double) doneMap.get(ug.ownerId) > newVersionOverOldVersion ){
                   FollowingList fl = FollowingList.getByOwnerId(ug.ownerId);
                   if (fl != null && fl.isCompleted()) {
                      createGraphForUser(ug, true);

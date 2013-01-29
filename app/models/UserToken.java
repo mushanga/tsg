@@ -81,4 +81,11 @@ public class UserToken extends TSGModel{
 		}
 	}
 	
+	public static void setAllInvalidToValid(){
+	   List<UserToken> invalidTokens = UserToken.find("byStatus", INVALID).fetch();
+	   for(UserToken ut : invalidTokens){
+         ut.setFree();
+      }
+	}
+	
 }

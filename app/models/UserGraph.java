@@ -83,7 +83,8 @@ public class UserGraph extends TSGModel {
    public static String COMPLETED = "Completed";
 
 	public static UserGraph getReadyToBeFinalized(){
-		return UserGraph.find("select ug from UserGraph ug where completed = total and total>0 and status = ?", IN_PROGRESS).first();
+		return UserGraph.find("select ug from UserGraph ug,FollowingList fl where " +
+				" completed = total and fl.ownerId = ug.ownerId and fl.status=? and ug.status = ?",FollowingList.SUCCESSFUL, IN_PROGRESS).first();
 	}
    public static UserGraph getWaiting(){
       return UserGraph.find("byStatus", WAITING).first();
