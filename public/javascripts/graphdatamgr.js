@@ -60,7 +60,7 @@ var GraphDataMgr = Class.extend({
 		for(var i in linkArr){
 			this.removeLink(linkArr[i].source.id, linkArr[i].target.id);
 		}
-		this.nodes.splice(findNodeIndex(id),1);
+		this.nodes.splice(this.findNodeIndex(id),1);
 	},
 	removeLink : function (sourceId,targetId) {
 		var i = 0;
