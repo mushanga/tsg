@@ -120,7 +120,10 @@ public class GraphReadyJob extends GraphJobBase {
 	   List<User> usersList = new ArrayList<User>(visibleUserSet);
 	   Collections.sort(usersList, new UserComparator(userIncomingCountMap));
 	   Collections.reverse(usersList);
-
+	  
+	   usersList.remove(user);	   
+	   usersList.add(0, user);
+	   
 	   visibleLinks.addAll(visibleLinkSet);
 	   visibleUsers.addAll(usersList);
 
