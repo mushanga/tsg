@@ -7,9 +7,6 @@ var GraphDataMgr = Class.extend({
 		this.nodeIncomingMap = {};
 		this.nodeOutgoingMap = {};
   },
-  dance: function(){
-    return this.dancing;
-  },
   addNode : function (obj) {
 		
 		var existing = this.getNodeById(obj.id);
@@ -86,11 +83,8 @@ var GraphDataMgr = Class.extend({
 		
 	},
 	clear : function () {
-		 $("#slider").slider({value:50});
 		this.nodes.length = 0;
 		this.links.length = 0;
-		uLinks.length = 0;
-		dLinks.length = 0;
 		this.nodeIncomingMap = {};
         this.nodeOutgoingMap = {};
 		

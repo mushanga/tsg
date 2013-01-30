@@ -9,9 +9,14 @@ var Graph = GraphDataMgr.extend({
 	centerNodeId : -1,
 	cliques : [],	
 	clear : function () {
-
+		
 		this._super();
-		centerNodeId : -1;
+		 $("#slider").slider({value:50});
+		this.centerNodeId = -1;
+		this.clickedImageId : -1,
+		this.uLinks = [];
+		this.dLinks = [];
+		this.cliques = [];
 		
 	},
 	init : function (el) {
