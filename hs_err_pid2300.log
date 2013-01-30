@@ -1,0 +1,1052 @@
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  EXCEPTION_ACCESS_VIOLATION (0xc0000005) at pc=0x57f0bd55, pid=2300, tid=4444
+#
+# JRE version: 7.0_07-b11
+# Java VM: Java HotSpot(TM) Client VM (23.3-b01 mixed mode windows-x86 )
+# Problematic frame:
+# V  [jvm.dll+0x7bd55]
+#
+# Failed to write core dump. Minidumps are not enabled by default on client versions of Windows
+#
+# If you would like to submit a bug report, please visit:
+#   http://bugreport.sun.com/bugreport/crash.jsp
+#
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x0120b800):  VMThread [stack: 0x179e0000,0x17a30000] [id=4444]
+
+siginfo: ExceptionCode=0xc0000005, reading address 0x15b99b40
+
+Registers:
+EAX=0x000194b0, EBX=0x00000000, ECX=0x15ace930, EDX=0x15acf5c0
+ESP=0x17a2f3e4, EBP=0x17a2f3e4, ESI=0x17a2f93c, EDI=0x17a2f86c
+EIP=0x57f0bd55, EFLAGS=0x00010212
+
+Top of Stack: (sp=0x17a2f3e4)
+0x17a2f3e4:   17a2f834 57f1192c 0000ca57 00000000
+0x17a2f3f4:   17a2f86c 17a2f93c 0000009b 5811a22c
+0x17a2f404:   17a82ce8 00000011 00000000 00000004
+0x17a2f414:   17a2f41c 00000001 4fffffff 2fffffff
+0x17a2f424:   2fffffff 2fffffff 00000000 00000000
+0x17a2f434:   00000000 00000000 00000000 00000000
+0x17a2f444:   00000000 00000000 00000000 00000000
+0x17a2f454:   00000000 00000000 00000000 00000000 
+
+Instructions: (pc=0x57f0bd55)
+0x57f0bd35:   0c 00 8b 45 08 75 23 8b 51 0c 85 d2 74 1c 85 c0
+0x57f0bd45:   79 0b f7 d0 40 03 c0 8b 04 c2 c1 e8 10 40 03 c0
+0x57f0bd55:   8b 04 c2 25 ff ff 00 00 eb 08 8b 51 08 80 7c 02
+0x57f0bd65:   0c 12 0f b7 44 81 2a 0f b7 44 81 2a 8b 54 81 28 
+
+
+Register to memory mapping:
+
+EAX=0x000194b0 is an unknown value
+EBX=0x00000000 is an unknown value
+ECX=0x15ace930 is an oop
+{constant pool} 
+ - klass: {other class}
+ - holder: 0x143470c8
+ - cache: 0x15acf5c0
+ -   1 :  : 'jobs/GraphOperationsBase'
+ -   2 :  : 'jobs/GraphOperationsBase'
+ -   3 :  : 'play/jobs/Job'
+ -   4 :  : 'play/jobs/Job'
+ -   5 :  : '<init>'
+ -   6 :  : '()V'
+ -   7 :  : 'Code'
+ -   8 :  : klass_index=3 name_and_type_index=9
+ -   9 :  : name_index=5 signature_index=6
+ -  10 :  : 'LineNumberTable'
+ -  11 :  : 'LocalVariableTable'
+ -  12 :  : 'this'
+ -  13 :  : 'Ljobs/GraphOperationsBase;'
+ -  14 :  : 'revealGraph'
+ -  15 :  : '(Lmodels/UserGraph;)V'
+ -  16 :  : klass_index=17 name_and_type_index=19
+ -  17 :  : 'models/UserGraph'
+ -  18 :  : 'models/UserGraph'
+ -  19 :  : name_index=20 signature_index=21
+ -  20 :  : 'ownerId'
+ -  21 :  : 'Ljava/lang/Long;'
+ -  22 :  : klass_index=17 name_and_type_index=23
+ -  23 :  : name_index=24 signature_index=25
+ -  24 :  : 'isProtected'
+ -  25 :  : '()Z'
+ -  26 :  : klass_index=27 name_and_type_index=29
+ -  27 :  : 'models/FollowingList'
+ -  28 :  : 'models/FollowingList'
+ -  29 :  : name_index=30 signature_index=31
+ -  30 :  : 'getByOwnerId'
+ -  31 :  : '(Ljava/lang/Long;)Lmodels/FollowingList;'
+ -  32 :  : klass_index=27 name_and_type_index=33
+ -  33 :  : name_index=5 signature_index=34
+ -  34 :  : '(Ljava/lang/Long;)V'
+ -  35 :  : klass_index=27 name_and_type_index=36
+ -  36 :  : name_index=37 signature_index=38
+ -  37 :  : 'save'
+ -  38 :  : '()Lplay/db/jpa/JPABase;'
+ -  39 :  : klass_index=27 name_and_type_index=40
+ -  40 :  : name_index=41 signature_index=25
+ -  41 :  : 'isCompleted'
+ -  42 :  : klass_index=43 name_and_type_index=45
+ -  43 :  : 'java/lang/Long'
+ -  44 :  : 'java/lang/Long'
+ -  45 :  : name_index=46 signature_index=47
+ -  46 :  : 'longValue'
+ -  47 :  : '()J'
+ -  48 :  : klass_index=49 name_and_type_index=51
+ -  49 :  : 'graph/GraphDatabase'
+ -  50 :  : 'graph/GraphDatabase'
+ -  51 :  : name_index=52 signature_index=53
+ -  52 :  : 'getFollowings'
+ -  53 :  : '(J)Ljava/util/Set;'
+ -  54 :  : klass_index=27 name_and_type_index=55
+ -  55 :  : name_index=56 signature_index=25
+ -  56 :  : 'isWaiting'
+ -  57 :  : klass_index=1 name_and_type_index=58
+ -  58 :  : name_index=52 signature_index=59
+ -  59 :  : '(JZ)Ljava/util/Set;'
+ -  60 :  : klass_index=27 name_and_type_index=23
+ -  61 :  : klass_index=17 name_and_type_index=62
+ -  62 :  : name_index=63 signature_index=6
+ -  63 :  : 'setStatusProtected'
+ -  64 :  : klass_index=65 name_and_type_index=67
+ -  65 :  : 'util/Util'
+ -  66 :  : 'util/Util'
+ -  67 :  : name_index=68 signature_index=69
+ -  68 :  : 'isSetValid'
+ -  69 :  : '(Ljava/util/Set;)Z'
+ -  70 :  : klass_index=17 name_and_type_index=71
+ -  71 :  : name_index=72 signature_index=73
+ -  72 :  : 'total'
+ -  73 :  : 'I'
+ -  74 :  : klass_index=75 name_and_type_index=77
+ -  75 :  : 'java/util/Set'
+ -  76 :  : 'java/util/Set'
+ -  77 :  : name_index=78 signature_index=79
+ -  78 :  : 'size'
+ -  79 :  : '()I'
+ -  80 :  : klass_index=17 name_and_type_index=36
+ -  81 :  : klass_index=75 name_and_type_index=82
+ -  82 :  : name_index=83 signature_index=84
+ -  83 :  : 'iterator'
+ -  84 :  : '()Ljava/util/Iterator;'
+ -  85 :  : klass_index=86 name_and_type_index=88
+ -  86 :  : 'java/util/Iterator'
+ -  87 :  : 'java/util/Iterator'
+ -  88 :  : name_index=89 signature_index=90
+ -  89 :  : 'next'
+ -  90 :  : '()Ljava/lang/Object;'
+ -  91 :  : klass_index=17 name_and_type_index=92
+ -  92 :  : name_index=93 signature_index=73
+ -  93 :  : 'completed'
+ -  94 :  : klass_index=17 name_and_type_index=95
+ -  95 :  : name_index=96 signature_index=6
+ -  96 :  : 'saveImmediately'
+ -  97 :  : klass_index=86 name_and_type_index=98
+ -  98 :  : name_index=99 signature_index=25
+ -  99 :  : 'hasNext'
+ - 100 :  : klass_index=17 name_and_type_index=101
+ - 101 :  : name_index=102 signature_index=6
+ - 102 :  : 'setStatusWaiting'
+ - 103 :  : klass_index=104 name_and_type_index=106
+ - 104 :  : 'java/lang/Exception'
+ - 105 :  : 'java/lang/Exception'
+ - 106 :  : name_index=107 signature_index=108
+ - 107 :  : 'getMessage'
+ - 108 :  : '()Ljava/lang/String;'
+ - 109 :  : 'java/lang/Object'
+ - 110 :  : 'java/lang/Object'
+ - 111 :  : klass_index=112 name_and_type_index=114
+ - 112 :  : 'play/Logger'
+ - 113 :  : 'play/Logger'
+ - 114 :  : name_index=115 signature_index=116
+ - 115 :  : 'error'
+ - 116 :  : '(Ljava/lang/Throwable;Ljava/lang/String;[Ljava/lang/Object;)V'
+ - 117 :  : 'graph'
+ - 118 :  : 'Lmodels/UserGraph;'
+ - 119 :  : 'followingIdSet'
+ - 120 :  : 'Ljava/util/Set;'
+ - 121 :  : 'fl'
+ - 122 :  : 'Lmodels/FollowingList;'
+ - 123 :  : 'followingId'
+ - 124 :  : 'ffl'
+ - 125 :  : 'e'
+ - 126 :  : 'Ljava/lang/Exception;'
+ - 127 :  : 'LocalVariableTypeTable'
+ - 128 :  : 'Ljava/util/Set<Ljava/lang/Long;>;'
+ - 129 :  : 'StackMapTable'
+ - 130 :  : 'createGraphForUser'
+ - 131 :  : '(Lmodels/UserGraph;Z)V'
+ - 132 :  : klass_index=133 name_and_type_index=135
+ - 133 :  : 'util/UserLookup'
+ - 134 :  : 'util/UserLookup'
+ - 135 :  : name_index=136 signature_index=137
+ - 136 :  : 'getUser'
+ - 137 :  : '(J)Lmodels/User;'
+ - 138 :  : 'java/lang/StringBuilder'
+ - 139 :  : 'java/lang/StringBuilder'
+ - 140 :  : "Creating graph for user: " {0x3c4d928}
+ - 141 :  : 'Creating graph for user: '
+ - 142 :  : klass_index=138 name_and_type_index=143
+ - 143 :  : name_index=5 signature_index=144
+ - 144 :  : '(Ljava/lang/String;)V'
+ - 145 :  : klass_index=146 name_and_type_index=148
+ - 146 :  : 'models/User'
+ - 147 :  : 'models/User'
+ - 148 :  : name_index=149 signature_index=150
+ - 149 :  : 'screenName'
+ - 150 :  : 'Ljava/lang/String;'
+ - 151 :  : klass_index=138 name_and_type_index=152
+ - 152 :  : name_index=153 signature_index=154
+ - 153 :  : 'append'
+ - 154 :  : '(Ljava/lang/String;)Ljava/lang/StringBuilder;'
+ - 155 :  : klass_index=138 name_and_type_index=156
+ - 156 :  : name_index=157 signature_index=108
+ - 157 :  : 'toString'
+ - 158 :  : klass_index=112 name_and_type_index=159
+ - 159 :  : name_index=160 signature_index=161
+ - 160 :  : 'info'
+ - 161 :  : '(Ljava/lang/String;[Ljava/lang/Object;)V'
+ - 162 :  : 'java/util/HashSet'
+ - 163 :  : 'java/util/HashSet'
+ - 164 :  : klass_index=162 name_and_type_index=9
+ - 165 :  : klass_index=75 name_and_type_index=166
+ - 166 :  : name_index=167 signature_index=168
+ - 167 :  : 'add'
+ - 168 :  : '(Ljava/lang/Object;)Z'
+ - 169 :  : klass_index=75 name_and_type_index=170
+ - 170 :  : name_index=171 signature_index=172
+ - 171 :  : 'addAll'
+ - 172 :  : '(Ljava/util/Collection;)Z'
+ - 173 :  : 'java/util/HashMap'
+ - 174 :  : 'java/util/HashMap'
+ - 175 :  : klass_index=173 name_and_type_index=9
+ - 176 :  : klass_index=49 name_and_type_index=177
+ - 177 :  : name_index=178 signature_index=179
+ - 178 :  : 'getMutualFriendsIncluding'
+ - 179 :  : '(JLjava/util/Set;)Ljava/util/Set;'
+ - 180 :  : klass_index=75 name_and_type_index=181
+ - 181 :  : name_index=182 signature_index=168
+ - 182 :  : 'contains'
+ - 183 :  : klass_index=138 name_and_type_index=9
+ - 184 :  : klass_index=138 name_and_type_index=185
+ - 185 :  : name_index=153 signature_index=186
+ - 186 :  : '(Ljava/lang/Object;)Ljava/lang/StringBuilder;'
+ - 187 :  : "-" {0x8e6cc08}
+ - 188 :  : '-'
+ - 189 :  : klass_index=173 name_and_type_index=190
+ - 190 :  : name_index=191 signature_index=192
+ - 191 :  : 'get'
+ - 192 :  : '(Ljava/lang/Object;)Ljava/lang/Object;'
+ - 193 :  : klass_index=194 name_and_type_index=196
+ - 194 :  : 'java/lang/Integer'
+ - 195 :  : 'java/lang/Integer'
+ - 196 :  : name_index=197 signature_index=198
+ - 197 :  : 'valueOf'
+ - 198 :  : '(I)Ljava/lang/Integer;'
+ - 199 :  : klass_index=173 name_and_type_index=200
+ - 200 :  : name_index=201 signature_index=202
+ - 201 :  : 'put'
+ - 202 :  : '(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;'
+ - 203 :  : klass_index=194 name_and_type_index=204
+ - 204 :  : name_index=205 signature_index=79
+ - 205 :  : 'intValue'
+ - 206 :  : 'java/util/ArrayList'
+ - 207 :  : 'java/util/ArrayList'
+ - 208 :  : klass_index=206 name_and_type_index=209
+ - 209 :  : name_index=5 signature_index=210
+ - 210 :  : '(Ljava/util/Collection;)V'
+ - 211 :  : 'jobs/GraphOperationsBase$UserComparator'
+ - 212 :  : 'jobs/GraphOperationsBase$UserComparator'
+ - 213 :  : klass_index=211 name_and_type_index=214
+ - 214 :  : name_index=5 signature_index=215
+ - 215 :  : '(Ljobs/GraphOperationsBase;Ljava/util/HashMap;)V'
+ - 216 :  : klass_index=217 name_and_type_index=219
+ - 217 :  : 'java/util/Collections'
+ - 218 :  : 'java/util/Collections'
+ - 219 :  : name_index=220 signature_index=221
+ - 220 :  : 'sort'
+ - 221 :  : '(Ljava/util/List;Ljava/util/Comparator;)V'
+ - 222 :  : klass_index=217 name_and_type_index=223
+ - 223 :  : name_index=224 signature_index=225
+ - 224 :  : 'reverse'
+ - 225 :  : '(Ljava/util/List;)V'
+ - 226 :  : 'com/google/gson/GsonBuilder'
+ - 227 :  : 'com/google/gson/GsonBuilder'
+ - 228 :  : klass_index=226 name_and_type_index=9
+ - 229 :  : klass_index=226 name_and_type_index=230
+ - 230 :  : name_index=231 signature_index=232
+ - 231 :  : 'setPrettyPrinting'
+ - 232 :  : '()Lcom/google/gson/GsonBuilder;'
+ - 233 :  : klass_index=226 name_and_type_index=234
+ - 234 :  : name_index=235 signature_index=236
+ - 235 :  : 'create'
+ - 236 :  : '()Lcom/google/gson/Gson;'
+ - 237 :  : klass_index=1 name_and_type_index=238
+ - 238 :  : name_index=239 signature_index=240
+ - 239 :  : 'paginateLinks'
+ - 240 :  : '(JILjava/util/Set;Ljava/util/List;II)Ljava/util/List;'
+ - 241 :  : klass_index=242 name_and_type_index=82
+ - 242 :  : 'java/util/List'
+ - 243 :  : 'java/util/List'
+ - 244 :  : 'jobs/ClientGraph'
+ - 245 :  : 'jobs/ClientGraph'
+ - 246 :  : klass_index=247 name_and_type_index=249
+ - 247 :  : 'com/google/gson/Gson'
+ - 248 :  : 'com/google/gson/Gson'
+ - 249 :  : name_index=250 signature_index=251
+ - 250 :  : 'toJson'
+ - 251 :  : '(Ljava/lang/Object;Ljava/lang/reflect/Type;)Ljava/lang/String;'
+ - 252 :  : klass_index=244 name_and_type_index=253
+ - 253 :  : name_index=254 signature_index=73
+ - 254 :  : 'page'
+ - 255 :  : klass_index=138 name_and_type_index=256
+ - 256 :  : name_index=153 signature_index=257
+ - 257 :  : '(I)Ljava/lang/StringBuilder;'
+ - 258 :  : klass_index=1 name_and_type_index=259
+ - 259 :  : name_index=260 signature_index=261
+ - 260 :  : 'saveGraphJson'
+ - 261 :  : '(Ljava/lang/String;Ljava/lang/String;)V'
+ - 262 :  : klass_index=17 name_and_type_index=263
+ - 263 :  : name_index=264 signature_index=6
+ - 264 :  : 'setStatusCompleted'
+ - 265 :  : klass_index=244 name_and_type_index=266
+ - 266 :  : name_index=5 signature_index=267
+ - 267 :  : '(Ljava/lang/Long;IILjava/util/Set;Ljava/util/List;I)V'
+ - 268 :  : klass_index=244 name_and_type_index=269
+ - 269 :  : name_index=270 signature_index=271
+ - 270 :  : 'needsReload'
+ - 271 :  : 'Z'
+ - 272 :  : "-temp" {0x3c4d980}
+ - 273 :  : '-temp'
+ - 274 :  : 'ug'
+ - 275 :  : 'temp'
+ - 276 :  : 'user'
+ - 277 :  : 'Lmodels/User;'
+ - 278 :  : 'visibleLinks'
+ - 279 :  : 'visibleUsers'
+ - 280 :  : 'followingIdList'
+ - 281 :  : 'userAndAllFollowings'
+ - 282 :  : 'userIncomingCountMap'
+ - 283 :  : 'Ljava/util/HashMap;'
+ - 284 :  : 'following'
+ - 285 :  : 'friendsOfFollowing'
+ - 286 :  : 'added'
+ - 287 :  : 'friendOfFollowing'
+ - 288 :  : 'usersList'
+ - 289 :  : 'Ljava/util/List;'
+ - 290 :  : 'gson'
+ - 291 :  : 'Lcom/google/gson/Gson;'
+ - 292 :  : 'graphs'
+ - 293 :  : 'cg'
+ - 294 :  : 'Ljobs/ClientGraph;'
+ - 295 :  : 'content'
+ - 296 :  : 'Ljava/util/Set<Ljava/lang/String;>;'
+ - 297 :  : 'Ljava/util/Set<Lmodels/User;>;'
+ - 298 :  : 'Ljava/util/HashMap<Ljava/lang/Long;Ljava/lang/Integer;>;'
+ - 299 :  : 'Ljava/util/List<Lmodels/User;>;'
+ - 300 :  : 'Ljava/util/List<Ljobs/ClientGraph;>;'
+ - 301 :  : 'Signature'
+ - 302 :  : '(JILjava/util/Set<Ljava/lang/String;>;Ljava/util/List<Lmodels/User;>;II)Ljava/util/List<Ljobs/ClientGraph;>;'
+ - 303 :  : klass_index=206 name_and_type_index=9
+ - 304 :  : klass_index=43 name_and_type_index=305
+ - 305 :  : name_index=197 signature_index=306
+ - 306 :  : '(J)Ljava/lang/Long;'
+ - 307 :  : klass_index=242 name_and_type_index=166
+ - 308 :  : klass_index=242 name_and_type_index=309
+ - 309 :  : name_index=191 signature_index=310
+ - 310 :  : '(I)Ljava/lang/Object;'
+ - 311 :  : klass_index=146 name_and_type_index=312
+ - 312 :  : name_index=313 signature_index=21
+ - 313 :  : 'twitterId'
+ - 314 :  : klass_index=315 name_and_type_index=317
+ - 315 :  : 'java/lang/String'
+ - 316 :  : 'java/lang/String'
+ - 317 :  : name_index=197 signature_index=318
+ - 318 :  : '(Ljava/lang/Object;)Ljava/lang/String;'
+ - 319 :  : klass_index=244 name_and_type_index=320
+ - 320 :  : name_index=321 signature_index=289
+ - 321 :  : 'users'
+ - 322 :  : klass_index=242 name_and_type_index=77
+ - 323 :  : klass_index=315 name_and_type_index=324
+ - 324 :  : name_index=325 signature_index=326
+ - 325 :  : 'split'
+ - 326 :  : '(Ljava/lang/String;)[Ljava/lang/String;'
+ - 327 :  : klass_index=242 name_and_type_index=328
+ - 328 :  : name_index=329 signature_index=330
+ - 329 :  : 'indexOf'
+ - 330 :  : '(Ljava/lang/Object;)I'
+ - 331 :  : klass_index=332 name_and_type_index=334
+ - 332 :  : 'java/lang/Math'
+ - 333 :  : 'java/lang/Math'
+ - 334 :  : name_index=335 signature_index=336
+ - 335 :  : 'max'
+ - 336 :  : '(II)I'
+ - 337 :  : klass_index=244 name_and_type_index=338
+ - 338 :  : name_index=339 signature_index=120
+ - 339 :  : 'links'
+ - 340 :  : 'J'
+ - 341 :  : 'recPerPage'
+ - 342 :  : 'ids'
+ - 343 :  : 'i'
+ - 344 :  : 'link'
+ - 345 :  : 'srcId'
+ - 346 :  : 'trgId'
+ - 347 :  : 'nthUser'
+ - 348 :  : 'nthArr'
+ - 349 :  : 'Ljava/util/List<Ljava/lang/String;>;'
+ - 350 :  : 'java/io/File'
+ - 351 :  : 'java/io/File'
+ - 352 :  : klass_index=353 name_and_type_index=355
+ - 353 :  : 'jobs/Start'
+ - 354 :  : 'jobs/Start'
+ - 355 :  : name_index=356 signature_index=108
+ - 356 :  : 'getGraphJSONDataPath'
+ - 357 :  : ".json" {0x3c4d9b0}
+ - 358 :  : '.json'
+ - 359 :  : klass_index=350 name_and_type_index=143
+ - 360 :  : klass_index=361 name_and_type_index=363
+ - 361 :  : 'org/apache/commons/io/FileUtils'
+ - 362 :  : 'org/apache/commons/io/FileUtils'
+ - 363 :  : name_index=364 signature_index=365
+ - 364 :  : 'writeStringToFile'
+ - 365 :  : '(Ljava/io/File;Ljava/lang/String;)V'
+ - 366 :  : klass_index=367 name_and_type_index=106
+ - 367 :  : 'java/io/IOException'
+ - 368 :  : 'java/io/IOException'
+ - 369 :  : 'name'
+ - 370 :  : 'Ljava/io/IOException;'
+ - 371 :  : 'getGraphJson'
+ - 372 :  : '(Ljava/lang/String;)Ljava/io/File;'
+ - 373 :  : '(JZ)Ljava/util/Set<Ljava/lang/Long;>;'
+ - 374 :  : klass_index=27 name_and_type_index=375
+ - 375 :  : name_index=376 signature_index=6
+ - 376 :  : 'setStatusInProgress'
+ - 377 :  : klass_index=27 name_and_type_index=19
+ - 378 :  : klass_index=49 name_and_type_index=379
+ - 379 :  : name_index=380 signature_index=381
+ - 380 :  : 'clearFollowings'
+ - 381 :  : '(J)V'
+ - 382 :  : klass_index=383 name_and_type_index=385
+ - 383 :  : 'twitter/TwitterProxyFactory'
+ - 384 :  : 'twitter/TwitterProxyFactory'
+ - 385 :  : name_index=386 signature_index=387
+ - 386 :  : 'defaultInstance'
+ - 387 :  : '()Ltwitter/TwitterProxy;'
+ - 388 :  : klass_index=389 name_and_type_index=391
+ - 389 :  : 'twitter/TwitterProxy'
+ - 390 :  : 'twitter/TwitterProxy'
+ - 391 :  : name_index=392 signature_index=393
+ - 392 :  : 'getFollowingIds'
+ - 393 :  : '(Ljava/lang/Long;)Ljava/util/List;'
+ - 394 :  : klass_index=49 name_and_type_index=395
+ - 395 :  : name_index=396 signature_index=397
+ - 396 :  : 'addFriendships'
+ - 397 :  : '(JLjava/util/Set;)V'
+ - 398 :  : klass_index=27 name_and_type_index=263
+ - 399 :  : klass_index=27 name_and_type_index=101
+ - 400 :  : klass_index=401 name_and_type_index=106
+ - 401 :  : 'exception/NoAvailableTokenException'
+ - 402 :  : 'exception/NoAvailableTokenException'
+ - 403 :  : klass_index=27 name_and_type_index=62
+ - 404 :  : klass_index=405 name_and_type_index=106
+ - 405 :  : 'exception/UserProtectedException'
+ - 406 :  : 'exception/UserProtectedException'
+ - 407 :  : 'id'
+ - 408 :  : 'force'
+ - 409 :  : 'followingList'
+ - 410 :  : 'twitter'
+ - 411 :  : 'Ltwitter/TwitterProxy;'
+ - 412 :  : 'Lexception/NoAvailableTokenException;'
+ - 413 :  : 'Lexception/UserProtectedException;'
+ - 414 :  : 'e1'
+ - 415 :  : 'SourceFile'
+ - 416 :  : 'GraphOperationsBase.java'
+ - 417 :  : 'RuntimeVisibleAnnotations'
+ - 418 :  : 'Lplay/jobs/Every;'
+ - 419 :  : 'value'
+ - 420 :  : '5s'
+ - 421 :  : 'InnerClasses'
+ - 422 :  : 'UserComparator'
+ - 423 :  : "ownerId" {0x955ac18}
+ - 424 :  : 'models.UserGraph'
+ - 425 :  : "models.UserGraph" {0x930d2b8}
+ - 426 :  : 'jobs.GraphOperationsBase.revealGraph, line 50'
+ - 427 :  : "jobs.GraphOperationsBase.revealGraph, line 50" {0x9bdc758}
+ - 428 :  : 'play/classloading/enhancers/PropertiesEnhancer$FieldAccessor'
+ - 429 :  : 'play/classloading/enhancers/PropertiesEnhancer$FieldAccessor'
+ - 430 :  : 'invokeReadProperty'
+ - 431 :  : '(Ljava/lang/Object;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/Object;'
+ - 432 :  : name_index=430 signature_index=431
+ - 433 :  : klass_index=429 name_and_type_index=432
+ - 434 :  : "total" {0x956c840}
+ - 435 :  : "models.UserGraph" {0x930d2b8}
+ - 436 :  : 'jobs.GraphOperationsBase.revealGraph, line 75'
+ - 437 :  : "jobs.GraphOperationsBase.revealGraph, line 75" {0x3c4d9e0}
+ - 438 :  : name_index=430 signature_index=431
+ - 439 :  : klass_index=429 name_and_type_index=438
+ - 440 :  : name_index=205 signature_index=79
+ - 441 :  : klass_index=194 name_and_type_index=440
+ - 442 :  : "total" {0x956c840}
+ - 443 :  : "models.UserGraph" {0x930d2b8}
+ - 444 :  : "jobs.GraphOperationsBase.revealGraph, line 75" {0x3c4d9e0}
+ - 445 :  : name_index=430 signature_index=431
+ - 446 :  : klass_index=429 name_and_type_index=445
+ - 447 :  : name_index=205 signature_index=79
+ - 448 :  : klass_index=194 name_and_type_index=447
+ - 449 :  : "total" {0x956c840}
+ - 450 :  : 'TYPE'
+ - 451 :  : 'Ljava/lang/Class;'
+ - 452 :  : name_index=450 signature_index=451
+ - 453 :  : klass_index=194 name_and_type_index=452
+ - 454 :  : "models.UserGraph" {0x930d2b8}
+ - 455 :  : 'jobs.GraphOperationsBase.revealGraph, line 76'
+ - 456 :  : "jobs.GraphOperationsBase.revealGraph, line 76" {0x3c4da60}
+ - 457 :  : 'invokeWriteProperty'
+ - 458 :  : '(Ljava/lang/Object;Ljava/lang/String;Ljava/lang/Class;ILjava/lang/String;Ljava/lang/String;)V'
+ - 459 :  : name_index=457 signature_index=458
+ - 460 :  : klass_index=429 name_and_type_index=459
+ - 461 :  : "completed" {0x956c300}
+ - 462 :  : "models.UserGraph" {0x930d2b8}
+ - 463 :  : 'jobs.GraphOperationsBase.revealGraph, line 95'
+ - 464 :  : "jobs.GraphOperationsBase.revealGraph, line 95" {0x3c4dae0}
+ - 465 :  : name_index=430 signature_index=431
+ - 466 :  : klass_index=429 name_and_type_index=465
+ - 467 :  : name_index=205 signature_index=79
+ - 468 :  : klass_index=194 name_and_type_index=467
+ - 469 :  : "completed" {0x956c300}
+ - 470 :  : name_index=450 signature_index=451
+ - 471 :  : klass_index=194 name_and_type_index=470
+ - 472 :  : "models.UserGraph" {0x930d2b8}
+ - 473 :  : 'jobs.GraphOperationsBase.revealGraph, line 96'
+ - 474 :  : "jobs.GraphOperationsBase.revealGraph, line 96" {0x3c4db60}
+ - 475 :  : name_index=457 signature_index=458
+ - 476 :  : klass_index=429 name_and_type_index=475
+ - 477 :  : "completed" {0x956c300}
+ - 478 :  : "models.UserGraph" {0x930d2b8}
+ - 479 :  : 'jobs.GraphOperationsBase.revealGraph, line 107'
+ - 480 :  : "jobs.GraphOperationsBase.revealGraph, line 107" {0x9c4af88}
+ - 481 :  : name_index=430 signature_index=431
+ - 482 :  : klass_index=429 name_and_type_index=481
+ - 483 :  : name_index=205 signature_index=79
+ - 484 :  : klass_index=194 name_and_type_index=483
+ - 485 :  : "total" {0x956c840}
+ - 486 :  : "models.UserGraph" {0x930d2b8}
+ - 487 :  : "jobs.GraphOperationsBase.revealGraph, line 107" {0x9c4af88}
+ - 488 :  : name_index=430 signature_index=431
+ - 489 :  : klass_index=429 name_and_type_index=488
+ - 490 :  : name_index=205 signature_index=79
+ - 491 :  : klass_index=194 name_and_type_index=490
+ - 492 :  : "ownerId" {0x955ac18}
+ - 493 :  : "models.UserGraph" {0x930d2b8}
+ - 494 :  : 'jobs.GraphOperationsBase.createGraphForUser, line 112'
+ - 495 :  : "jobs.GraphOperationsBase.createGraphForUser, line 112" {0x3c4dbe0}
+ - 496 :  : name_index=430 signature_index=431
+ - 497 :  : klass_index=429 name_and_type_index=496
+ - 498 :  : "screenName" {0x956c630}
+ - 499 :  : 'models.User'
+ - 500 :  : "models.User" {0x930d0a8}
+ - 501 :  : 'jobs.GraphOperationsBase.createGraphForUser, line 113'
+ - 502 :  : "jobs.GraphOperationsBase.createGraphForUser, line 113" {0x3c4dc70}
+ - 503 :  : name_index=430 signature_index=431
+ - 504 :  : klass_index=429 name_and_type_index=503
+ - 505 :  : "ownerId" {0x955ac18}
+ - 506 :  : "models.UserGraph" {0x930d2b8}
+ - 507 :  : 'jobs.GraphOperationsBase.createGraphForUser, line 120'
+ - 508 :  : "jobs.GraphOperationsBase.createGraphForUser, line 120" {0x3c4dd00}
+ - 509 :  : name_index=430 signature_index=431
+ - 510 :  : klass_index=429 name_and_type_index=509
+ - 511 :  : "ownerId" {0x955ac18}
+ - 512 :  : "models.UserGraph" {0x930d2b8}
+ - 513 :  : 'jobs.GraphOperationsBase.createGraphForUser, line 124'
+ - 514 :  : "jobs.GraphOperationsBase.createGraphForUser, line 124" {0x3c4dd90}
+ - 515 :  : name_index=430 signature_index=431
+ - 516 :  : klass_index=429 name_and_type_index=515
+ - 517 :  : "ownerId" {0x955ac18}
+ - 518 :  : "models.UserGraph" {0x930d2b8}
+ - 519 :  : 'jobs.GraphOperationsBase.createGraphForUser, line 135'
+ - 520 :  : "jobs.GraphOperationsBase.createGraphForUser, line 135" {0x3c4de20}
+ - 521 :  : name_index=430 signature_index=431
+ - 522 :  : klass_index=429 name_and_type_index=521
+ - 523 :  : "ownerId" {0x955ac18}
+ - 524 :  : "models.UserGraph" {0x930d2b8}
+ - 525 :  : 'jobs.GraphOperationsBase.createGraphForUser, line 137'
+ - 526 :  : "jobs.GraphOperationsBase.createGraphForUser, line 137" {0x3c4deb0}
+ - 527 :  : name_index=430 signature_index=431
+ - 528 :  : klass_index=429 name_and_type_index=527
+ - 529 :  : "total" {0x956c840}
+ - 530 :  : name_index=450 signature_index=451
+ - 531 :  : klass_index=194 name_and_type_index=530
+ - 532 :  : "models.UserGraph" {0x930d2b8}
+ - 533 :  : 'jobs.GraphOperationsBase.createGraphForUser, line 181'
+ - 534 :  : "jobs.GraphOperationsBase.createGraphForUser, line 181" {0x3c4df40}
+ - 535 :  : name_index=457 signature_index=458
+ - 536 :  : klass_index=429 name_and_type_index=535
+ - 537 :  : "completed" {0x956c300}
+ - 538 :  : name_index=450 signature_index=451
+ - 539 :  : klass_index=194 name_and_type_index=538
+ - 540 :  : "models.UserGraph" {0x930d2b8}
+ - 541 :  : 'jobs.GraphOperationsBase.createGraphForUser, line 182'
+ - 542 :  : "jobs.GraphOperationsBase.createGraphForUser, line 182" {0x3c4dfd0}
+ - 543 :  : name_index=457 signature_index=458
+ - 544 :  : klass_index=429 name_and_type_index=543
+ - 545 :  : "ownerId" {0x955ac18}
+ - 546 :  : "models.UserGraph" {0x930d2b8}
+ - 547 :  : 'jobs.GraphOperationsBase.createGraphForUser, line 195'
+ - 548 :  : "jobs.GraphOperationsBase.createGraphForUser, line 195" {0x3c4e060}
+ - 549 :  : name_index=430 signature_index=431
+ - 550 :  : klass_index=429 name_and_type_index=549
+ - 551 :  : "ownerId" {0x955ac18}
+ - 552 :  : "models.UserGraph" {0x930d2b8}
+ - 553 :  : 'jobs.GraphOperationsBase.createGraphForUser, line 200'
+ - 554 :  : "jobs.GraphOperationsBase.createGraphForUser, line 200" {0x3c4e0f0}
+ - 555 :  : name_index=430 signature_index=431
+ - 556 :  : klass_index=429 name_and_type_index=555
+ - 557 :  : "page" {0x9bdc650}
+ - 558 :  : 'jobs.ClientGraph'
+ - 559 :  : "jobs.ClientGraph" {0x930cd18}
+ - 560 :  : "jobs.GraphOperationsBase.createGraphForUser, line 200" {0x3c4e0f0}
+ - 561 :  : name_index=430 signature_index=431
+ - 562 :  : klass_index=429 name_and_type_index=561
+ - 563 :  : name_index=205 signature_index=79
+ - 564 :  : klass_index=194 name_and_type_index=563
+ - 565 :  : "ownerId" {0x955ac18}
+ - 566 :  : "models.UserGraph" {0x930d2b8}
+ - 567 :  : 'jobs.GraphOperationsBase.createGraphForUser, line 205'
+ - 568 :  : "jobs.GraphOperationsBase.createGraphForUser, line 205" {0x3c4e180}
+ - 569 :  : name_index=430 signature_index=431
+ - 570 :  : klass_index=429 name_and_type_index=569
+ - 571 :  : "needsReload" {0x3c4e210}
+ - 572 :  : 'java/lang/Boolean'
+ - 573 :  : 'java/lang/Boolean'
+ - 574 :  : name_index=450 signature_index=451
+ - 575 :  : klass_index=573 name_and_type_index=574
+ - 576 :  : "jobs.ClientGraph" {0x930cd18}
+ - 577 :  : 'jobs.GraphOperationsBase.createGraphForUser, line 206'
+ - 578 :  : "jobs.GraphOperationsBase.createGraphForUser, line 206" {0x3c4e250}
+ - 579 :  : '(Ljava/lang/Object;Ljava/lang/String;Ljava/lang/Class;ZLjava/lang/String;Ljava/lang/String;)V'
+ - 580 :  : name_index=457 signature_index=579
+ - 581 :  : klass_index=429 name_and_type_index=580
+ - 582 :  : "ownerId" {0x955ac18}
+ - 583 :  : "models.UserGraph" {0x930d2b8}
+ - 584 :  : 'jobs.GraphOperationsBase.createGraphForUser, line 208'
+ - 585 :  : "jobs.GraphOperationsBase.createGraphForUser, line 208" {0x3c4e2e0}
+ - 586 :  : name_index=430 signature_index=431
+ - 587 :  : klass_index=429 name_and_type_index=586
+ - 588 :  : "twitterId" {0x956bad8}
+ - 589 :  : "models.User" {0x930d0a8}
+ - 590 :  : 'jobs.GraphOperationsBase.paginateLinks, line 227'
+ - 591 :  : "jobs.GraphOperationsBase.paginateLinks, line 227" {0x3c4e370}
+ - 592 :  : name_index=430 signature_index=431
+ - 593 :  : klass_index=429 name_and_type_index=592
+ - 594 :  : "ownerId" {0x955ac18}
+ - 595 :  : 'models.FollowingList'
+ - 596 :  : "models.FollowingList" {0x930d240}
+ - 597 :  : 'jobs.GraphOperationsBase.getFollowings, line 299'
+ - 598 :  : "jobs.GraphOperationsBase.getFollowings, line 299" {0x9bdc3e0}
+ - 599 :  : name_index=430 signature_index=431
+ - 600 :  : klass_index=429 name_and_type_index=599
+ - 601 :  : 'jobs.GraphOperationsBase.revealGraph, line 97'
+ - 602 :  : "jobs.GraphOperationsBase.revealGraph, line 97" {0x3c4e3f8}
+ - 603 :  : 'jobs.GraphOperationsBase.revealGraph, line 109'
+ - 604 :  : "jobs.GraphOperationsBase.revealGraph, line 109" {0x3c4e478}
+ - 605 :  : 'jobs.GraphOperationsBase.createGraphForUser, line 114'
+ - 606 :  : "jobs.GraphOperationsBase.createGraphForUser, line 114" {0x3c4e4f8}
+ - 607 :  : 'jobs.GraphOperationsBase.createGraphForUser, line 115'
+ - 608 :  : "jobs.GraphOperationsBase.createGraphForUser, line 115" {0x3c4e588}
+ - 609 :  : 'jobs.GraphOperationsBase.createGraphForUser, line 122'
+ - 610 :  : "jobs.GraphOperationsBase.createGraphForUser, line 122" {0x3c4e618}
+ - 611 :  : 'jobs.GraphOperationsBase.createGraphForUser, line 126'
+ - 612 :  : "jobs.GraphOperationsBase.createGraphForUser, line 126" {0x3c4e6a8}
+ - 613 :  : 'jobs.GraphOperationsBase.createGraphForUser, line 139'
+ - 614 :  : "jobs.GraphOperationsBase.createGraphForUser, line 139" {0x3c4e738}
+ - 615 :  : 'jobs.GraphOperationsBase.createGraphForUser, line 183'
+ - 616 :  : "jobs.GraphOperationsBase.createGraphForUser, line 183" {0x3c4e7c8}
+ - 617 :  : 'jobs.GraphOperationsBase.createGraphForUser, line 184'
+ - 618 :  : "jobs.GraphOperationsBase.createGraphForUser, line 184" {0x3c4e858}
+ - 619 :  : 'jobs.GraphOperationsBase.createGraphForUser, line 197'
+ - 620 :  : "jobs.GraphOperationsBase.createGraphForUser, line 197" {0x3c4e8e8}
+ - 621 :  : 'jobs.GraphOperationsBase.createGraphForUser, line 202'
+ - 622 :  : "jobs.GraphOperationsBase.createGraphForUser, line 202" {0x3c4e978}
+ - 623 :  : 'jobs.GraphOperationsBase.createGraphForUser, line 207'
+ - 624 :  : "jobs.GraphOperationsBase.createGraphForUser, line 207" {0x3c4ea08}
+ - 625 :  : 'jobs.GraphOperationsBase.createGraphForUser, line 210'
+ - 626 :  : "jobs.GraphOperationsBase.createGraphForUser, line 210" {0x3c4ea98}
+ - 627 :  : 'jobs.GraphOperationsBase.paginateLinks, line 229'
+ - 628 :  : "jobs.GraphOperationsBase.paginateLinks, line 229" {0x3c4eb28}
+ - 629 :  : 'jobs.GraphOperationsBase.getFollowings, line 301'
+ - 630 :  : "jobs.GraphOperationsBase.getFollowings, line 301" {0x3c4ebb0}
+
+EDX=0x15acf5c0 is an oop
+{constant pool cache} 
+ - klass: {other class}
+ESP=0x17a2f3e4 is an unknown value
+EBP=0x17a2f3e4 is an unknown value
+ESI=0x17a2f93c is an unknown value
+EDI=0x17a2f86c is an unknown value
+
+
+Stack: [0x179e0000,0x17a30000],  sp=0x17a2f3e4,  free space=316k
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+V  [jvm.dll+0x7bd55]
+V  [jvm.dll+0x8192c]
+V  [jvm.dll+0x8225d]
+V  [jvm.dll+0x82cdc]
+V  [jvm.dll+0x82e72]
+V  [jvm.dll+0x58dd9]
+V  [jvm.dll+0x5917c]
+V  [jvm.dll+0x5952f]
+V  [jvm.dll+0x83746]
+V  [jvm.dll+0x9c618]
+V  [jvm.dll+0x14b60e]
+V  [jvm.dll+0xf4d25]
+V  [jvm.dll+0x14f4f5]
+V  [jvm.dll+0x14e66e]
+V  [jvm.dll+0x14e9f7]
+V  [jvm.dll+0x14eec2]
+V  [jvm.dll+0x17efe9]
+C  [msvcr100.dll+0x5c6de]  endthreadex+0x3a
+C  [msvcr100.dll+0x5c788]  endthreadex+0xe4
+C  [kernel32.dll+0x51114]  BaseThreadInitThunk+0x12
+C  [ntdll.dll+0x5b299]  RtlInitializeExceptionChain+0x63
+C  [ntdll.dll+0x5b26c]  RtlInitializeExceptionChain+0x36
+
+VM_Operation (0x184bfaf8): GetOrSetLocal, mode: safepoint, requested by thread 0x17ab6400
+
+
+---------------  P R O C E S S  ---------------
+
+Java Threads: ( => current thread )
+  0x18b08400 JavaThread "JDWP Command Reader" daemon [_thread_in_native, id=2024, stack(0x1b590000,0x1b5e0000)]
+  0x18e7f000 JavaThread "jobs-thread-10" [_thread_blocked, id=4412, stack(0x1b390000,0x1b3e0000)]
+  0x18e7ec00 JavaThread "jobs-thread-9" [_thread_blocked, id=3088, stack(0x1b670000,0x1b6c0000)]
+  0x18e7e400 JavaThread "jobs-thread-8" [_thread_blocked, id=5088, stack(0x1ab60000,0x1abb0000)]
+  0x18e7e000 JavaThread "jobs-thread-7" [_thread_blocked, id=1460, stack(0x1a970000,0x1a9c0000)]
+  0x18e7d800 JavaThread "jobs-thread-6" [_thread_blocked, id=4092, stack(0x1b5f0000,0x1b640000)]
+  0x18e7d000 JavaThread "Timer-1" daemon [_thread_blocked, id=5072, stack(0x1b510000,0x1b560000)]
+  0x191bc800 JavaThread "17480292@qtp-28358236-1 - Acceptor0 SelectChannelConnector@localhost:7575" [_thread_in_native, id=2868, stack(0x1b490000,0x1b4e0000)]
+  0x191bc400 JavaThread "21030262@qtp-28358236-0" [_thread_blocked, id=4712, stack(0x1b330000,0x1b380000)]
+  0x191bbc00 JavaThread "Statistics Gatherer[primitives]" [_thread_blocked, id=1772, stack(0x1b410000,0x1b460000)]
+  0x191bb800 JavaThread "RRD4J Sync Pool [Thread-1]" daemon [_thread_blocked, id=1548, stack(0x1b050000,0x1b0a0000)]
+  0x191bb000 JavaThread "GC-Monitor" daemon [_thread_blocked, id=3800, stack(0x1a7b0000,0x1a800000)]
+  0x191ba400 JavaThread "RMI RenewClean-[47.168.97.172:52706]" daemon [_thread_blocked, id=3684, stack(0x1ae30000,0x1ae80000)]
+  0x191b9c00 JavaThread "RMI Scheduler(0)" daemon [_thread_blocked, id=2316, stack(0x1ade0000,0x1ae30000)]
+  0x191b9000 JavaThread "RMI TCP Accept-1337" daemon [_thread_in_native, id=1132, stack(0x1ac10000,0x1ac60000)]
+  0x191b8c00 JavaThread "GC Daemon" daemon [_thread_blocked, id=4100, stack(0x1ae80000,0x1aed0000)]
+  0x191b8400 JavaThread "RMI Reaper" [_thread_blocked, id=3900, stack(0x1abc0000,0x1ac10000)]
+  0x191b8000 JavaThread "RMI TCP Accept-0" daemon [_thread_in_native, id=2128, stack(0x1ad70000,0x1adc0000)]
+  0x191b7800 JavaThread "Neo4j UDC Timer" daemon [_thread_blocked, id=1172, stack(0x1ac90000,0x1ace0000)]
+  0x191b7400 JavaThread "jobs-thread-5" [_thread_blocked, id=3772, stack(0x1aa80000,0x1aad0000)]
+  0x191b6c00 JavaThread "jobs-thread-4" [_thread_blocked, id=3348, stack(0x195a0000,0x195f0000)]
+  0x191b6400 JavaThread "jobs-thread-3" [_thread_blocked, id=5928, stack(0x1a910000,0x1a960000)]
+  0x191b6000 JavaThread "jobs-thread-2" [_thread_blocked, id=5932, stack(0x19660000,0x196b0000)]
+  0x191b5800 JavaThread "jobs-thread-1" [_thread_blocked, id=4516, stack(0x1a890000,0x1a8e0000)]
+  0x191b5400 JavaThread "com.mchange.v2.async.ThreadPoolAsynchronousRunner$PoolThread-#2" daemon [_thread_blocked, id=3460, stack(0x1a810000,0x1a860000)]
+  0x1916c400 JavaThread "com.mchange.v2.async.ThreadPoolAsynchronousRunner$PoolThread-#1" daemon [_thread_blocked, id=5324, stack(0x195f0000,0x19640000)]
+  0x19145400 JavaThread "com.mchange.v2.async.ThreadPoolAsynchronousRunner$PoolThread-#0" daemon [_thread_blocked, id=4180, stack(0x19290000,0x192e0000)]
+  0x1908e800 JavaThread "Timer-0" daemon [_thread_blocked, id=4720, stack(0x1a740000,0x1a790000)]
+  0x18fd1c00 JavaThread "net.sf.ehcache.CacheManager@978575" daemon [_thread_blocked, id=5108, stack(0x194c0000,0x19510000)]
+  0x18da5800 JavaThread "play-thread-1" [_thread_blocked, id=4976, stack(0x19440000,0x19490000)]
+  0x18ce2800 JavaThread "New I/O  worker #4" [_thread_blocked, id=524, stack(0x18390000,0x183e0000)]
+  0x17b0fc00 JavaThread "New I/O  worker #3" [_thread_blocked, id=1940, stack(0x19350000,0x193a0000)]
+  0x1896a400 JavaThread "New I/O  worker #2" [_thread_blocked, id=3572, stack(0x191d0000,0x19220000)]
+  0x17b0d400 JavaThread "New I/O  worker #1" [_thread_blocked, id=2164, stack(0x17920000,0x17970000)]
+  0x01122800 JavaThread "DestroyJavaVM" [_thread_blocked, id=2172, stack(0x01250000,0x012a0000)]
+  0x18ce5000 JavaThread "New I/O server boss #1 ([id: 0x0103f1ff, /0:0:0:0:0:0:0:0:9000])" [_thread_in_native, id=5992, stack(0x19240000,0x19290000)]
+  0x17acc400 JavaThread "Service Thread" daemon [_thread_blocked, id=4228, stack(0x184e0000,0x18530000)]
+  0x17ac3800 JavaThread "C1 CompilerThread0" daemon [_thread_blocked, id=2124, stack(0x18570000,0x185c0000)]
+  0x17abd800 JavaThread "JDWP Event Helper Thread" daemon [_thread_blocked, id=2864, stack(0x183e0000,0x18430000)]
+  0x17ab6400 JavaThread "JDWP Transport Listener: dt_socket" daemon [_thread_blocked, id=148, stack(0x18470000,0x184c0000)]
+  0x17a8f400 JavaThread "Attach Listener" daemon [_thread_blocked, id=2892, stack(0x17980000,0x179d0000)]
+  0x17a8c000 JavaThread "Signal Dispatcher" daemon [_thread_blocked, id=356, stack(0x17d00000,0x17d50000)]
+  0x17a31c00 JavaThread "Finalizer" daemon [_thread_blocked, id=3368, stack(0x17d60000,0x17db0000)]
+  0x17a30800 JavaThread "Reference Handler" daemon [_thread_blocked, id=2212, stack(0x17c40000,0x17c90000)]
+
+Other Threads:
+=>0x0120b800 VMThread [stack: 0x179e0000,0x17a30000] [id=4444]
+  0x17aeb400 WatcherThread [stack: 0x17cb0000,0x17d00000] [id=2464]
+
+VM state:at safepoint (normal execution)
+
+VM Mutex/Monitor currently owned by a thread:  ([mutex/lock_event])
+[0x0178e1f8] Threads_lock - owner thread: 0x0120b800
+
+Heap
+ def new generation   total 12416K, used 4104K [0x03910000, 0x04680000, 0x08e60000)
+  eden space 11072K,  30% used [0x03910000, 0x03c4ec38, 0x043e0000)
+  from space 1344K,  58% used [0x043e0000, 0x044a3620, 0x04530000)
+  to   space 1344K,   0% used [0x04530000, 0x04530000, 0x04680000)
+ tenured generation   total 27352K, used 19322K [0x08e60000, 0x0a916000, 0x13910000)
+   the space 27352K,  70% used [0x08e60000, 0x0a13ea70, 0x0a13ec00, 0x0a916000)
+ compacting perm gen  total 34560K, used 34559K [0x13910000, 0x15ad0000, 0x17910000)
+   the space 34560K,  99% used [0x13910000, 0x15acfdc0, 0x15acfe00, 0x15ad0000)
+No shared spaces configured.
+
+Card table byte_map: [0x01810000,0x018c0000] byte_map_base: 0x017f3780
+
+Polling page: 0x00170000
+
+Code Cache  [0x01910000, 0x01fe8000, 0x03910000)
+ total_blobs=3072 nmethods=2624 adapters=390 free_code_cache=25780Kb largest_free_block=26393280
+
+Compilation events (10 events):
+Event: 125.351 Thread 0x17ac3800 2674   !         javassist.expr.ExprEditor::doit (213 bytes)
+Event: 125.353 Thread 0x17ac3800 nmethod 2674 0x01fde388 code [0x01fde580, 0x01fdec7c]
+Event: 125.353 Thread 0x17ac3800 2675             javassist.ClassPool::get (35 bytes)
+Event: 125.353 Thread 0x17ac3800 nmethod 2675 0x01fdfbc8 code [0x01fdfcf0, 0x01fdfe54]
+Event: 125.353 Thread 0x17ac3800 2676  s          javassist.ClassPool::get0 (101 bytes)
+Event: 125.353 Thread 0x17ac3800 nmethod 2676 0x01fdff48 code [0x01fe00a0, 0x01fe04bc]
+Event: 125.354 Thread 0x17ac3800 2677             javassist.bytecode.CodeIterator::write (32 bytes)
+Event: 125.354 Thread 0x17ac3800 nmethod 2677 0x01fe0708 code [0x01fe0810, 0x01fe0900]
+Event: 125.354 Thread 0x17ac3800 2678             javassist.bytecode.stackmap.BasicBlock$Maker::makeMarks (713 bytes)
+Event: 125.358 Thread 0x17ac3800 nmethod 2678 0x01fe0a48 code [0x01fe0da0, 0x01fe1ddc]
+
+GC Heap History (10 events):
+Event: 102.217 GC heap before
+{Heap before GC invocations=97 (full 6):
+ def new generation   total 12416K, used 11442K [0x03910000, 0x04680000, 0x08e60000)
+  eden space 11072K, 100% used [0x03910000, 0x043e0000, 0x043e0000)
+  from space 1344K,  27% used [0x04530000, 0x0458cba8, 0x04680000)
+  to   space 1344K,   0% used [0x043e0000, 0x043e0000, 0x04530000)
+ tenured generation   total 27352K, used 18779K [0x08e60000, 0x0a916000, 0x13910000)
+   the space 27352K,  68% used [0x08e60000, 0x0a0b6c18, 0x0a0b6e00, 0x0a916000)
+ compacting perm gen  total 34560K, used 34516K [0x13910000, 0x15ad0000, 0x17910000)
+   the space 34560K,  99% used [0x13910000, 0x15ac52b0, 0x15ac5400, 0x15ad0000)
+No shared spaces configured.
+Event: 102.221 GC heap after
+Heap after GC invocations=98 (full 6):
+ def new generation   total 12416K, used 368K [0x03910000, 0x04680000, 0x08e60000)
+  eden space 11072K,   0% used [0x03910000, 0x03910000, 0x043e0000)
+  from space 1344K,  27% used [0x043e0000, 0x0443c118, 0x04530000)
+  to   space 1344K,   0% used [0x04530000, 0x04530000, 0x04680000)
+ tenured generation   total 27352K, used 18779K [0x08e60000, 0x0a916000, 0x13910000)
+   the space 27352K,  68% used [0x08e60000, 0x0a0b6c18, 0x0a0b6e00, 0x0a916000)
+ compacting perm gen  total 34560K, used 34516K [0x13910000, 0x15ad0000, 0x17910000)
+   the space 34560K,  99% used [0x13910000, 0x15ac52b0, 0x15ac5400, 0x15ad0000)
+No shared spaces configured.
+}
+Event: 113.284 GC heap before
+{Heap before GC invocations=98 (full 6):
+ def new generation   total 12416K, used 11440K [0x03910000, 0x04680000, 0x08e60000)
+  eden space 11072K, 100% used [0x03910000, 0x043e0000, 0x043e0000)
+  from space 1344K,  27% used [0x043e0000, 0x0443c118, 0x04530000)
+  to   space 1344K,   0% used [0x04530000, 0x04530000, 0x04680000)
+ tenured generation   total 27352K, used 18779K [0x08e60000, 0x0a916000, 0x13910000)
+   the space 27352K,  68% used [0x08e60000, 0x0a0b6c18, 0x0a0b6e00, 0x0a916000)
+ compacting perm gen  total 34560K, used 34516K [0x13910000, 0x15ad0000, 0x17910000)
+   the space 34560K,  99% used [0x13910000, 0x15ac52b0, 0x15ac5400, 0x15ad0000)
+No shared spaces configured.
+Event: 113.288 GC heap after
+Heap after GC invocations=99 (full 6):
+ def new generation   total 12416K, used 365K [0x03910000, 0x04680000, 0x08e60000)
+  eden space 11072K,   0% used [0x03910000, 0x03910000, 0x043e0000)
+  from space 1344K,  27% used [0x04530000, 0x0458b518, 0x04680000)
+  to   space 1344K,   0% used [0x043e0000, 0x043e0000, 0x04530000)
+ tenured generation   total 27352K, used 18779K [0x08e60000, 0x0a916000, 0x13910000)
+   the space 27352K,  68% used [0x08e60000, 0x0a0b6c18, 0x0a0b6e00, 0x0a916000)
+ compacting perm gen  total 34560K, used 34516K [0x13910000, 0x15ad0000, 0x17910000)
+   the space 34560K,  99% used [0x13910000, 0x15ac52b0, 0x15ac5400, 0x15ad0000)
+No shared spaces configured.
+}
+Event: 124.286 GC heap before
+{Heap before GC invocations=99 (full 6):
+ def new generation   total 12416K, used 11437K [0x03910000, 0x04680000, 0x08e60000)
+  eden space 11072K, 100% used [0x03910000, 0x043e0000, 0x043e0000)
+  from space 1344K,  27% used [0x04530000, 0x0458b518, 0x04680000)
+  to   space 1344K,   0% used [0x043e0000, 0x043e0000, 0x04530000)
+ tenured generation   total 27352K, used 18779K [0x08e60000, 0x0a916000, 0x13910000)
+   the space 27352K,  68% used [0x08e60000, 0x0a0b6c18, 0x0a0b6e00, 0x0a916000)
+ compacting perm gen  total 34560K, used 34516K [0x13910000, 0x15ad0000, 0x17910000)
+   the space 34560K,  99% used [0x13910000, 0x15ac52b0, 0x15ac5400, 0x15ad0000)
+No shared spaces configured.
+Event: 124.290 GC heap after
+Heap after GC invocations=100 (full 6):
+ def new generation   total 12416K, used 364K [0x03910000, 0x04680000, 0x08e60000)
+  eden space 11072K,   0% used [0x03910000, 0x03910000, 0x043e0000)
+  from space 1344K,  27% used [0x043e0000, 0x0443b250, 0x04530000)
+  to   space 1344K,   0% used [0x04530000, 0x04530000, 0x04680000)
+ tenured generation   total 27352K, used 18779K [0x08e60000, 0x0a916000, 0x13910000)
+   the space 27352K,  68% used [0x08e60000, 0x0a0b6c18, 0x0a0b6e00, 0x0a916000)
+ compacting perm gen  total 34560K, used 34516K [0x13910000, 0x15ad0000, 0x17910000)
+   the space 34560K,  99% used [0x13910000, 0x15ac52b0, 0x15ac5400, 0x15ad0000)
+No shared spaces configured.
+}
+Event: 125.152 GC heap before
+{Heap before GC invocations=100 (full 6):
+ def new generation   total 12416K, used 11436K [0x03910000, 0x04680000, 0x08e60000)
+  eden space 11072K, 100% used [0x03910000, 0x043e0000, 0x043e0000)
+  from space 1344K,  27% used [0x043e0000, 0x0443b250, 0x04530000)
+  to   space 1344K,   0% used [0x04530000, 0x04530000, 0x04680000)
+ tenured generation   total 27352K, used 18779K [0x08e60000, 0x0a916000, 0x13910000)
+   the space 27352K,  68% used [0x08e60000, 0x0a0b6c18, 0x0a0b6e00, 0x0a916000)
+ compacting perm gen  total 34560K, used 34516K [0x13910000, 0x15ad0000, 0x17910000)
+   the space 34560K,  99% used [0x13910000, 0x15ac5350, 0x15ac5400, 0x15ad0000)
+No shared spaces configured.
+Event: 125.157 GC heap after
+Heap after GC invocations=101 (full 6):
+ def new generation   total 12416K, used 1048K [0x03910000, 0x04680000, 0x08e60000)
+  eden space 11072K,   0% used [0x03910000, 0x03910000, 0x043e0000)
+  from space 1344K,  77% used [0x04530000, 0x04636088, 0x04680000)
+  to   space 1344K,   0% used [0x043e0000, 0x043e0000, 0x04530000)
+ tenured generation   total 27352K, used 18779K [0x08e60000, 0x0a916000, 0x13910000)
+   the space 27352K,  68% used [0x08e60000, 0x0a0b6c18, 0x0a0b6e00, 0x0a916000)
+ compacting perm gen  total 34560K, used 34516K [0x13910000, 0x15ad0000, 0x17910000)
+   the space 34560K,  99% used [0x13910000, 0x15ac5350, 0x15ac5400, 0x15ad0000)
+No shared spaces configured.
+}
+Event: 125.313 GC heap before
+{Heap before GC invocations=101 (full 6):
+ def new generation   total 12416K, used 12120K [0x03910000, 0x04680000, 0x08e60000)
+  eden space 11072K, 100% used [0x03910000, 0x043e0000, 0x043e0000)
+  from space 1344K,  77% used [0x04530000, 0x04636088, 0x04680000)
+  to   space 1344K,   0% used [0x043e0000, 0x043e0000, 0x04530000)
+ tenured generation   total 27352K, used 18779K [0x08e60000, 0x0a916000, 0x13910000)
+   the space 27352K,  68% used [0x08e60000, 0x0a0b6c18, 0x0a0b6e00, 0x0a916000)
+ compacting perm gen  total 34560K, used 34533K [0x13910000, 0x15ad0000, 0x17910000)
+   the space 34560K,  99% used [0x13910000, 0x15ac97f0, 0x15ac9800, 0x15ad0000)
+No shared spaces configured.
+Event: 125.319 GC heap after
+Heap after GC invocations=102 (full 6):
+ def new generation   total 12416K, used 781K [0x03910000, 0x04680000, 0x08e60000)
+  eden space 11072K,   0% used [0x03910000, 0x03910000, 0x043e0000)
+  from space 1344K,  58% used [0x043e0000, 0x044a3620, 0x04530000)
+  to   space 1344K,   0% used [0x04530000, 0x04530000, 0x04680000)
+ tenured generation   total 27352K, used 19322K [0x08e60000, 0x0a916000, 0x13910000)
+   the space 27352K,  70% used [0x08e60000, 0x0a13ea70, 0x0a13ec00, 0x0a916000)
+ compacting perm gen  total 34560K, used 34533K [0x13910000, 0x15ad0000, 0x17910000)
+   the space 34560K,  99% used [0x13910000, 0x15ac97f0, 0x15ac9800, 0x15ad0000)
+No shared spaces configured.
+}
+
+Deoptimization events (0 events):
+No events
+
+Internal exceptions (10 events):
+Event: 125.073 Thread 0x18e7ec00 Threw 0x03ccf5f8 at C:\jdk7u1_32P\jdk7u7\hotspot\src\share\vm\prims\jvm.cpp:1166
+Event: 125.077 Thread 0x18e7ec00 Threw 0x03d343d0 at C:\jdk7u1_32P\jdk7u7\hotspot\src\share\vm\prims\jvm.cpp:1166
+Event: 125.077 Thread 0x18e7ec00 Threw 0x03d345e0 at C:\jdk7u1_32P\jdk7u7\hotspot\src\share\vm\prims\jvm.cpp:1166
+Event: 125.077 Thread 0x18e7ec00 Threw 0x03d3c210 at C:\jdk7u1_32P\jdk7u7\hotspot\src\share\vm\prims\jvm.cpp:1166
+Event: 125.077 Thread 0x18e7ec00 Threw 0x03d3c420 at C:\jdk7u1_32P\jdk7u7\hotspot\src\share\vm\prims\jvm.cpp:1166
+Event: 125.144 Thread 0x18e7ec00 Threw 0x043414c8 at C:\jdk7u1_32P\jdk7u7\hotspot\src\share\vm\runtime\sharedRuntime.cpp:613
+Event: 125.197 Thread 0x18e7ec00 Threw 0x03ae0628 at C:\jdk7u1_32P\jdk7u7\hotspot\src\share\vm\prims\jvm.cpp:1166
+Event: 125.197 Thread 0x18e7ec00 Threw 0x03ae0838 at C:\jdk7u1_32P\jdk7u7\hotspot\src\share\vm\prims\jvm.cpp:1166
+Event: 125.200 Thread 0x18e7ec00 Threw 0x03b44658 at C:\jdk7u1_32P\jdk7u7\hotspot\src\share\vm\prims\jvm.cpp:1166
+Event: 125.200 Thread 0x18e7ec00 Threw 0x03b44868 at C:\jdk7u1_32P\jdk7u7\hotspot\src\share\vm\prims\jvm.cpp:1166
+
+Events (10 events):
+Event: 125.577 Executing VM operation: ChangeBreakpoints done
+Event: 125.584 Executing VM operation: EnterInterpOnlyMode
+Event: 125.584 Executing VM operation: EnterInterpOnlyMode done
+Event: 125.584 Executing VM operation: GetCurrentLocation
+Event: 125.584 Executing VM operation: GetCurrentLocation done
+Event: 125.584 Executing VM operation: ChangeSingleStep
+Event: 125.584 Executing VM operation: ChangeSingleStep done
+Event: 125.584 Executing VM operation: ChangeSingleStep
+Event: 125.584 Executing VM operation: ChangeSingleStep done
+Event: 125.658 Executing VM operation: GetOrSetLocal
+
+
+Dynamic libraries:
+0x01300000 - 0x0132f000 	C:\Program Files\Java\jre7\bin\javaw.exe
+0x775d0000 - 0x7770c000 	C:\Windows\SYSTEM32\ntdll.dll
+0x75a60000 - 0x75b34000 	C:\Windows\system32\kernel32.dll
+0x75a10000 - 0x75a5a000 	C:\Windows\system32\KERNELBASE.dll
+0x77390000 - 0x77430000 	C:\Windows\system32\ADVAPI32.dll
+0x75c60000 - 0x75d0c000 	C:\Windows\system32\msvcrt.dll
+0x761e0000 - 0x761f9000 	C:\Windows\SYSTEM32\sechost.dll
+0x75da0000 - 0x75e41000 	C:\Windows\system32\RPCRT4.dll
+0x772c0000 - 0x77389000 	C:\Windows\system32\USER32.dll
+0x76620000 - 0x7666e000 	C:\Windows\system32\GDI32.dll
+0x77720000 - 0x7772a000 	C:\Windows\system32\LPK.dll
+0x76140000 - 0x761dd000 	C:\Windows\system32\USP10.dll
+0x747a0000 - 0x7493e000 	C:\Windows\WinSxS\x86_microsoft.windows.common-controls_6595b64144ccf1df_6.0.7600.16661_none_420fe3fa2b8113bd\COMCTL32.dll
+0x75ed0000 - 0x75f27000 	C:\Windows\system32\SHLWAPI.dll
+0x75f30000 - 0x75f4f000 	C:\Windows\system32\IMM32.DLL
+0x76430000 - 0x764fc000 	C:\Windows\system32\MSCTF.dll
+0x626b0000 - 0x6276e000 	C:\Program Files\Java\jre7\bin\msvcr100.dll
+0x57e90000 - 0x581dc000 	C:\Program Files\Java\jre7\bin\client\jvm.dll
+0x71420000 - 0x71427000 	C:\Windows\system32\WSOCK32.dll
+0x77730000 - 0x77765000 	C:\Windows\system32\WS2_32.dll
+0x76420000 - 0x76426000 	C:\Windows\system32\NSI.dll
+0x73ba0000 - 0x73bd2000 	C:\Windows\system32\WINMM.dll
+0x75fd0000 - 0x75fd5000 	C:\Windows\system32\PSAPI.DLL
+0x73780000 - 0x7378c000 	C:\Program Files\Java\jre7\bin\verify.dll
+0x69400000 - 0x69420000 	C:\Program Files\Java\jre7\bin\java.dll
+0x67b00000 - 0x67b2a000 	C:\Program Files\Java\jre7\bin\jdwp.dll
+0x683d0000 - 0x683f0000 	C:\Program Files\Java\jre7\bin\instrument.dll
+0x73d80000 - 0x73d87000 	C:\Program Files\Java\jre7\bin\npt.dll
+0x67ae0000 - 0x67af3000 	C:\Program Files\Java\jre7\bin\zip.dll
+0x73770000 - 0x73778000 	C:\Program Files\Java\jre7\bin\dt_socket.dll
+0x35670000 - 0x35675000 	C:\Windows\system32\mswsock.dll
+0x751d0000 - 0x7520c000 	\\.\globalroot\systemroot\system32\mswsock.dll
+0x75190000 - 0x751a5000 	C:\Windows\system32\Cabinet.dll
+0x75b40000 - 0x75c51000 	C:\Windows\system32\urlmon.dll
+0x75fe0000 - 0x7613c000 	C:\Windows\system32\ole32.dll
+0x75d10000 - 0x75d9f000 	C:\Windows\system32\OLEAUT32.dll
+0x76200000 - 0x763b8000 	C:\Windows\system32\iertutil.dll
+0x76500000 - 0x7661b000 	C:\Windows\system32\WININET.dll
+0x77710000 - 0x77713000 	C:\Windows\system32\Normaliz.dll
+0x76670000 - 0x772b9000 	C:\Windows\system32\SHELL32.dll
+0x75650000 - 0x75658000 	C:\Windows\system32\Secur32.dll
+0x75670000 - 0x7568a000 	C:\Windows\system32\SSPICLI.DLL
+0x758a0000 - 0x759be000 	C:\Windows\system32\CRYPT32.dll
+0x757d0000 - 0x757dc000 	C:\Windows\system32\MSASN1.dll
+0x759e0000 - 0x75a0d000 	C:\Windows\system32\WINTRUST.dll
+0x74cd0000 - 0x74cd5000 	C:\Windows\System32\wshtcpip.dll
+0x67d00000 - 0x67d14000 	C:\Program Files\Java\jre7\bin\net.dll
+0x751c0000 - 0x751c6000 	C:\Windows\System32\wship6.dll
+0x70300000 - 0x7030f000 	C:\Program Files\Java\jre7\bin\nio.dll
+0x75210000 - 0x75226000 	C:\Windows\system32\CRYPTSP.dll
+0x74f80000 - 0x74fbb000 	C:\Windows\system32\rsaenh.dll
+0x74da0000 - 0x74db7000 	C:\Windows\system32\USERENV.dll
+0x75760000 - 0x7576b000 	C:\Windows\system32\profapi.dll
+0x756e0000 - 0x756ec000 	C:\Windows\system32\CRYPTBASE.dll
+0x75060000 - 0x750a4000 	C:\Windows\system32\DNSAPI.dll
+0x70670000 - 0x70678000 	C:\Windows\System32\winrnr.dll
+0x70660000 - 0x70670000 	C:\Windows\system32\napinsp.dll
+0x70640000 - 0x70652000 	C:\Windows\system32\pnrpnsp.dll
+0x716b0000 - 0x716d1000 	C:\Program Files\Bonjour\mdnsNSP.dll
+0x73580000 - 0x7359c000 	C:\Windows\system32\Iphlpapi.DLL
+0x73570000 - 0x73577000 	C:\Windows\system32\WINNSI.DLL
+0x716a0000 - 0x716a6000 	C:\Windows\system32\rasadhlp.dll
+0x730b0000 - 0x730e8000 	C:\Windows\System32\fwpuclnt.dll
+0x69360000 - 0x6936a000 	C:\Program Files\Java\jre7\bin\management.dll
+0x73470000 - 0x73482000 	C:\Windows\system32\dhcpcsvc.DLL
+0x72de0000 - 0x72ded000 	C:\Windows\system32\dhcpcsvc6.DLL
+0x69320000 - 0x69326000 	C:\Program Files\Java\jre7\bin\rmi.dll
+0x67ac0000 - 0x67ae0000 	C:\Program Files\Java\jre7\bin\sunec.dll
+0x706e0000 - 0x707cb000 	C:\Windows\system32\dbghelp.dll
+
+VM Arguments:
+jvm_args: -Xdebug -Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=n -Dplay.debug=yes -Dplay.id= -Dapplication.path=C:\desktop\is\projeler\Workspace\tsg\tsg -Djava.endorsed.dirs=C:\desktop\is\programlar\play-1.2.5/framework/endorsed -javaagent:C:\desktop\is\programlar\play-1.2.5/framework/play-1.2.5.jar -Dfile.encoding=UTF-8 
+java_command: play.server.Server
+Launcher Type: SUN_STANDARD
+
+Environment Variables:
+JAVA_HOME=C:\Program Files\Java\jdk1.6.0_22
+CLASSPATH=.;C:\Program Files\QuickTime\QTSystem\QTJava.zip;C:\Users\mush\Desktop\Workspace\TestGUI\external
+PATH=C:/Program Files/Java/jdk1.6.0_22/bin/../jre/bin/client;C:/Program Files/Java/jdk1.6.0_22/bin/../jre/bin;C:/Program Files/Java/jdk1.6.0_22/bin/../jre/lib/i386;C:\desktop\is\programlar\play-1.2.5;C:\Program Files\Java\jdk1.6.0_22\bin;C:\php\;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files\QuickTime\QTSystem\;C:\CMake 2.8\bin;C:\MinGW\bin;C:\OpenCV2.0\bin;C:\Program Files\MySQL\MySQL Server 5.1\bin;C:\MinGW\bin;C:\desktop\is\programlar\apache-maven-3.0.4-bin\apache-maven-3.0.4\bin;;C:\desktop\eclipse;
+USERNAME=cagdas
+OS=Windows_NT
+PROCESSOR_IDENTIFIER=x86 Family 6 Model 23 Stepping 6, GenuineIntel
+
+
+
+---------------  S Y S T E M  ---------------
+
+OS: Windows 7 Build 7600 
+
+CPU:total 2 (2 cores per cpu, 1 threads per core) family 6 model 23 stepping 6, cmov, cx8, fxsr, mmx, sse, sse2, sse3, ssse3, sse4.1, tsc
+
+Memory: 4k page, physical 3667944k(1198632k free), swap 7334124k(4241468k free)
+
+vm_info: Java HotSpot(TM) Client VM (23.3-b01) for windows-x86 JRE (1.7.0_07-b11), built on Sep  7 2012 01:40:56 by "java_re" with unknown MS VC++:1600
+
+time: Thu Jan 24 14:17:07 2013
+elapsed time: 125 seconds
+

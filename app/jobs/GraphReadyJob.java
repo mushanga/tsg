@@ -1,6 +1,7 @@
 package jobs;
 
 import exception.NoAvailableTokenException;
+import exception.UserDoesNotExistException;
 import exception.UserProtectedException;
 import graph.GraphDatabase;
 import graph.IMGraphDatabase;
@@ -66,9 +67,12 @@ public class GraphReadyJob extends GraphJobBase {
 		
 	}
 		
-	protected void fillLinksAndNodesForUserSet(UserGraph ug, List<Long> graphContentIdList,List<User> visibleUsers, List<String> visibleLinks, HashMap<Long, Integer> userIncomingCountMap ){
+	protected void fillLinksAndNodesForUserSet(UserGraph ug, List<Long> graphContentIdList,List<User> visibleUsers, List<String> visibleLinks, HashMap<Long, Integer> userIncomingCountMap ) throws UserDoesNotExistException{
 
-	   User user = UserLookup.getUser(ug.ownerId);
+	   User user;
+    
+         user = UserLookup.getUser(ug.ownerId);
+      
       Set<User> visibleUserSet = new HashSet();
       Set<String> visibleLinkSet = new HashSet();
       
@@ -80,26 +84,28 @@ public class GraphReadyJob extends GraphJobBase {
 	      if(following==ug.ownerId){
 	         continue;
 	      }
+	      
+	      try {
+            visibleUserSet.add(UserLookup.getUser(following));
+         } catch (UserDoesNotExistException e) {
+            Logger.info(e.getMessage());
+            continue;
+         }
 	      Set<Long> friendsOfFollowing = GraphDatabase.getMutualFriendsIncluding(following,graphContentIdList);
-//	      if(!friendsOfFollowing.contains(ug.ownerId)){
-//
-//	         boolean added = visibleLinkSet.add(ug.ownerId+"-"+following);
-//
-//	         if(added){
-//	            if(userIncomingCountMap.get(following) == null){
-//	               userIncomingCountMap.put(following, 0);
-//	            }
-//	            userIncomingCountMap.put(following, userIncomingCountMap.get(following)+1);
-//	         }
-
-	      visibleUserSet.add(UserLookup.getUser(following));
+	      
+	     
 	      if(userIncomingCountMap.get(following) == null){
 	         userIncomingCountMap.put(following, 0);
 	      }
-
-//	      }
 	      for (Long friendOfFollowing : friendsOfFollowing) {
 
+            try {
+               visibleUserSet.add(UserLookup.getUser(friendOfFollowing));
+               visibleUserSet.add(UserLookup.getUser(following));
+            } catch (UserDoesNotExistException e) {
+               Logger.error(e, e.getMessage());
+               continue;
+            }
 	         boolean added = visibleLinkSet.add(friendOfFollowing+"-"+following);
 	         if(added){
 	            userIncomingCountMap.put(following, userIncomingCountMap.get(following)+1);
@@ -113,8 +119,6 @@ public class GraphReadyJob extends GraphJobBase {
 	         }
 
 
-	         visibleUserSet.add(UserLookup.getUser(friendOfFollowing));
-	         visibleUserSet.add(UserLookup.getUser(following));
 	      }
 	   }
 	   List<User> usersList = new ArrayList<User>(visibleUserSet);
@@ -140,8 +144,11 @@ public class GraphReadyJob extends GraphJobBase {
       
 	}
 
-	public void createGraphForUser(UserGraph ug, boolean temp) {
-	   User user = UserLookup.getUser(ug.ownerId);
+	public void createGraphForUser(UserGraph ug, boolean temp) throws UserDoesNotExistException {
+	   User user;
+     
+         user = UserLookup.getUser(ug.ownerId);
+     
 	   Logger.info("Creating"+((temp)?" temp":"")+" graph for user: "+ user.screenName);
 
 	   List<String> visibleLinks = new ArrayList<String>();

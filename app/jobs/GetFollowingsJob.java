@@ -1,6 +1,7 @@
 package jobs;
 
 import exception.NoAvailableTokenException;
+import exception.UserDoesNotExistException;
 import exception.UserProtectedException;
 import graph.GraphDatabase;
 import graph.IMGraphDatabase;
@@ -90,9 +91,12 @@ public class GetFollowingsJob extends GraphJobBase {
 			Logger.error(e, e.getMessage());
 
 		} catch (UserProtectedException e) {
-			fl.setStatusProtected();
-			Logger.info(e.getMessage());
-		}
+         fl.setStatusProtected();
+         Logger.info(e.getMessage());
+      } catch (UserDoesNotExistException e) {
+         fl.setStatusError();
+         Logger.info(e.getMessage());
+      }
 
 		catch (Exception e1) {
 			fl.setStatusWaiting();

@@ -104,14 +104,18 @@ public class FollowingList extends TSGModel {
 	}
 
    public boolean isCompleted(){
-      return SUCCESSFUL.equalsIgnoreCase(this.status) || PROTECTED.equalsIgnoreCase(this.status);
+      return SUCCESSFUL.equalsIgnoreCase(this.status) || PROTECTED.equalsIgnoreCase(this.status)|| ERROR.equalsIgnoreCase(this.status);
    }
    public boolean isSuccessful(){
       return this.status.equals(SUCCESSFUL);
    }
-	public boolean isWaiting(){
-		return this.status.equals(WAITING);
-	}
+   public boolean isWaiting(){
+      return this.status.equals(WAITING);
+   }
+
+   public boolean isError(){
+      return this.status.equals(ERROR);
+   }
 
 	private void setStatus(String status) {
 		this.status = status;
@@ -119,15 +123,13 @@ public class FollowingList extends TSGModel {
 		
 	}
 	
+   public void setStatusInProgress() {
+      setStatus(IN_PROGRESS);
+   }
 
-
-	public void setStatusInProgress() {
-		setStatus(IN_PROGRESS);
-	}
-
-	public void setStatusCompleted() {
-		setStatus(COMPLETED);
-	}
+   public void setStatusError() {
+      setStatus(ERROR);
+   }
 
    public void setStatusSuccessful() {
       setStatus(SUCCESSFUL);
@@ -140,33 +142,5 @@ public class FollowingList extends TSGModel {
 		setStatus(WAITING);	
 	}
 	
-//	public List<Long> getTargetIds(){
-//		List<Long> ids = new ArrayList<Long>();
-//		for(Link link : links){
-//			ids.add(link.trgId);
-//		}
-//		
-//		return ids;
-//	}
-//
-//	public void addLink(Link link){
-//		if(!this.links.contains(link)){
-//			this.links.add(link);
-//		}
-//		
-//	}
-//	public void addLinks(Link link){
-//		if(!this.links.contains(link)){
-//			this.links.add(link);
-//		}
-//		
-//	}
-//	public void addLinks(Set<Long> targets){
-//		
-//		if(!this.links.addAll(link)){
-//			this.links.add(link);
-//		}
-//		
-//	}
 	
 }

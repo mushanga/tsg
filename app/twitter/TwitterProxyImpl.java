@@ -28,6 +28,7 @@ import com.google.gson.reflect.TypeToken;
 
 import exception.NoAvailableTokenException;
 import exception.TSGException;
+import exception.UserDoesNotExistException;
 import exception.UserProtectedException;
 
 public class TwitterProxyImpl implements TwitterProxy {
@@ -59,7 +60,7 @@ public class TwitterProxyImpl implements TwitterProxy {
 		twitter.setOAuthConsumer(OAuthSettings.getConsumerKey(), OAuthSettings.getConsumerSecret());
 		twitter.setOAuthAccessToken(new AccessToken(token.accessToken, token.accessTokenSecret));
 	}
-	public TwitterProxyImpl() throws TSGException {
+	public TwitterProxyImpl() throws NoAvailableTokenException {
 		
 		twitter = new TwitterFactory().getInstance();
 		twitter.setOAuthConsumer(Play.configuration.getProperty("twitstreetConsumerKey"), Play.configuration.getProperty("twitstreetConsumerSecret"));
@@ -70,7 +71,7 @@ public class TwitterProxyImpl implements TwitterProxy {
 	
 
 	@Override
-	public List<Long> getFollowingIds(Long id) throws NoAvailableTokenException, UserProtectedException  {
+	public List<Long> getFollowingIds(Long id) throws NoAvailableTokenException, UserProtectedException, UserDoesNotExistException  {
 		ArrayList<Long> followingList = new ArrayList<Long>();
 		try {
 			for (Long friendId : twitter.getFriendsIDs(id, -1).getIDs()) {
@@ -78,7 +79,10 @@ public class TwitterProxyImpl implements TwitterProxy {
 			}
 		} catch (TwitterException e1) {
 			
-			boolean repeat = handleTwitterException(e1, id);
+			boolean repeat = false;
+       
+         repeat = handleTwitterException(e1, new String[]{"getFollowingIds",String.valueOf(id)});
+         
 			if(repeat){
 				getFollowingIds(id);
 			}else{
@@ -89,7 +93,7 @@ public class TwitterProxyImpl implements TwitterProxy {
 	}
 
 	@Override
-	public User getUser(Long userId) throws NoAvailableTokenException  {
+	public User getUserById(Long userId) throws NoAvailableTokenException, UserDoesNotExistException  {
 		User user = null;
 		try {
 			twitter4j.User twuser = twitter.showUser(userId);
@@ -98,12 +102,12 @@ public class TwitterProxyImpl implements TwitterProxy {
 			
 			boolean repeat = false;
 			try {
-				repeat = handleTwitterException(e1);
+				repeat = handleTwitterException(e1,new String[]{"getUserById",String.valueOf(userId)});
 			} catch (UserProtectedException e) {
 				Logger.error(e, "This method shouldn't have given 'user protected' error!\n"+e.getMessage());
 			}
 			if(repeat){
-				user = getUser(userId);
+				user = getUserById(userId);
 			}
 		} catch (Exception e1) {
 			Logger.error(e1, e1.getMessage());
@@ -114,7 +118,7 @@ public class TwitterProxyImpl implements TwitterProxy {
 	
 
 	@Override
-	public User getUser(String screenName) throws NoAvailableTokenException  {
+	public User getUserByScreenName(String screenName) throws NoAvailableTokenException, UserDoesNotExistException  {
 		User user = null;
 		try {
 			twitter4j.User twuser = twitter.showUser(screenName);
@@ -123,12 +127,12 @@ public class TwitterProxyImpl implements TwitterProxy {
 			
 			boolean repeat = false;
 			try {
-				repeat = handleTwitterException(e1);
+				repeat = handleTwitterException(e1,new String[]{"getUserByScreenName",screenName});
 			} catch (UserProtectedException e) {
 				Logger.error(e, "This method shouldn't have given 'user protected' error!\n"+e.getMessage());
-			}
+			} 
 			if(repeat){
-				user = getUser(screenName);
+				user = getUserByScreenName(screenName);
 			}
 		} catch (Exception e1) {
 			Logger.error(e1, e1.getMessage());
@@ -169,10 +173,12 @@ public class TwitterProxyImpl implements TwitterProxy {
 				
 				boolean repeat = false;
 				try {
-					repeat = handleTwitterException(e1);
+					repeat = handleTwitterException(e1,new String[]{"getUsers",getParametersAsString(idList)});
 				} catch (UserProtectedException e) {
 					Logger.error(e, "This method shouldn't have given 'user protected' error!\n"+e.getMessage());
-				}
+				} catch (UserDoesNotExistException e) {
+               Logger.error(e.getMessage());
+            }
 				if(repeat){
 					users = getUsers(idList);
 				}
@@ -239,10 +245,35 @@ public class TwitterProxyImpl implements TwitterProxy {
 
 		}
 	}
-	
-	private boolean handleTwitterException(TwitterException e1,  long ownerOfFollowingList) throws NoAvailableTokenException, UserProtectedException {
-		boolean repeat = false;		
 
+   private String getParametersAsString(String[] params){
+      String ret = "";
+      if(params!=null){
+         for(String param: params){
+            ret = ret+","+param;
+         }
+      }
+      if(ret.length()>200){
+         ret = ret.substring(0,200);
+      }
+      return ret;
+   }
+   private String getParametersAsString(List<Long> params){
+      String ret = "";
+      if(params!=null){
+         for(Long param: params){
+            ret = ret+","+param;
+         }
+      }
+      if(ret.length()>200){
+         ret = ret.substring(0,200);
+      }
+      return ret;
+   }
+	
+	private boolean handleTwitterException(TwitterException e1,  String[] parameters) throws NoAvailableTokenException, UserProtectedException, UserDoesNotExistException {
+		boolean repeat = false;		
+		String paramStr = getParametersAsString(parameters);
 		if (e1.exceededRateLimitation()) {
 			token.setRateLimited(e1.getRateLimitStatus().getResetTimeInSeconds());
 			Logger.info("Rate limited: "+token.ownerScreenName);
@@ -258,7 +289,8 @@ public class TwitterProxyImpl implements TwitterProxy {
 			repeat = true;			
 			findAvailableToken();
 		} else if (e1.getMessage().contains("Not authorized")) {
-			throw new UserProtectedException(ownerOfFollowingList);
+		
+			throw new UserProtectedException(paramStr);
 		} else if (e1.getMessage().contains("connect timed out")) {
          Logger.info("Connect timed out: " + token.ownerScreenName);
          repeat = true;    
@@ -267,7 +299,21 @@ public class TwitterProxyImpl implements TwitterProxy {
          Logger.info("Read-only application cannot POST: " + token.ownerScreenName);
          repeat = true;    
          findAvailableToken();
-      } else {
+      } 
+      else if (e1.getMessage().contains("such as a user, does not exists")) {
+         Logger.info("Something wrong with the user : " + paramStr);
+         if(parameters[0].equalsIgnoreCase("getUserById")){
+         try{
+            throw new UserDoesNotExistException(Long.valueOf(parameters[1]));
+         }catch(NumberFormatException ex){
+            Logger.info("NumberFormatException : " + parameters[1]);
+         }
+            
+         }else{
+            throw new UserDoesNotExistException(parameters[1]);
+         }
+      }
+      else {
 			Logger.info("UNKNOWN ERROR: " + token.ownerScreenName);
 			Logger.error(e1.getMessage(), e1);
 
@@ -275,14 +321,19 @@ public class TwitterProxyImpl implements TwitterProxy {
 		return repeat;
 	}
 	
-	private boolean handleTwitterException(TwitterException e1) throws NoAvailableTokenException, UserProtectedException {
-		return handleTwitterException(e1, -1);
+	private boolean handleTwitterException(TwitterException e1) throws NoAvailableTokenException, UserProtectedException, UserDoesNotExistException {
+		return handleTwitterException(e1, null);
 
 	}
 	public List<User> searchUserThroughTwitter(String query) throws NoAvailableTokenException {
 	   List<User> users = new ArrayList<User>();
 
-	   User exactMatch = UserLookup.getUser(query);
+	   User exactMatch = null;
+      try {
+         exactMatch = UserLookup.getUser(query);
+      } catch (UserDoesNotExistException e3) {
+         
+      }
 	   if(exactMatch!=null){
 	      users.add(exactMatch);
 	   }
@@ -294,10 +345,12 @@ public class TwitterProxyImpl implements TwitterProxy {
 
 	      boolean repeat = false;
 	      try {
-	         repeat = handleTwitterException(e);
+	         repeat = handleTwitterException(e,new String[]{"searchUserThroughTwitter",query});
 	      } catch (UserProtectedException e1) {
 	         Logger.error(e1, "This method shouldn't have given 'user protected' error!\n"+e1.getMessage());
-	      }
+	      } catch (UserDoesNotExistException e2) {
+            Logger.info(e2.getMessage());
+         }
 	      if(repeat){
 	         users = searchUserThroughTwitter(query);
 	      }

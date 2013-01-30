@@ -14,6 +14,7 @@ import twitter.TwitterProxy;
 import twitter.TwitterProxyFactory;
 import exception.NoAvailableTokenException;
 import exception.TSGException;
+import exception.UserDoesNotExistException;
 import exception.UserProtectedException;
 
 public class UserLookup {
@@ -22,14 +23,14 @@ public class UserLookup {
 	private static int MEM = 0;
 	private static int DB = 1;
 	private static int TWITTER = 2;
-	public static User getUser(String screenName) {
+	public static User getUser(String screenName) throws UserDoesNotExistException {
 		return getUser(screenName, TWITTER);
 	}
-	public static User getUser(long id) {
+	public static User getUser(long id) throws UserDoesNotExistException {
 		return getUser(id, TWITTER);
 	}
 	
-	private static User getUser(long id, int maxDepth) {
+	private static User getUser(long id, int maxDepth) throws UserDoesNotExistException {
 	    User user = Cache.get("user_id_" + id, User.class);
 	    if(user == null && maxDepth> MEM) {
 	        user = User.findByTwitterId(Long.valueOf(id));
@@ -37,7 +38,7 @@ public class UserLookup {
 	        	TwitterProxy twitter;
 				try {
 					twitter = TwitterProxyFactory.defaultInstance();
-					user = twitter.getUser(Long.valueOf(id));
+					user = twitter.getUserById(Long.valueOf(id));
 					user.save();
 					
 				} catch (NumberFormatException e) {
@@ -46,9 +47,7 @@ public class UserLookup {
 					Logger.error(e, e.getMessage());
 				} catch (UserProtectedException e) {
 					Logger.error(e, e.getMessage());
-				} catch (TSGException e) {
-					Logger.error(e, e.getMessage());
-				}
+				} 
 	        }
 	        if(user!=null){
 		        Cache.set("user_id_" + id, user, "30mn");	        	
@@ -57,7 +56,7 @@ public class UserLookup {
 	 
 		return user;
 	}
-	public static User getUser(String screenName, int maxDepth) {
+	public static User getUser(String screenName, int maxDepth) throws UserDoesNotExistException {
 		screenName = screenName.toLowerCase();
 		screenName = screenName.replace(" ", "");
 	    User user = Cache.get("user_name_" + screenName, User.class);
@@ -67,7 +66,7 @@ public class UserLookup {
 	        	TwitterProxy twitter;
 				try {
 					twitter = TwitterProxyFactory.defaultInstance();
-					user = twitter.getUser(screenName);
+					user = twitter.getUserByScreenName(screenName);
 					if(user!=null){
 	               user.save();
 					   
@@ -79,11 +78,7 @@ public class UserLookup {
 					Logger.error(e, e.getMessage());
 				} catch (UserProtectedException e) {
 					Logger.error(e, e.getMessage());
-				} catch (TSGException e) {
-               Logger.error(e, e.getMessage());
-            } catch (Exception e) {
-               Logger.error(e, e.getMessage());
-            }
+				} 
 	        }
 	        if(user!=null){
 		        Cache.set("user_name_" + screenName, user, "30mn");	        	
@@ -99,7 +94,12 @@ public class UserLookup {
 	   Set<User> users = new HashSet<User>();
 	   for(Long userId : userIdList){
 
-		   User user = getUser(userId,DB);
+		   User user = null;
+         try {
+            user = getUser(userId,DB);
+         } catch (UserDoesNotExistException e) {
+            Logger.error(e, e.getMessage());
+         }
 		   if(user==null){
 			   missingUserIds.add(userId);
 		   }else{

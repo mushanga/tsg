@@ -43,6 +43,7 @@ import com.google.gson.reflect.TypeToken;
 
 import exception.NoAvailableTokenException;
 import exception.TSGException;
+import exception.UserDoesNotExistException;
 import exception.UserProtectedException;
 
 @With({ Auth.class })
@@ -266,7 +267,9 @@ public class Application extends Controller {
 			Logger.error(e, e.getMessage());
 		} catch (UserProtectedException e) {
 			Logger.error(e, e.getMessage());
-		}
+		} catch (UserDoesNotExistException e) {
+         Logger.error(e, e.getMessage());
+      }
 		if(Util.isListValid(followings) && followings.size()>=50){
 		   followings = followings.subList(0, 50);
 //			int i = 0;
@@ -312,14 +315,17 @@ public class Application extends Controller {
 	}
    public static void user(String screenName) {
      
-      User user = UserLookup.getUser(screenName);
-      if(user==null){
-         try{
+      User user = null;
+      try {
+         user = UserLookup.getUser(screenName);
+      } catch (UserDoesNotExistException e) {
+         try {
             user = TwitterProxyFactory.defaultInstance().searchUser(screenName).get(0);
-         }catch(Exception ex){
-            
+         } catch (NoAvailableTokenException e1) {
+            Logger.error(e1, e1.getMessage());
          }
       }
+  
       render(user);
    }
 

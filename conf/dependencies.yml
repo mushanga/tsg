@@ -13,3 +13,4 @@ require:
     - mysql -> mysql-connector-java 5.1.18
     - commons-io -> commons-io 2.3 
     - net.sf.jung -> jung-graph-impl 2.0.1
+    - play -> betterlogs 1.0

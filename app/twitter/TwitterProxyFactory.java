@@ -1,6 +1,7 @@
 package twitter;
 
 import play.Logger;
+import exception.NoAvailableTokenException;
 import exception.TSGException;
 import models.User;
 
@@ -15,7 +16,7 @@ public class TwitterProxyFactory {
 	public static TwitterProxy newInstance(Long tokenOwnerId) throws TSGException{
 		return new TwitterProxyImpl(tokenOwnerId);
 	}
-	public static TwitterProxy defaultInstance() throws TSGException{
+	public static TwitterProxy defaultInstance() throws NoAvailableTokenException{
 		return  new TwitterProxyImpl();
 	}
 }
