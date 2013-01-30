@@ -13,7 +13,7 @@ var Graph = GraphDataMgr.extend({
 		this._super();
 		 $("#slider").slider({value:50});
 		this.centerNodeId = -1;
-		this.clickedImageId : -1,
+		this.clickedImageId = -1,
 		this.uLinks = [];
 		this.dLinks = [];
 		this.cliques = [];
