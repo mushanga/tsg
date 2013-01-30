@@ -88,7 +88,6 @@ var GraphDataMgr = Class.extend({
 		this.nodeIncomingMap = {};
         this.nodeOutgoingMap = {};
 		
-		this.update();
 	},
 	addLink : function (sourceId, targetId) {
 

@@ -102,7 +102,6 @@ function getUserGraph(id){
 			ginfo.activeUserId = data.ownerId;
 			
 
-			graph.centerNodeId = data.ownerId;
 				
 			ginfo.page = data.page;
 			
@@ -132,7 +131,10 @@ function getUserGraph(id){
 					$("#slider").show();
 				}
 			}
-		
+			
+			
+			graph.centerNodeId = data.ownerId;
+			
 			for ( var i = 0; i < data.users.length; i++) {
 				
 				var newNode = data.users[i];

@@ -17,7 +17,8 @@ var Graph = GraphDataMgr.extend({
 		this.uLinks = [];
 		this.dLinks = [];
 		this.cliques = [];
-		
+
+		this.update();
 	},
 	init : function (el) {
 		
