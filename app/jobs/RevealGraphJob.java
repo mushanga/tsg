@@ -86,7 +86,7 @@ public class RevealGraphJob extends GraphJobBase {
                graph.total = followingIdSet.size();
                if(graph.completed==graph.total){
                   graph.setStatusReadyToConstruct();
-                  Logger.info(ownerId+" has 0 followings...");
+                  Logger.info(ownerId+" has "+graph.completed+" followings...");
                   return;
                }
             } 

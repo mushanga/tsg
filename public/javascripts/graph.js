@@ -62,33 +62,33 @@ var Graph = GraphDataMgr.extend({
 				var clique = thisObj.cliques[i];
 				if(clique.indexOf(d.source.id)>-1 &&
 						clique.indexOf(d.target.id)>-1 ){
-					return 200;
+					return 100;
 				}
 				
 			}
 			var revLink = thisObj.getLinkBySrcTrgId(d.target.id,d.source.id);
 			if(thisObj.uLinks.indexOf(d)>-1 || thisObj.uLinks.indexOf(revLink)>-1){
-				return 200;
+				return 100;
 			}	else{
-				return 300;
+				return 150;
 			}
 		})
-		.linkStrength(function(d){
-			for(var i in thisObj.cliques){
-				var clique = thisObj.cliques[i];
-				if(clique.indexOf(d.source.id)>-1 &&
-						clique.indexOf(d.target.id)>-1 ){
-					return 0.5;
-				}
-				
-			}
-			var revLink = thisObj.getLinkBySrcTrgId(d.target.id,d.source.id);
-			if(thisObj.uLinks.indexOf(d)>-1 || thisObj.uLinks.indexOf(revLink)>-1){
-				return 0.5;
-			}	else{
-				return 1;
-			}
-		})
+//		.linkStrength(function(d){
+//			for(var i in thisObj.cliques){
+//				var clique = thisObj.cliques[i];
+//				if(clique.indexOf(d.source.id)>-1 &&
+//						clique.indexOf(d.target.id)>-1 ){
+//					return 0.5;
+//				}
+//				
+//			}
+//			var revLink = thisObj.getLinkBySrcTrgId(d.target.id,d.source.id);
+//			if(thisObj.uLinks.indexOf(d)>-1 || thisObj.uLinks.indexOf(revLink)>-1){
+//				return 0.5;
+//			}	else{
+//				return 1;
+//			}
+//		})
 //		.gravity(0.03);
 //		.charge(function(d){
 //			if(d.id == thisObj.centerNodeId){
@@ -427,16 +427,7 @@ var Graph = GraphDataMgr.extend({
 	},
 	tick : function() {
 		var thisObj = this;
-		this.pth.attr("d", this.getPositionOfLink);
-		this.dpth.attr("d", this.getPositionOfLink);
-
-		this.txt.attr("transform", function(d) {
-			return "translate(" + d.x + "," + d.y + ")";
-		});
-
-
 	
-		
 		var rootNode = this.activeNodes[0];
 		if(rootNode){	
 
@@ -478,7 +469,16 @@ var Graph = GraphDataMgr.extend({
 
 		}
 	
+		this.pth.attr("d", this.getPositionOfLink);
+		this.dpth.attr("d", this.getPositionOfLink);
 
+		this.txt.attr("transform", function(d) {
+			return "translate(" + d.x + "," + d.y + ")";
+		});
+
+
+	
+		
 		this.images.attr("transform", function(d) {
 			d.x = Math.max(d.radius, Math.min(thisObj.w - d.radius, d.x));
 			d.y = Math.max(d.radius, Math.min(thisObj.thirdViewBottomLeft.y - d.radius, d.y)); 
