@@ -83,16 +83,21 @@ public class RevealGraphJob extends GraphJobBase {
 
             if(fl.isSuccessful()) {
                followingIdSet = GraphDatabase.getFollowings(ownerId);	
-             
+               graph.total = followingIdSet.size();
+               if(graph.completed==graph.total){
+                  graph.setStatusReadyToConstruct();
+                  Logger.info(ownerId+" has 0 followings...");
+                  return;
+               }
             } 
         
             if (fl.isProtected()) {
                graph.setStatusProtected();
                return;
             }
-            if(Util.isSetValid(followingIdSet)&& graph.total==0 && graph.total != followingIdSet.size()){
-               graph.total = followingIdSet.size();
-            }
+//            if(Util.isSetValid(followingIdSet)&& graph.total==0 && graph.total != followingIdSet.size()){
+//          
+//            }
 
             int completed = 0;
 
@@ -100,13 +105,6 @@ public class RevealGraphJob extends GraphJobBase {
                for (Long followingId : followingIdSet) {
 
                   FollowingList ffl = FollowingList.getByOwnerId(followingId);
-
-                  //					if (ffl.isWaiting()) {
-                  //						ffl.setStatusInProgress();
-                  //						GetFollowingsJob gfj = new GetFollowingsJob(ffl.ownerId);
-                  //						gfj.now();
-                  //						
-                  //					}
                   if(ffl.isCompleted()){
                      completed++;
                      if(completed>graph.completed){
@@ -122,10 +120,10 @@ public class RevealGraphJob extends GraphJobBase {
             Logger.error(e.getMessage(),e);
             graph.setStatusWaiting();
          }
-
-         if(Util.isValid(followingIdSet)&& (graph.completed==0 || graph.completed<graph.total)){
+//
+//         if(Util.isValid(followingIdSet)&& (graph.completed==0 || graph.completed<graph.total)){
             graph.setStatusWaiting();
-         }
+//         }
       }finally{
 
          graph.save();

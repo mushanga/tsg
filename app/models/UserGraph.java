@@ -77,14 +77,15 @@ public class UserGraph extends TSGModel {
 	public static String WAITING = "Waiting...";
 	public static String IN_PROGRESS = "In Progress...";
 	public static String ERROR = "Error";
+   public static String READY_TO_CONSTRUCT = "Ready to Construct";
    public static String CONTRUCTING = "Constructing...";
    public static String PROTECTED = "Protected";
    public static String SUCCESSFUL = "Successful";
    public static String COMPLETED = "Completed";
 
 	public static UserGraph getReadyToBeFinalized(){
-		return UserGraph.find("select ug from UserGraph ug,FollowingList fl where " +
-				" completed = total and fl.ownerId = ug.ownerId and fl.status=? and ug.status = ?",FollowingList.SUCCESSFUL, IN_PROGRESS).first();
+		return UserGraph.find("select ug from UserGraph ug where " +
+				" ug.status = ?", READY_TO_CONSTRUCT).first();
 	}
    public static UserGraph getWaiting(){
       return UserGraph.find("byStatus", WAITING).first();
@@ -106,6 +107,10 @@ public class UserGraph extends TSGModel {
 		return UserGraph.find("byOwnerId", ownerId).first();
 	}
 
+   public boolean isReadyToConstruct(){
+      return this.status.equals(READY_TO_CONSTRUCT);
+   }
+
    public boolean isProtected(){
       return this.status.equals(PROTECTED);
    }
@@ -120,9 +125,12 @@ public class UserGraph extends TSGModel {
 	}
 
 
-	public void setStatusInProgress() {
-		setStatus(IN_PROGRESS);
-	}
+   public void setStatusReadyToConstruct() {
+      setStatus(READY_TO_CONSTRUCT);
+   }
+   public void setStatusInProgress() {
+      setStatus(IN_PROGRESS);
+   }
 
 //   public void setStatusCompleted() {
 //      setStatus(COMPLETED);
