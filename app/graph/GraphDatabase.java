@@ -50,8 +50,8 @@ public class GraphDatabase {
 		// let the server endpoint be on a custom port
 //      config.configuration().setProperty(
 //            Configurator.WEBSERVER_PORT_PROPERTY_KEY, 7575);
-      config.configuration().setProperty(
-            Configurator.WEBSERVER_ADDRESS_PROPERTY_KEY, "0.0.0.0");
+//      config.configuration().setProperty(
+//            Configurator.WEBSERVER_ADDRESS_PROPERTY_KEY, "0.0.0.0");
 
 		
 		srv = new WrappingNeoServerBootstrapper(graphDatabase, config);
