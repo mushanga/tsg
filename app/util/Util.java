@@ -5,6 +5,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -60,6 +62,18 @@ public class Util {
       }
       return idListStr;
    }
+
+//   public static synchronized long startTimer(){
+//      long startTime = new Date().getTime();
+//      
+//      return idListStr;
+//   }
+//
+//   public static long getDiff(){
+//      long startTime = new Date().getTime();
+//      
+//      return idListStr;
+//   }
 
 	
 	

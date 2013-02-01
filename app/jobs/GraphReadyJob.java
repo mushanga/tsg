@@ -134,7 +134,7 @@ public class GraphReadyJob extends GraphJobBase {
 	}
 	
 	protected List<Long> getUserListForGraph(UserGraph ug, boolean temp){
-	   
+	
       List<Long> idList = new ArrayList<Long>(GraphDatabase.getFollowings(ug.ownerId));
       idList.add(0, ug.ownerId);
 //      if(temp && idList.size()>50){
@@ -145,6 +145,9 @@ public class GraphReadyJob extends GraphJobBase {
 	}
 
 	public void createGraphForUser(UserGraph ug, boolean temp) throws UserDoesNotExistException {
+	   
+	   
+	   
 	   User user;
      
          user = UserLookup.getUser(ug.ownerId);
@@ -154,17 +157,23 @@ public class GraphReadyJob extends GraphJobBase {
 	   List<String> visibleLinks = new ArrayList<String>();
 	   List<User> visibleUsers = new ArrayList<User>();
 
-
+	   Logger.info("getUserListForGraph for user "+ug.ownerId);
 	   List<Long> graphIdList = getUserListForGraph(ug, temp);
 
       HashMap<Long, Integer> userIncomingCountMap = new HashMap<Long, Integer>();
 
+
+      Logger.info("fillLinksAndNodesForUserSet for user "+ug.ownerId);
 	   fillLinksAndNodesForUserSet(ug, graphIdList, visibleUsers, visibleLinks,userIncomingCountMap);
 
+      Logger.info("normalizeAndGetSizeCoefficient for user "+ug.ownerId);
 	   HashMap<Long, Double> userNodeSizeMap = normalizeAndGetSizeCoefficient(userIncomingCountMap);
 	   
 	   
 	   Gson gson = new GsonBuilder().setPrettyPrinting().create();
+	   
+	   Logger.info("paginateLinks for user "+ug.ownerId);
+      
 	   List<ClientGraph> graphs = paginateLinks(ug, 50, visibleLinks, visibleUsers,userNodeSizeMap);
 
 
