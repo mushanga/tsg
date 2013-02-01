@@ -16,4 +16,5 @@ rm $TSG_PROD/README.md
 rm $TSG_PROD/build.sh
 cd $TSG_PROD
 $PLAY deps --sync
+$PLAY mvn:update
 $PLAY start -Dpidfile.path=$TCOMMERCE_PROD/server.pid --%prod
