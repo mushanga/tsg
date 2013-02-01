@@ -6,4 +6,4 @@ TSG_PROD=/home/tsg/tsg_prod
 
 cd $TSG_PROD
 $PLAY stop $TSG_PROD
-$PLAY start $TSG_PROD
+$PLAY start -Dpidfile.path=$TCOMMERCE_PROD/server.pid --%prod
