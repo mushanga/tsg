@@ -72,8 +72,9 @@ public class GraphReadyJob extends GraphJobBase {
 	   User user;
     
          user = UserLookup.getUser(ug.ownerId);
-      
-      Set<User> visibleUserSet = new HashSet();
+
+         Set<User> visibleUserSet = new HashSet();
+         Set<Long> visibleUserIdSet = new HashSet();
       Set<String> visibleLinkSet = new HashSet();
       
 	   visibleUserSet.add(user);
@@ -84,7 +85,7 @@ public class GraphReadyJob extends GraphJobBase {
 	      if(following==ug.ownerId){
 	         continue;
 	      }
-	      
+//	      visibleUserIdSet.add(following);
 	      try {
             visibleUserSet.add(UserLookup.getUser(following));
          } catch (UserDoesNotExistException e) {
@@ -164,18 +165,33 @@ public class GraphReadyJob extends GraphJobBase {
 
 
       Logger.info("fillLinksAndNodesForUserSet for user "+ug.ownerId);
-	   fillLinksAndNodesForUserSet(ug, graphIdList, visibleUsers, visibleLinks,userIncomingCountMap);
+      LinksUtil linksUtil = GraphDatabase.getAllNodesAndLinksForUserGraph(ug.ownerId);
+//	   fillLinksAndNodesForUserSet(ug, graphIdList, visibleUsers, visibleLinks,userIncomingCountMap);
 
-      Logger.info("normalizeAndGetSizeCoefficient for user "+ug.ownerId);
-	   HashMap<Long, Double> userNodeSizeMap = normalizeAndGetSizeCoefficient(userIncomingCountMap);
+//      Logger.info("normalizeAndGetSizeCoefficient for user "+ug.ownerId);
+//	   HashMap<Long, Double> userNodeSizeMap = normalizeAndGetSizeCoefficient(userIncomingCountMap);
 	   
 	   
-	   Gson gson = new GsonBuilder().setPrettyPrinting().create();
-	   
-	   Logger.info("paginateLinks for user "+ug.ownerId);
+//      
+
+      Gson gson = new GsonBuilder().setPrettyPrinting().create();
       
-	   List<ClientGraph> graphs = paginateLinks(ug, 50, visibleLinks, visibleUsers,userNodeSizeMap);
+      Logger.info("paginateLinks for user "+ug.ownerId);
+      
+      
+	   List<Long> idList = new ArrayList<Long>();
+	   
+	   for(String idStr : linksUtil.nodesList){
+	      idList.add(Long.valueOf(idStr));
+	   }
+	   idList.remove(ug.ownerId);
+	   idList.add(0, ug.ownerId);
+	   
+	   List<User> users = UserLookup.getUsers(idList);
+	   List<ClientGraph> graphs = paginateLinks(ug, 50, linksUtil.linksList, users);
+	   
 
+//	   List<ClientGraph> graphs = paginateLinks(ug, 50, visibleLinks, visibleUsers);
 
 	   for(ClientGraph cg : graphs){
 	      if(temp){
@@ -215,7 +231,7 @@ public class GraphReadyJob extends GraphJobBase {
 	   
 	   return userNodeSizeMap;
 	}
-	protected List<ClientGraph> paginateLinks(UserGraph ug, int recPerPage,List<String> visibleLinks, List<User> users, HashMap<Long, Double> userNodeSizeMap){
+	protected List<ClientGraph> paginateLinks(UserGraph ug, int recPerPage,List<String> visibleLinks, List<User> users){
 	    int total = ug.total;
 	    int completed= ug.completed;
 	   Long ownerId = ug.ownerId;
@@ -239,7 +255,7 @@ public class GraphReadyJob extends GraphJobBase {
 			User user = users.get(i);
 			ids.add(String.valueOf(user.twitterId));
          cg.users.add(user);
-         cg.userNodeSizeMap.put(user.twitterId,userNodeSizeMap.get(user.twitterId));
+//         cg.userNodeSizeMap.put(user.twitterId,userNodeSizeMap.get(user.twitterId));
 			
 		}
 		

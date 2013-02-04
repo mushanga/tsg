@@ -34,10 +34,24 @@ public class LinksUtil extends ArrayList<String> {
       this.linksSet = links;
       process();
    }
-   public LinksUtil(List<String> visibleLinks) {
+   public LinksUtil(List<String> links) {
 
       super();
-      this.linksSet = new HashSet<String>(visibleLinks);
+      this.linksSet = new HashSet<String>(links);
+      process();
+   }
+   public LinksUtil(List<Long> startIds, List<Long> endIds) {
+
+      super();
+      this.linksSet = new HashSet<String>();
+      for(int i = 0; i< startIds.size(); i++){
+         Long startId = startIds.get(i);
+         Long endId = endIds.get(i);
+         String link = startId+"-"+endId;
+         this.linksSet.add(link);
+      }
+      
+      
       process();
    }
    
@@ -140,6 +154,7 @@ for(int i = 0; i<undirectedLinksList.size();i++){
             }
          }
       }
+      nodesList.addAll(nodesSet);
 
    }
 

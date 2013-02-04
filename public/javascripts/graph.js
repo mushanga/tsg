@@ -62,17 +62,18 @@ var Graph = GraphDataMgr.extend({
 				var clique = thisObj.cliques[i];
 				if(clique.indexOf(d.source.id)>-1 &&
 						clique.indexOf(d.target.id)>-1 ){
-					return 100;
+					return 150;
 				}
 				
 			}
 			var revLink = thisObj.getLinkBySrcTrgId(d.target.id,d.source.id);
 			if(thisObj.uLinks.indexOf(d)>-1 || thisObj.uLinks.indexOf(revLink)>-1){
-				return 100;
-			}	else{
 				return 150;
+			}	else{
+				return 225;
 			}
 		})
+//		.linkStrength(0.05)
 //		.linkStrength(function(d){
 //			for(var i in thisObj.cliques){
 //				var clique = thisObj.cliques[i];
@@ -388,7 +389,7 @@ var Graph = GraphDataMgr.extend({
 		
 		function getDescription(d){
 			//return d.screen_name+" (Following: "+d.friends_count+", Followed by: "+d.followers_count+")";
-			return '@'+d.screenName+' ('+d.fullName+')';
+			return '@'+d.screenName+' ('+d.fullName+') '+d.id;
 		}
 		
 		this.txt = this.textGroup.selectAll("g").data(this.activeNodes, function(d) { 
