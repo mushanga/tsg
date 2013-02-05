@@ -12,7 +12,7 @@ rect {
 path.link {
   fill: none;
 /*   //stroke: #666; */
-  stroke: #008000;
+  stroke: rgba(92, 166, 170, 0.2);
   stroke-width: 1.5px;
 /*   stroke-dasharray: 0,2 1; */
 }
@@ -39,11 +39,11 @@ path.dlink {
 /* } */
 
 marker#licensing {
-  fill: green;
+  fill: #9AE4E8;
 }
 
 path.link.licensing {
-  stroke: green;
+  stroke: #9AE4E8;
 }
 
 .directed{

@@ -146,53 +146,17 @@ public class GraphReadyJob extends GraphJobBase {
 	}
 
 	public void createGraphForUser(UserGraph ug, boolean temp) throws UserDoesNotExistException {
-	   
-	   
-	   
-	   User user;
-     
-         user = UserLookup.getUser(ug.ownerId);
+	   User user = UserLookup.getUser(ug.ownerId);
      
 	   Logger.info("Creating"+((temp)?" temp":"")+" graph for user: "+ user.screenName);
-
-	   List<String> visibleLinks = new ArrayList<String>();
-	   List<User> visibleUsers = new ArrayList<User>();
-
-	   Logger.info("getUserListForGraph for user "+ug.ownerId);
-	   List<Long> graphIdList = getUserListForGraph(ug, temp);
-
-      HashMap<Long, Integer> userIncomingCountMap = new HashMap<Long, Integer>();
-
-
+	   
       Logger.info("fillLinksAndNodesForUserSet for user "+ug.ownerId);
-      LinksUtil linksUtil = GraphDatabase.getAllNodesAndLinksForUserGraph(ug.ownerId);
-//	   fillLinksAndNodesForUserSet(ug, graphIdList, visibleUsers, visibleLinks,userIncomingCountMap);
-
-//      Logger.info("normalizeAndGetSizeCoefficient for user "+ug.ownerId);
-//	   HashMap<Long, Double> userNodeSizeMap = normalizeAndGetSizeCoefficient(userIncomingCountMap);
+      UserGraphUtil ugUtil = GraphDatabase.getAllNodesAndLinksForUserGraph(ug.ownerId);
+     
+      Logger.info("paginateLinks for user "+ug.ownerId); 
+	   List<ClientGraph> graphs = paginateLinks(ug, 50, ugUtil);
 	   
-	   
-//      
-
-      Gson gson = new GsonBuilder().setPrettyPrinting().create();
-      
-      Logger.info("paginateLinks for user "+ug.ownerId);
-      
-      
-	   List<Long> idList = new ArrayList<Long>();
-	   
-	   for(String idStr : linksUtil.nodesList){
-	      idList.add(Long.valueOf(idStr));
-	   }
-	   idList.remove(ug.ownerId);
-	   idList.add(0, ug.ownerId);
-	   
-	   List<User> users = UserLookup.getUsers(idList);
-	   List<ClientGraph> graphs = paginateLinks(ug, 50, linksUtil.linksList, users);
-	   
-
-//	   List<ClientGraph> graphs = paginateLinks(ug, 50, visibleLinks, visibleUsers);
-
+	   Gson gson = new GsonBuilder().setPrettyPrinting().create();      
 	   for(ClientGraph cg : graphs){
 	      if(temp){
 	         cg.needsReload = true;
@@ -207,37 +171,13 @@ public class GraphReadyJob extends GraphJobBase {
 	   Logger.info("Created"+((temp)?" temp":"")+" graph for user: "+ user.screenName);
 
 	}
-	
-	public HashMap<Long, Double> normalizeAndGetSizeCoefficient( HashMap<Long, Integer> userIncomingCountMap){
-	   
-	   HashMap<Long, Double> userNodeSizeMap = new HashMap<Long, Double>();
-	   int max = 0;
-	   for(Long userId: userIncomingCountMap.keySet()){
-	      Integer incomingCount = userIncomingCountMap.get(userId);
-	      if(incomingCount>max){
-	         max = incomingCount;
-	      }     
-	   }
-	   
 
-      for(Long userId: userIncomingCountMap.keySet()){
-         Integer incomingCount = userIncomingCountMap.get(userId);
-         Double coefficient = Double.valueOf(incomingCount) / (double) max;
-         if(coefficient.isNaN()){
-            coefficient = 0D;
-         }
-         userNodeSizeMap.put(userId, coefficient);
-      }
-	   
-	   return userNodeSizeMap;
-	}
-	protected List<ClientGraph> paginateLinks(UserGraph ug, int recPerPage,List<String> visibleLinks, List<User> users){
+	protected List<ClientGraph> paginateLinks(UserGraph ug, int recPerPage,UserGraphUtil lu){
 	    int total = ug.total;
 	    int completed= ug.completed;
-	   Long ownerId = ug.ownerId;
-	   LinksUtil lu = new LinksUtil(visibleLinks);
+      
+      List<User> users = UserLookup.getUsers(lu.nodesList);
 	   List<HashSet<Long>> cliques = lu.findMaxCliques();
-
 
 		List<String> ids = new ArrayList<String>();
 		
@@ -255,12 +195,12 @@ public class GraphReadyJob extends GraphJobBase {
 			User user = users.get(i);
 			ids.add(String.valueOf(user.twitterId));
          cg.users.add(user);
-//         cg.userNodeSizeMap.put(user.twitterId,userNodeSizeMap.get(user.twitterId));
+         cg.userNodeSizeMap.put(user.twitterId,lu.userNodeSizeMap.get(user.twitterId));
 			
 		}
 		
 		
-		for(String link : visibleLinks){
+		for(String link : lu.linksList){
 			String srcId = link.split("-")[0];
 			String trgId = link.split("-")[1];
 			int nthUser = Math.max(ids.indexOf(srcId), ids.indexOf(trgId));

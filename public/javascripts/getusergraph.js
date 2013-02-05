@@ -132,7 +132,7 @@ function getUserGraph(id){
 				}
 			}
 			
-			
+			graph.addNodeSizeMap(data.userNodeSizeMap);
 			graph.centerNodeId = data.ownerId;
 			
 			for ( var i = 0; i < data.users.length; i++) {
@@ -148,7 +148,7 @@ function getUserGraph(id){
 
 			}
 			graph.addLinks(data.links);
-			graph.cliques = data.cliques;
+//			graph.cliques = data.cliques;
 			var val = parseInt((data.completed/data.total)*100);
 	
 			graph.update();

@@ -9,7 +9,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import jobs.LinksUtil;
+import jobs.GraphUtil;
+import jobs.UserGraphUtil;
 
 import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.cypher.javacompat.ExecutionResult;
@@ -96,7 +97,7 @@ public class GraphDatabase {
    public static void main(String[] args){
       
       startGraphDatabase();
-      LinksUtil lin = getAllNodesAndLinksForUserGraph(73930194);
+      GraphUtil lin = getAllNodesAndLinksForUserGraph(73930194);
       int a = 0;
       a++;
       
@@ -148,7 +149,7 @@ public class GraphDatabase {
       
    }
    private static ArrayList<Relationship> executeAndGetRels(String query, Map<String, Object> params){
-      LinksUtil liut = null;
+      GraphUtil liut = null;
       ArrayList<Relationship> relationships = new ArrayList<Relationship>();
       try {
          ExecutionEngine engine = new ExecutionEngine( graphDatabase );
@@ -177,15 +178,16 @@ public class GraphDatabase {
       }
       return relationships;
    }
-   public static LinksUtil getAllNodesAndLinksForUserGraph(long userId) {
-       Set<Long> followings = getFollowings(userId);
+   public static UserGraphUtil getAllNodesAndLinksForUserGraph(long userId) {
+      Set<Long> followings = getFollowings(userId);
       Set<Long> followingNodeIds = getFollowingNodeIds(userId); 
-
+//       Long rootNodeId = getNodeIdByUserId(userId);
+//      followingNodeIds.add(rootNodeId);
       List<Relationship> relationships = new ArrayList<Relationship>();
 
       Set<String> links = new HashSet<String>();
       
-    
+   
       Set<Relationship> relsOfRoot = getRelationships(userId, Direction.BOTH, new ArrayList<Long>(followings), null);
       
       if(Util.isValid(relsOfRoot)){
@@ -212,11 +214,11 @@ public class GraphDatabase {
          links.add(rel.getStartNode().getProperty(USER_ID).toString()+"-"+rel.getEndNode().getProperty(USER_ID).toString());    
       }
       
-      LinksUtil liut = new LinksUtil(links);
+      UserGraphUtil liut = new UserGraphUtil(userId, links);
 
       return liut;
    }
-   public static LinksUtil getRelsOfUserInSet(long userId, Set<Long> userIdList) {
+   public static GraphUtil getRelsOfUserInSet(long userId, Set<Long> userIdList) {
       Set<Long> processSet = getFollowingNodeIds(userId); 
 
       List<Relationship> relationships = new ArrayList<Relationship>();
@@ -245,7 +247,7 @@ public class GraphDatabase {
          links.add(rel.getStartNode().getProperty(USER_ID).toString()+"-"+rel.getEndNode().getProperty(USER_ID).toString());    
       }
       
-      LinksUtil liut = new LinksUtil(links);
+      GraphUtil liut = new GraphUtil(links);
 
       return liut;
    }

@@ -7,6 +7,13 @@ var GraphDataMgr = Class.extend({
 		this.nodeIncomingMap = {};
 		this.nodeOutgoingMap = {};
   },
+  clear : function () {
+	  this.nodes.length = 0;
+	  this.links.length = 0;
+	  this.nodeIncomingMap = {};
+	  this.nodeOutgoingMap = {};
+
+  },
   addNode : function (obj) {
 		
 		var existing = this.getNodeById(obj.id);
@@ -82,13 +89,6 @@ var GraphDataMgr = Class.extend({
 		}
 		
 	},
-	clear : function () {
-		this.nodes.length = 0;
-		this.links.length = 0;
-		this.nodeIncomingMap = {};
-        this.nodeOutgoingMap = {};
-		
-	},
 	addLink : function (sourceId, targetId) {
 
 		if (!this.getLinkBySrcTrgId(sourceId, targetId)) {
@@ -120,7 +120,7 @@ var GraphDataMgr = Class.extend({
 			}
 		}	
 	},
-	getLinkBySrcTrgId : function(srcId,trgId) {
+	getLinkBySrcTrgId : function getLinkBySrcTrgId(srcId,trgId) {
 		for (var i in this.links) {
 			if (this.links[i].source["id"] === srcId && this.links[i].target["id"] === trgId){
 				return this.links[i];
@@ -164,6 +164,11 @@ var GraphDataMgr = Class.extend({
 	getMutualLinks : function(id1) {
 
 		return intersect(this.nodeIncomingMap[id1], this.nodeOutgoingMap[id1]);
+	},
+	intersectMutualLinksOfNodes : function(id1,id2) {
+		var mls1 = this.getMutualLinks(id1);
+		var mls2 = this.getMutualLinks(id2);
+		return intersect(mls1, mls2);
 	},
 	findNodeIndex : function(id) {
 		for (var i in this.nodes) {if (this.nodes[i]["id"] === id) return i};

@@ -1,6 +1,6 @@
 
-		var imageHeight = 32;
-		var imageWidth = 32;
+		var imageHeight = 25;
+		var imageWidth = 25;
 var Graph = GraphDataMgr.extend({
 	uLinks : [],
 	dLinks : [],
@@ -8,15 +8,19 @@ var Graph = GraphDataMgr.extend({
 	clickedImageId : -1,
 	centerNodeId : -1,
 	cliques : [],	
+	nodeSizeMap : {},	
+	imageHeight : 32,	
+	imageWidth : 32,	
 	clear : function () {
 		
 		this._super();
 		 $("#slider").slider({value:50});
 		this.centerNodeId = -1;
 		this.clickedImageId = -1,
-		this.uLinks = [];
-		this.dLinks = [];
-		this.cliques = [];
+		this.uLinks.length=0;
+		this.dLinks.length=0;
+		this.cliques.length=0;
+		this.nodeSizeMap = {};	
 
 		this.update();
 	},
@@ -26,9 +30,6 @@ var Graph = GraphDataMgr.extend({
 		this._super();
 		 $("#slider").slider({value:50});
 		var thisObj  = this;
-		this.nodes.length = 0;
-		this.links.length = 0;
-		this.nodeIncomingMap = {};
 		
 		
 		// set up the D3 visualisation in the specified element
@@ -57,23 +58,15 @@ var Graph = GraphDataMgr.extend({
 
 		this.force = d3.layout.force()
 		.size([this.w, this.h])
+		.gravity(0.1)
 		.linkDistance(function(d){
-			for(var i in thisObj.cliques){
-				var clique = thisObj.cliques[i];
-				if(clique.indexOf(d.source.id)>-1 &&
-						clique.indexOf(d.target.id)>-1 ){
-					return 150;
-				}
-				
-			}
-			var revLink = thisObj.getLinkBySrcTrgId(d.target.id,d.source.id);
-			if(thisObj.uLinks.indexOf(d)>-1 || thisObj.uLinks.indexOf(revLink)>-1){
-				return 150;
-			}	else{
-				return 225;
-			}
+			
+			var src = d.source.id;
+			var trg = d.target.id;
+			return 30 + (thisObj.nodeSizeMap[src]+thisObj.nodeSizeMap[trg])/2
 		})
-//		.linkStrength(0.05)
+		.linkStrength(0.2)
+//		.friction(0.1)
 //		.linkStrength(function(d){
 //			for(var i in thisObj.cliques){
 //				var clique = thisObj.cliques[i];
@@ -90,7 +83,6 @@ var Graph = GraphDataMgr.extend({
 //				return 1;
 //			}
 //		})
-//		.gravity(0.03);
 //		.charge(function(d){
 //			if(d.id == thisObj.centerNodeId){
 //				return -800;
@@ -98,7 +90,6 @@ var Graph = GraphDataMgr.extend({
 //				return -200
 //			}
 //		})
-//		.friction(0.1)
 		
 
 		this.vis = d3.select(el).append("svg:svg")
@@ -127,21 +118,24 @@ var Graph = GraphDataMgr.extend({
 		.attr("orient", "auto")
 		.append("svg:path")
 		.attr("d", "M0,-5L10,0L0,5");
-
-	   
+		
 		this.pathGroup = this.vis.append("svg:g");
 		this.circleGroup = this.vis.append("svg:g");
 
+		this.bgGroup = this.vis.append("svg:g");
 		this.textGroup = this.vis.append("svg:g");
 
 		this.visibleNodes = this.force.nodes();
 		this.visibleLinks = this.force.links();
 
-		
-		
 		this.update();
-		
-		
+	},
+	addNodeSizeMap : function addNodeSizeMap(pnodeSizeMap){
+
+		var keys=		Object.keys(pnodeSizeMap);
+		for(var key in keys ){				
+			this.nodeSizeMap[keys[key]]= parseInt((pnodeSizeMap[keys[key]]*imageHeight)+imageHeight);
+		}
 	},
 	addAll : function(from,to){
 
@@ -161,9 +155,7 @@ var Graph = GraphDataMgr.extend({
 			}
 		}
 	},
-	separateLinks : function(visibleLinks){
-		
-
+	separateLinks : function separateLinks(visibleLinks){
 		this.uLinks.length = 0;
 		this.dLinks.length = 0;
 		for(var i in visibleLinks){
@@ -177,13 +169,13 @@ var Graph = GraphDataMgr.extend({
 				}
 			}
 			else{
-				this.dLinks.push(ln);
+//				this.dLinks.push(ln);
 			}
 		}
 
 
 	},
-	getVisibleLinks : function(visibleLinks,visibleNodes){
+	getVisibleLinks : function getVisibleLinks(visibleLinks,visibleNodes){
 		
 		var visibleNodeIds = [];
 		
@@ -196,7 +188,9 @@ var Graph = GraphDataMgr.extend({
 			var link = this.links[i];
 			
 			if(visibleNodeIds.indexOf(link.source.id)>-1 && visibleNodeIds.indexOf(link.target.id)>-1){
-				visibleLinks.push(link);
+				if(this.getLinkBySrcTrgId(link.target.id,link.source.id)){
+					visibleLinks.push(link);
+				}
 			}
 		}
 		return visibleLinks;
@@ -231,7 +225,7 @@ var Graph = GraphDataMgr.extend({
 		this.separateLinks(this.visibleLinks);
 		
 		this.force.charge(function(d){
-			return -500;
+			return -300;
 		})
 		
 		var roundedRects= this.circleGroup.selectAll("rect")
@@ -240,54 +234,24 @@ var Graph = GraphDataMgr.extend({
 		var roundedRectsEnter = roundedRects.enter();
 		var defs = roundedRectsEnter.append("defs");
 		defs.append("svg:rect")
-	    .style("fill","none")
-	    .style("stroke",function(d){
-			for(var i in thisObj.cliques){
-				var clique = thisObj.cliques[i];
-				if(clique.indexOf(d.id)>-1 ){
-					return "black";
-					//return cliqueColor[i];
-				}
-				
-			}
-			return "black"
-		})
+	    .style("fill","black")
+	    .style("stroke","black")
 	    .style("stroke-width","3")
 	    .attr("id",function(d) { return 'image-clip-'+d.id;})	 
 	    .attr("x", function(d) {
-	    	if (d.id == thisObj.centerNodeId) {
-				return - imageWidth;
-			} else {
-				return -(thisObj.nodeIncomingMap[d.id].length + imageWidth)/2;				
-			}
+				return - thisObj.nodeSizeMap[d.id]/2;
 		})
 	    .attr("y",function(d) {
-	    	if (d.id == thisObj.centerNodeId) {
-				return -imageHeight;
-			} else {
-				return -(thisObj.nodeIncomingMap[d.id].length  + imageHeight)/2;				
-			}
+	    	return - thisObj.nodeSizeMap[d.id]/2;
 		})
 	    .attr("width", function(d) {
-	    	if (d.id == thisObj.centerNodeId) {
-				return 2 * imageWidth;
-			} else {
-				return thisObj.nodeIncomingMap[d.id].length + imageWidth;				
-			}
+	    	return thisObj.nodeSizeMap[d.id];
 		})
 		.attr("height", function(d) {
-			if (d.id == thisObj.centerNodeId) {
-				return 2 * imageHeight
-			} else {
-				return thisObj.nodeIncomingMap[d.id].length + imageHeight;
-			}
+			return thisObj.nodeSizeMap[d.id];
 		})		
 	    .attr("rx", function(d) {
-			if (d.id == thisObj.centerNodeId) {
-				return imageHeight
-			} else {
-				return (thisObj.nodeIncomingMap[d.id].length  + imageHeight)/2;
-			}
+	    	return thisObj.nodeSizeMap[d.id]/2;
 		});
 		
 		roundedRects.exit().remove();
@@ -322,46 +286,27 @@ var Graph = GraphDataMgr.extend({
 		imagesEnterg.append("use")
 	    .attr("xlink:href", function(d) { return '#image-clip-'+d.id;})
 	    .attr("stroke","black")
-	    .attr("stroke-width","3")
+	    .attr("stroke-width","6")
 	    
 		imagesEnterg.append("image")
-		.style("border-color","black").style("border-width","5px")
+//		.style("border-color","black").style("border-width","5px")
 		.attr("clip-path",function(d) { return 'url(#image-clip-path-'+d.id+')';})
 		.attr("xlink:href", function(d) { return d.picture;})
-		.attr("x", function(d) {
-			if (d.id == thisObj.centerNodeId) {
-				return - imageWidth;
-			} else {
-				return -(thisObj.nodeIncomingMap[d.id].length + imageWidth)/2;				
-			}
+		 .attr("x", function(d) {
+				return - thisObj.nodeSizeMap[d.id]/2;
 		})
-		.attr("y",function(d) {
-			if (d.id == thisObj.centerNodeId) {
-				return -imageHeight;
-			} else {
-				return -(thisObj.nodeIncomingMap[d.id].length  + imageHeight)/2;				
-			}
-		})
+	    .attr("y",function(d) {
+	    	return - thisObj.nodeSizeMap[d.id]/2;
+		})  
 		.attr("width", function(d) {
-			if (d.id == thisObj.centerNodeId) {
-				d.radius =  imageWidth;
-				return 2*d.radius;
-			} else {
-				d.radius =   (thisObj.nodeIncomingMap[d.id].length + imageWidth)/2;
-				return 2*d.radius; 			
-			}
+			d.radius =  (thisObj.nodeSizeMap[d.id]*2)/3;
+	    	return thisObj.nodeSizeMap[d.id];
 		})
 		.attr("height", function(d) {
-			if (d.id == thisObj.centerNodeId) {
-				d.radius = imageHeight
-				return  2 *d.radius 
-			} else {
-				d.radius = (thisObj.nodeIncomingMap[d.id].length + imageHeight)/2;
-				return 2*d.radius;
-			}
+			d.radius =  (thisObj.nodeSizeMap[d.id]*2)/3;
+	    	return thisObj.nodeSizeMap[d.id];
 		});
-
-
+		
 		if(this.centerNodeId>0){
 
 			var rootNode = this.getNodeById(this.centerNodeId);
@@ -378,17 +323,17 @@ var Graph = GraphDataMgr.extend({
 		this.pth.enter().append("svg:path")
 		.attr("class", function(d) { return "link " + "suit"; })
 		
-		this.dpth = this.pathGroup.selectAll(".dlink")
-		.data(this.dLinks, function(d) { return d.source.id + "-" + d.target.id; });
-
-		this.dpth.exit().remove();
-		this.dpth.enter().append("svg:path")
-		.attr("class", function(d) { return "dlink " + "directed"; })
-		.attr("marker-end", function(d) { return "url(#" +  "suit" + ")"; });
+//		this.dpth = this.pathGroup.selectAll(".dlink")
+//		.data(this.dLinks, function(d) { return d.source.id + "-" + d.target.id; });
+//
+//		this.dpth.exit().remove();
+//		this.dpth.enter().append("svg:path")
+//		.attr("class", function(d) { return "dlink " + "directed"; })
+//		.attr("marker-end", function(d) { return "url(#" +  "suit" + ")"; });
 		
 		
 		function getDescription(d){
-			//return d.screen_name+" (Following: "+d.friends_count+", Followed by: "+d.followers_count+")";
+			
 			return '@'+d.screenName+' ('+d.fullName+') '+d.id;
 		}
 		
@@ -471,15 +416,12 @@ var Graph = GraphDataMgr.extend({
 		}
 	
 		this.pth.attr("d", this.getPositionOfLink);
-		this.dpth.attr("d", this.getPositionOfLink);
+//		this.dpth.attr("d", this.getPositionOfLink);
 
 		this.txt.attr("transform", function(d) {
 			return "translate(" + d.x + "," + d.y + ")";
 		});
 
-
-	
-		
 		this.images.attr("transform", function(d) {
 			d.x = Math.max(d.radius, Math.min(thisObj.w - d.radius, d.x));
 			d.y = Math.max(d.radius, Math.min(thisObj.thirdViewBottomLeft.y - d.radius, d.y)); 
@@ -492,12 +434,12 @@ var Graph = GraphDataMgr.extend({
 		var thisObj = this;
 		if(id == this.clickedImageId){
 			this.circleGroup.selectAll("g").each(function(d,i){
-				this.style.visibility = "visible";
+//				this.style.visibility = "visible";
 				this.style.display = "block";
 			
 			});
 			this.pathGroup.selectAll("path").each(function(d,i){
-				this.style.visibility = "visible";
+//				this.style.visibility = "visible";
 				this.style.display = "block";
 			
 			});
@@ -509,11 +451,11 @@ var Graph = GraphDataMgr.extend({
 			this.clickedImageId = id;
 			this.circleGroup.selectAll("g").each(function(d,i){
 				if(id == d.id || thisObj.nodesHaveARelation(id, d.id)){
-					this.style.visibility = "visible";
+//					this.style.visibility = "visible";
 					this.style.display = "block";
 					tempVisibleArr.push(d);
 				}else{
-					this.style.visibility = "hidden";
+//					this.style.visibility = "hidden";
 					this.style.display = "none";
 				}
 			});
@@ -522,42 +464,42 @@ var Graph = GraphDataMgr.extend({
 				var trgNode = link.target;
 				
 				if(tempVisibleArr.indexOf(srcNode) >-1 && tempVisibleArr.indexOf(trgNode) >-1){
-					this.style.visibility = "visible";
+//					this.style.visibility = "visible";
 					this.style.display = "block";
 				}else{
-					this.style.visibility = "hidden";
+//					this.style.visibility = "hidden";
 					this.style.display = "none";
 				}
 			});
-			this.pathGroup.selectAll(".dlink").each(function(link,i){
-				var srcNode = link.source;
-				var trgNode = link.target;
-				
-				if(tempVisibleArr.indexOf(srcNode) >-1 && tempVisibleArr.indexOf(trgNode) >-1){
-					this.style.visibility = "visible";
-					this.style.display = "block";
-				}else{
-					this.style.visibility = "hidden";
-					this.style.display = "none";
-				}
-			});
+//			this.pathGroup.selectAll(".dlink").each(function(link,i){
+//				var srcNode = link.source;
+//				var trgNode = link.target;
+//				
+//				if(tempVisibleArr.indexOf(srcNode) >-1 && tempVisibleArr.indexOf(trgNode) >-1){
+//					this.style.visibility = "visible";
+//					this.style.display = "block";
+//				}else{
+//					this.style.visibility = "hidden";
+//					this.style.display = "none";
+//				}
+//			});
 		}
 	
 	},
-	comparatorByIncoming : function(a, b) {
-		if (this.incomingCount(a) < this.incomingCount(b))
-			return -1;
-		if (this.incomingCount(a)  > this.incomingCount(b) )
-			return 1;
-		return 0;
-	},
-	comparatorByOutgoing : function(a, b) {
-		if (this.outgoingCount(a) < this.outgoingCount(b))
-			return -1;
-		if (this.outgoingCount(a)  > this.outgoingCount(b) )
-			return 1;
-		return 0;
-	}
+//	comparatorByIncoming : function(a, b) {
+//		if (this.incomingCount(a) < this.incomingCount(b))
+//			return -1;
+//		if (this.incomingCount(a)  > this.incomingCount(b) )
+//			return 1;
+//		return 0;
+//	},
+//	comparatorByOutgoing : function(a, b) {
+//		if (this.outgoingCount(a) < this.outgoingCount(b))
+//			return -1;
+//		if (this.outgoingCount(a)  > this.outgoingCount(b) )
+//			return 1;
+//		return 0;
+//	}
 
 });
 	
