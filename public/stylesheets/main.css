@@ -111,8 +111,8 @@ span.comment {
 .input-append .add-on:last-child {
 	border-radius: 0 15px 15px 0;
 	-moz-transition: border 0.2s linear 0s, box-shadow 0.2s linear 0s;
-	background-color: #FFFFFF;
-	border: 1px solid #CCCCCC;
+	background-color: #323232;
+	border: 1px solid #888888;
 	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
 	border-left-style: none;
 }

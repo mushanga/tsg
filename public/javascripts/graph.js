@@ -54,42 +54,34 @@ var Graph = GraphDataMgr.extend({
 		this.thirdViewTopRight = this.secViewBottomRight;
 		this.thirdViewBottomLeft = {"x":0,"y":this.h};
 		this.thirdViewBottomRight = {"x":this.w,"y":this.h};
-
-
+		
+		
 		this.force = d3.layout.force()
 		.size([this.w, this.h])
-		.gravity(0.1)
-		.linkDistance(function(d){
-			
+//		.gravity(0.1)
+		.linkDistance(function(d){			
 			var src = d.source.id;
 			var trg = d.target.id;
-			return 30 + (thisObj.nodeSizeMap[src]+thisObj.nodeSizeMap[trg])/2
+			if(src == thisObj.centerNodeId || trg == thisObj.centerNodeId){
+				return 30 + (thisObj.nodeSizeMap[src]+thisObj.nodeSizeMap[trg])/2;
+			}else{
+				return 80 + (thisObj.nodeSizeMap[src]+thisObj.nodeSizeMap[trg])/2;
+			}
+			
 		})
-		.linkStrength(0.2)
+		.linkStrength(function(d){			
+			var src = d.source.id;
+			var trg = d.target.id;
+			if(src == thisObj.centerNodeId || trg == thisObj.centerNodeId){
+				return 0.3;
+			}else{
+				return 0.05;
+			}
+			
+		})
+		.charge(-300);
 //		.friction(0.1)
-//		.linkStrength(function(d){
-//			for(var i in thisObj.cliques){
-//				var clique = thisObj.cliques[i];
-//				if(clique.indexOf(d.source.id)>-1 &&
-//						clique.indexOf(d.target.id)>-1 ){
-//					return 0.5;
-//				}
-//				
-//			}
-//			var revLink = thisObj.getLinkBySrcTrgId(d.target.id,d.source.id);
-//			if(thisObj.uLinks.indexOf(d)>-1 || thisObj.uLinks.indexOf(revLink)>-1){
-//				return 0.5;
-//			}	else{
-//				return 1;
-//			}
-//		})
-//		.charge(function(d){
-//			if(d.id == thisObj.centerNodeId){
-//				return -800;
-//			}	else{
-//				return -200
-//			}
-//		})
+
 		
 
 		this.vis = d3.select(el).append("svg:svg")
@@ -205,7 +197,8 @@ var Graph = GraphDataMgr.extend({
 		}
 		return false;
 	},
-	update : function() {
+	update : function update() {
+		
 		var thisObj = this;
 		
 		var maxUser = $('#slider').slider("option", "value");
@@ -224,10 +217,7 @@ var Graph = GraphDataMgr.extend({
 		this.getVisibleLinks(this.visibleLinks,this.activeNodes);
 		this.separateLinks(this.visibleLinks);
 		
-		this.force.charge(function(d){
-			return -300;
-		})
-		
+	
 		var roundedRects= this.circleGroup.selectAll("rect")
 		.data(this.activeNodes, function(d) { return d.id;});
 		
@@ -235,8 +225,10 @@ var Graph = GraphDataMgr.extend({
 		var defs = roundedRectsEnter.append("defs");
 		defs.append("svg:rect")
 	    .style("fill","black")
-	    .style("stroke","black")
-	    .style("stroke-width","3")
+	    .style("stroke","rgba(255,255,255,0.1)")
+	    .style("stroke-width",function(d) {
+			return thisObj.nodeSizeMap[d.id]/10;
+		})
 	    .attr("id",function(d) { return 'image-clip-'+d.id;})	 
 	    .attr("x", function(d) {
 				return - thisObj.nodeSizeMap[d.id]/2;
@@ -270,16 +262,27 @@ var Graph = GraphDataMgr.extend({
 		var imagesEnterc = this.images.enter();
 		
 
+//		var node_drag = d3.behavior.drag()
+//	    .on("dragstart", function(d,i){	    	
+//	    	thisObj.dragStart(d,i);
+//	    })
+//	    .on("drag", function(d,i){	    	
+//	    	thisObj.dragMove(d,i);
+//	    })
+//	    .on("dragend", function(d,i){	    	
+//	    	thisObj.dragEnd(d,i);
+//	    })
+
 		var imagesEnterg = imagesEnterc.append("svg:g")
-			.on("click",  function(ele) {
-			  thisObj.nodeClicked(ele.id);
+			.on("click",  function(d) {
+			  thisObj.nodeClicked(d.id);
 			})
-			.on("mouseover",function(ele){
-				thisObj.vis.selectAll(".text"+ele.id).style("display","block");
+			.on("mouseover",function(d){
+				thisObj.vis.selectAll(".text"+d.id).style("display","block");
 				
 			})
-			.on("mouseout",function(ele){
-				thisObj.vis.selectAll(".text"+ele.id).style("display","none");
+			.on("mouseout",function(d){
+				thisObj.vis.selectAll(".text"+d.id).style("display","none");
 			})
 			.call(this.force.drag)
 			.style("cursor","pointer")
@@ -371,7 +374,7 @@ var Graph = GraphDataMgr.extend({
 		dr = Math.sqrt(dx * dx + dy * dy);
 		return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x + "," + d.target.y;
 	},
-	tick : function() {
+	tick : function tick() {
 		var thisObj = this;
 	
 		var rootNode = this.activeNodes[0];
@@ -430,6 +433,25 @@ var Graph = GraphDataMgr.extend({
 		});
 
 	},
+//	dragStart : function dragStart(d, i) 
+//	{
+////		this.force.friction(0);
+//	},	 
+//	dragMove : function dragMove(d, i) 
+//	{
+//		d.px += d3.event.dx;
+//		d.py += d3.event.dy;
+//		d.x += d3.event.dx;
+//		d.y += d3.event.dy; 
+//		this.tick();
+//	},	 
+//	dragEnd : function dragEnd(d, i) 
+//	{
+//		d.fixed = !d.fixed ;
+////		this.update();
+////		this.force.friction(0.01);
+//		this.force.resume();
+//	},
 	nodeClicked : function(id){
 		var thisObj = this;
 		if(id == this.clickedImageId){
