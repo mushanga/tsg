@@ -41,16 +41,17 @@ public class UserGraphUtil extends GraphUtil {
          }     
       }
       
+      double maxSizeOverRoot = 0.75;
 
       for(Long userId: nodesList){
          Integer intersectCount = friendIntersectionWithRoot.get(userId).size();
-         Double coefficient = Double.valueOf(intersectCount) / (double) max;
+         Double coefficient = (Double.valueOf(intersectCount) / (double) max)*maxSizeOverRoot;
          if(coefficient.isNaN()){
             coefficient = 0D;
          }
          userNodeSizeMap.put(userId, coefficient);
       }
-      userNodeSizeMap.put(root, 1.5D);
+      userNodeSizeMap.put(root, 1D);
    }
    public void sort(){
       Set<Long> friends = nodeMutuallyLinkedNodesMap.get(this.root);

@@ -291,8 +291,11 @@ public class Application extends Controller {
 		
 		List<User> visibleUsers = new ArrayList<User>();
 		visibleUsers.addAll(UserLookup.getUsers(ownerAndFollowings));
-		
-		ClientGraph cg = new ClientGraph(ug, followings.size(), 0, visibleLinks, visibleUsers, 0, new HashMap<Long, Double>() );
+		HashMap<Long, Double> nodeSizeMap = new HashMap<Long, Double>();
+		for(User user : visibleUsers){
+		   nodeSizeMap.put(user.twitterId, 0D);
+		}
+		ClientGraph cg = new ClientGraph(ug, followings.size(), 0, visibleLinks, visibleUsers, 0,  nodeSizeMap);
 		cg.needsReload = true;
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		String content = gson.toJson(cg, ClientGraph.class);

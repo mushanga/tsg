@@ -63,9 +63,9 @@ var Graph = GraphDataMgr.extend({
 			var src = d.source.id;
 			var trg = d.target.id;
 			if(src == thisObj.centerNodeId || trg == thisObj.centerNodeId){
-				return 60 + (thisObj.nodeSizeMap[src]+thisObj.nodeSizeMap[trg])/2;
+				return 40 + (thisObj.nodeSizeMap[src]+thisObj.nodeSizeMap[trg])/2;
 			}else{
-				return 30 + (thisObj.nodeSizeMap[src]+thisObj.nodeSizeMap[trg])/2;
+				return 40 + (thisObj.nodeSizeMap[src]+thisObj.nodeSizeMap[trg])/2;
 			}
 			
 		})
@@ -73,7 +73,7 @@ var Graph = GraphDataMgr.extend({
 			var src = d.source.id;
 			var trg = d.target.id;
 			if(src == thisObj.centerNodeId || trg == thisObj.centerNodeId){
-				return 0.3;
+				return 0.2;
 			}else{
 				return 0.02;
 			}

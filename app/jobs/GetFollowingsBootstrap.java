@@ -43,7 +43,7 @@ import util.Util;
 @Every("1s")
 public class GetFollowingsBootstrap extends GraphJobBase {
 
-   private static int MAX_THREAD = 25;
+   private static int MAX_THREAD = 50;
    
    public static int threadCounter = 0;
    
