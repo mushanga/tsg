@@ -209,7 +209,9 @@ public class TwitterProxyImpl implements TwitterProxy {
             nvps.add(new BasicNameValuePair("user_id", ids));
 
             String resp = OAuth.getInstance().get(token.accessToken, token.accessTokenSecret, "users/lookup.json", nvps);
-
+            if(resp.contains("Sorry, that page does not exist")){
+               throw new UserDoesNotExistException(idList.get(0));
+            }
             Type listOfTestObject = new TypeToken<List<UserJSONImpl>>() {
             }.getType();
 

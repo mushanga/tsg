@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import models.User;
+import util.UserLookup;
+
 import edu.uci.ics.jung.graph.UndirectedGraph;
 import edu.uci.ics.jung.graph.UndirectedSparseGraph;
 
@@ -88,9 +91,39 @@ public class GraphUtil {
       }
       return cliques;
    }
-   protected void process(){
-      this.linksList = new ArrayList<String>(this.linksSet);
+   
+   private void checkNodesExistence(){
+      Set<Long> userIds = new HashSet<Long>();
+      for(String link : this.linksSet){
+         userIds.add(Long.valueOf(link.split("-")[0]));
+         userIds.add(Long.valueOf(link.split("-")[1]));
+      }
+      List<User> existingUsers = UserLookup.getUsers(new ArrayList<Long>(userIds));
+      Set<Long> existingUserIds = new HashSet<Long>();
+      if(existingUsers.size()!=userIds.size()){
 
+         for(User u: existingUsers){
+            existingUserIds.add(u.twitterId);
+         }   
+         List<String> temp = new ArrayList<String>(this.linksSet);
+         for(int i = 0; i<temp.size(); i++){
+            String link = temp.get(i);
+            Long id1 = Long.valueOf(link.split("-")[0]);
+            Long id2 = Long.valueOf(link.split("-")[1]);
+            if(!existingUserIds.contains(id1) || !existingUserIds.contains(id2)){
+               temp.remove(i);
+               i--;
+            }
+         }
+         this.linksSet.retainAll(temp);
+      }
+   
+   }
+   protected void process(){
+      
+      checkNodesExistence();
+      this.linksList = new ArrayList<String>(this.linksSet);
+      
       for(int i =0; i<linksList.size(); i++){
          String link = linksList.get(i);
          Long node1 = Long.valueOf(link.split("-")[0]);

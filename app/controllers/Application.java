@@ -287,7 +287,7 @@ public class Application extends Controller {
 		
 		List<Long> ownerAndFollowings = new ArrayList<Long>();
 		ownerAndFollowings.add(ug.ownerId);
-		ownerAndFollowings.addAll(visibleFollowings);
+		ownerAndFollowings.addAll(followings);
 		
 		List<User> visibleUsers = new ArrayList<User>();
 		visibleUsers.addAll(UserLookup.getUsers(ownerAndFollowings));

@@ -98,7 +98,9 @@ var GraphDataMgr = Class.extend({
 				"source" : srcObj,
 				"target" : trgObj
 			});
-
+if(!srcObj || !trgObj){
+	console.log ( 'node not found for link\n src: '+sourceId+'/'+srcObj+'\n trg: '+targetId+'/'+trgObj );
+}
 			this.nodeOutgoingMap[srcObj.id].push(trgObj.id);
 			this.nodeIncomingMap[trgObj.id].push(srcObj.id);
 		}

@@ -63,9 +63,9 @@ var Graph = GraphDataMgr.extend({
 			var src = d.source.id;
 			var trg = d.target.id;
 			if(src == thisObj.centerNodeId || trg == thisObj.centerNodeId){
-				return 30 + (thisObj.nodeSizeMap[src]+thisObj.nodeSizeMap[trg])/2;
+				return 60 + (thisObj.nodeSizeMap[src]+thisObj.nodeSizeMap[trg])/2;
 			}else{
-				return 80 + (thisObj.nodeSizeMap[src]+thisObj.nodeSizeMap[trg])/2;
+				return 30 + (thisObj.nodeSizeMap[src]+thisObj.nodeSizeMap[trg])/2;
 			}
 			
 		})
@@ -75,12 +75,12 @@ var Graph = GraphDataMgr.extend({
 			if(src == thisObj.centerNodeId || trg == thisObj.centerNodeId){
 				return 0.3;
 			}else{
-				return 0.05;
+				return 0.02;
 			}
 			
 		})
-		.charge(-300);
-//		.friction(0.1)
+		.charge(-300)
+		.friction(0.2)
 
 		
 
@@ -126,7 +126,11 @@ var Graph = GraphDataMgr.extend({
 
 		var keys=		Object.keys(pnodeSizeMap);
 		for(var key in keys ){				
-			this.nodeSizeMap[keys[key]]= parseInt((pnodeSizeMap[keys[key]]*imageHeight)+imageHeight);
+			var size = pnodeSizeMap[keys[key]];
+			if(!size){
+				size = 0;
+			}
+			this.nodeSizeMap[keys[key]]= parseInt((size*imageHeight)+imageHeight);
 		}
 	},
 	addAll : function(from,to){
@@ -375,8 +379,14 @@ var Graph = GraphDataMgr.extend({
 		return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x + "," + d.target.y;
 	},
 	tick : function tick() {
+		
 		var thisObj = this;
 	
+		var alpha = this.force.alpha();
+		if(alpha<0.03){
+			this.force.stop();
+			return;
+		}
 		var rootNode = this.activeNodes[0];
 		if(rootNode){	
 
