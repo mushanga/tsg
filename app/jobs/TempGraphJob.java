@@ -38,7 +38,7 @@ private static double newVersionOverOldVersion = 1.2;
          
                
       } catch (Exception e) {
-         Logger.error(e.getMessage());
+         Logger.error(e,e.getMessage());
       }
 
    }

@@ -67,72 +67,7 @@ public class GraphReadyJob extends GraphJobBase {
 		
 	}
 		
-	protected void fillLinksAndNodesForUserSet(UserGraph ug, List<Long> graphContentIdList,List<User> visibleUsers, List<String> visibleLinks, HashMap<Long, Integer> userIncomingCountMap ) throws UserDoesNotExistException{
-
-	   User user;
-    
-         user = UserLookup.getUser(ug.ownerId);
-
-         Set<User> visibleUserSet = new HashSet();
-         Set<Long> visibleUserIdSet = new HashSet();
-      Set<String> visibleLinkSet = new HashSet();
-      
-	   visibleUserSet.add(user);
-      
-
-	   for (Long following : graphContentIdList) {
-	   
-	      if(following==ug.ownerId){
-	         continue;
-	      }
-//	      visibleUserIdSet.add(following);
-	      try {
-            visibleUserSet.add(UserLookup.getUser(following));
-         } catch (UserDoesNotExistException e) {
-            Logger.info(e.getMessage());
-            continue;
-         }
-	      Set<Long> friendsOfFollowing = GraphDatabase.getMutualFriendsIncluding(following,graphContentIdList);
-	      
-	     
-	      if(userIncomingCountMap.get(following) == null){
-	         userIncomingCountMap.put(following, 0);
-	      }
-	      for (Long friendOfFollowing : friendsOfFollowing) {
-
-            try {
-               visibleUserSet.add(UserLookup.getUser(friendOfFollowing));
-               visibleUserSet.add(UserLookup.getUser(following));
-            } catch (UserDoesNotExistException e) {
-               Logger.error(e, e.getMessage());
-               continue;
-            }
-	         boolean added = visibleLinkSet.add(friendOfFollowing+"-"+following);
-	         if(added){
-	            userIncomingCountMap.put(following, userIncomingCountMap.get(following)+1);
-	         }
-	         added = visibleLinkSet.add(following+"-"+friendOfFollowing);
-	         if(added){
-	            if(userIncomingCountMap.get(friendOfFollowing) == null){
-	               userIncomingCountMap.put(friendOfFollowing, 0);
-	            }
-	            userIncomingCountMap.put(friendOfFollowing, userIncomingCountMap.get(friendOfFollowing)+1);
-	         }
-
-
-	      }
-	   }
-	   List<User> usersList = new ArrayList<User>(visibleUserSet);
-	   Collections.sort(usersList, new UserComparator(userIncomingCountMap));
-	   Collections.reverse(usersList);
-	  
-	   usersList.remove(user);	   
-	   usersList.add(0, user);
-	   
-	   visibleLinks.addAll(visibleLinkSet);
-	   visibleUsers.addAll(usersList);
-
-	}
+	
 	
 	protected List<Long> getUserListForGraph(UserGraph ug, boolean temp){
 	
@@ -152,9 +87,10 @@ public class GraphReadyJob extends GraphJobBase {
 	   
       Logger.info("fillLinksAndNodesForUserSet for user "+ug.ownerId);
       UserGraphUtil ugUtil = GraphDatabase.getAllNodesAndLinksForUserGraph(ug.ownerId);
-     
+//      UserGraphUtil ugUtil = fillLinksAndNodesForUserSet(ug, graphContentIdList, visibleUsers, visibleLinks, userIncomingCountMap);
+      
       Logger.info("paginateLinks for user "+ug.ownerId); 
-	   List<ClientGraph> graphs = paginateLinks(ug, 50, ugUtil);
+	   List<ClientGraph> graphs = paginateLinks(ug, USER_PER_PAGE, ugUtil);
 	   
 	   Gson gson = new GsonBuilder().setPrettyPrinting().create();      
 	   for(ClientGraph cg : graphs){
@@ -188,7 +124,7 @@ public class GraphReadyJob extends GraphJobBase {
 			
 			if(i%recPerPage == 0){
 				
-				cg = new ClientGraph(ug, total, completed, new HashSet() , new ArrayList(), (i/recPerPage) + 1,new HashMap<Long, Double>());
+				cg = new ClientGraph(ug, total, completed, new HashSet() , new ArrayList(), (i/recPerPage) + 1,new HashMap<Long, Double>(),new HashMap<Long, Integer>());
 				cg.cliques = cliques;
 				graphs.add(cg);
 			}
@@ -196,6 +132,7 @@ public class GraphReadyJob extends GraphJobBase {
 			ids.add(String.valueOf(user.twitterId));
          cg.users.add(user);
          cg.userNodeSizeMap.put(user.twitterId,lu.userNodeSizeMap.get(user.twitterId));
+         cg.userLinkSizeMap.put(user.twitterId,lu.userLinkSizeMap.get(user.twitterId));
 			
 		}
 		

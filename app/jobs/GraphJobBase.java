@@ -50,7 +50,7 @@ public class GraphJobBase extends Job {
 
 	
 	
-
+public static int USER_PER_PAGE = 50;
 
 
 public class UserComparator implements Comparator<User>{

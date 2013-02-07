@@ -159,11 +159,11 @@ if(!srcObj || !trgObj){
 		}
 		return ls;
 	},
-	checkMutualLink : function(id1, id2) {
+	checkMutualLink : function checkMutualLink(id1, id2) {
 
 		return this.nodeIncomingMap[id1].indexOf(id2)>-1 && this.nodeOutgoingMap[id1].indexOf(id2)>-1;
 	},
-	getMutualLinks : function(id1) {
+	getMutualLinks : function getMutualLinks(id1) {
 
 		return intersect(this.nodeIncomingMap[id1], this.nodeOutgoingMap[id1]);
 	},

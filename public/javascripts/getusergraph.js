@@ -131,8 +131,9 @@ function getUserGraph(id){
 					$("#slider").show();
 				}
 			}
-			
+
 			graph.addNodeSizeMap(data.userNodeSizeMap);
+			graph.addLinkSizeMap(data.userLinkSizeMap);
 			graph.centerNodeId = data.ownerId;
 			
 			for ( var i = 0; i < data.users.length; i++) {

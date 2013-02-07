@@ -260,9 +260,11 @@ public class Application extends Controller {
 	
 
       List<Long> followings = new ArrayList<Long>();
-      List<Long> visibleFollowings = new ArrayList<Long>();
+      
+      int total = 0;
 		try {
 			followings = twitter.getFollowingIds(ug.ownerId);
+			total = followings.size();
 		} catch (NoAvailableTokenException e) {
 			Logger.error(e, e.getMessage());
 		} catch (UserProtectedException e) {
@@ -270,18 +272,13 @@ public class Application extends Controller {
 		} catch (UserDoesNotExistException e) {
          Logger.error(e, e.getMessage());
       }
-		if(Util.isListValid(followings) && followings.size()>=50){
-		   followings = followings.subList(0, 50);
-//			int i = 0;
-			
-//			for(Long following : followings){
-//			   if(i>=49){
-//			      break;
-//			   }
-//			   visibleFollowings.add(following);
-//				visibleLinks.add(ug.ownerId+"-"+following);
-//				i++;
-//			}
+		if(Util.isListValid(followings) && followings.size()>=GraphJobBase.USER_PER_PAGE){
+		   followings = followings.subList(0, GraphJobBase.USER_PER_PAGE);
+
+			for(Long following : followings){
+			  
+				visibleLinks.add(ug.ownerId+"-"+following);
+			}
 			
 		}
 		
@@ -291,11 +288,15 @@ public class Application extends Controller {
 		
 		List<User> visibleUsers = new ArrayList<User>();
 		visibleUsers.addAll(UserLookup.getUsers(ownerAndFollowings));
-		HashMap<Long, Double> nodeSizeMap = new HashMap<Long, Double>();
+
+      HashMap<Long, Double> nodeSizeMap = new HashMap<Long, Double>();
+      HashMap<Long, Integer> linkSizeMap = new HashMap<Long, Integer>();
 		for(User user : visibleUsers){
 		   nodeSizeMap.put(user.twitterId, 0D);
 		}
-		ClientGraph cg = new ClientGraph(ug, followings.size(), 0, visibleLinks, visibleUsers, 0,  nodeSizeMap);
+		nodeSizeMap.put(ug.ownerId, 1D);
+		
+		ClientGraph cg = new ClientGraph(ug, total, 0, visibleLinks, visibleUsers, 0,  nodeSizeMap,linkSizeMap);
 		cg.needsReload = true;
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		String content = gson.toJson(cg, ClientGraph.class);

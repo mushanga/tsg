@@ -80,6 +80,28 @@ function contains(arr, obj)
 	return arr.indexOf(obj)>-1;
 }
 
+function addClass(selector, className)
+{
+	var classes = $(selector).attr("class").split(" ");	
+	if(!contains(classes,className)){
+
+		classes.push(className);
+		var newClass = classes.join(" ");
+		$(selector).attr("class",newClass);
+	}
+}
+function removeClass(selector, className)
+{
+
+	var classes = $(selector).attr("class").split(" ");
+	if(contains(classes,className)){
+		remove(classes, className);
+		var newClass = classes.join(" ");
+		$(selector).attr("class",newClass);
+		
+	}
+}
+
 function getObjectOutOfArea(object, area){
 	
 	

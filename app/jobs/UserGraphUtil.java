@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 import play.Logger;
+import util.Util;
 
 import edu.uci.ics.jung.graph.UndirectedGraph;
 import edu.uci.ics.jung.graph.UndirectedSparseGraph;
@@ -18,13 +19,23 @@ import edu.uci.ics.jung.graph.UndirectedSparseGraph;
 public class UserGraphUtil extends GraphUtil {
    
    public Long root;
+
+   HashMap<Long, Double> userNodeSizeMap = new HashMap<Long, Double>();
    
    public HashMap<Long,Set<Long>> friendIntersectionWithRoot = new HashMap<Long, Set<Long>>();
+   public HashMap<Long,Integer> userLinkSizeMap = new HashMap<Long, Integer>();
 
-   public UserGraphUtil(Long root, Set<String> links) {
+   public UserGraphUtil(Long root, List<String> links) {
       super(links);
       this.root = root;
       normalizeAndGetSizeCoefficient();
+      calculateLinkStrength();
+   }
+   public UserGraphUtil(Long root, List<Long> nodes , List<String> links) {
+      super(nodes,links);
+      this.root = root;
+      normalizeAndGetSizeCoefficient();
+      calculateLinkStrength();
    }
 
    protected void normalizeAndGetSizeCoefficient() {
@@ -54,23 +65,22 @@ public class UserGraphUtil extends GraphUtil {
       userNodeSizeMap.put(root, 1D);
    }
    public void sort(){
-      Set<Long> friends = nodeMutuallyLinkedNodesMap.get(this.root);
+      Set<Long> rootFriends = nodeMutuallyLinkedNodesMap.get(this.root);
       
       friendIntersectionWithRoot.put(this.root, nodeMutuallyLinkedNodesMap.get(this.root));
-      if(friends!=null){
-         for(Long friend : friends){
-            Set<Long> friendsOfFriend = nodeMutuallyLinkedNodesMap.get(friend);
-            Set<Long> fof = new HashSet<Long>(friendsOfFriend);
-            fof.retainAll(friends);
-            this.friendIntersectionWithRoot.put(friend, fof);
+     
+      for(Long node : this.nodesList){
+
+         Set<Long> friendsOfNode = nodeMutuallyLinkedNodesMap.get(node);
+         Set<Long> fson = new HashSet<Long>();
+         if(Util.isValid(friendsOfNode)){
+
+            fson.addAll(friendsOfNode);
+            fson.retainAll(rootFriends);
          }
+         friendIntersectionWithRoot.put(node,fson);
       }
 
-      for(Long node : nodesList){
-         if(friendIntersectionWithRoot.get(node)==null){
-            friendIntersectionWithRoot.put(node, new HashSet<Long>());
-         }
-      }
 
       Collections.sort(this.nodesList, new ByCommonFriends(friendIntersectionWithRoot));
       Collections.reverse(this.nodesList);
@@ -109,6 +119,28 @@ public class UserGraphUtil extends GraphUtil {
       
    }
    
+   public void calculateLinkStrength(){
+      if(Util.isValid(cliques)){
+         List<Long> tempNodes = new ArrayList<Long>(this.nodesList);
+         
+         for(HashSet<Long> clique : this.cliques){
+            HashSet<Long> tempClique = new HashSet<Long>(clique);
+            tempClique.retainAll(tempNodes);
+           for(Long node :tempClique){
+              userLinkSizeMap.put(node, clique.size());
+              tempNodes.remove(node);
+           }
+          
+            
+         }
+         for(Long node :tempNodes){
+            userLinkSizeMap.put(node, 1);
+         }
+         
+      }
+    
+      
+   }
    
    
    

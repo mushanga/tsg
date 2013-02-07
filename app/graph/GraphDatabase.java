@@ -2,6 +2,7 @@ package graph;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -11,6 +12,10 @@ import java.util.Set;
 
 import jobs.GraphUtil;
 import jobs.UserGraphUtil;
+import jobs.GraphJobBase.UserComparator;
+
+import models.User;
+import models.UserGraph;
 
 import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.cypher.javacompat.ExecutionResult;
@@ -34,10 +39,13 @@ import org.neo4j.server.WrappingNeoServerBootstrapper;
 import org.neo4j.server.configuration.ServerConfigurator;
 import org.neo4j.shell.ShellSettings;
 
+import exception.UserDoesNotExistException;
+
 import play.Logger;
 
 import scala.collection.JavaConversions;
 import scala.collection.convert.Wrappers.SeqWrapper;
+import util.UserLookup;
 import util.Util;
 
 public class GraphDatabase {
@@ -95,13 +103,13 @@ public class GraphDatabase {
       });
    }
    public static void main(String[] args){
-      
-      startGraphDatabase();
-      GraphUtil lin = getAllNodesAndLinksForUserGraph(73930194);
-      int a = 0;
-      a++;
-      
-      
+//      
+//      startGraphDatabase();
+//      GraphUtil lin = getAllNodesAndLinksForUserGraph(73930194);
+//      int a = 0;
+//      a++;
+//      
+//      
    }
    private static List<Relationship> processResults(Object obj){
                List<Relationship> rels = new ArrayList<Relationship>();
@@ -178,14 +186,40 @@ public class GraphDatabase {
       }
       return relationships;
    }
-   public static UserGraphUtil getAllNodesAndLinksForUserGraph(long userId) {
+   public static UserGraphUtil getAllNodesAndLinksForUserGraph(long userId){
+      Set<Long> followings = getFollowings(userId);
+      Set<Long>  ownerAndFollowing =new HashSet<Long>(followings);
+      ownerAndFollowing.add(userId);
+
+      Set<Long> nodes = new HashSet();
+      Set<String> links = new HashSet<String>();
+
+      nodes.add(userId);
+      for (Long following : followings) {
+
+         nodes.add(following);         
+         links.add(userId+"-"+following);
+         
+         Set<Long> friendsOfFollowing = getMutualFriendsIncluding(following,ownerAndFollowing);
+
+         for (Long friendOfFollowing : friendsOfFollowing) {
+            links.add(friendOfFollowing+"-"+following);
+            links.add(following+"-"+friendOfFollowing);
+         }
+      }
+
+      
+      UserGraphUtil liut = new UserGraphUtil(userId, new ArrayList<Long>(nodes), new ArrayList<String>(links));
+      return liut;
+   }
+   public static UserGraphUtil getAllNodesAndLinksForUserGraphCypher(long userId) {
       Set<Long> followings = getFollowings(userId);
       Set<Long> followingNodeIds = getFollowingNodeIds(userId); 
 //       Long rootNodeId = getNodeIdByUserId(userId);
 //      followingNodeIds.add(rootNodeId);
       List<Relationship> relationships = new ArrayList<Relationship>();
 
-      Set<String> links = new HashSet<String>();
+      List<String> links = new ArrayList<String>();
       
    
       Set<Relationship> relsOfRoot = getRelationships(userId, Direction.BOTH, new ArrayList<Long>(followings), null);

@@ -1,8 +1,38 @@
 
-#progressbar-message {
-text-align: center;
+.tsg-nc{
+  fill: black;
+/*   //stroke: #666; */
+  stroke: rgba(255,50,50,0.4);
+/*   stroke-dasharray: 0,2 1; */
+}
+.tsg-root-nc{
+  fill: black;
+  stroke: rgba(255, 255, 255, 0.3);
+/*   stroke-dasharray: 0,2 1; */
+}
+.tsg-root-friend-nc{
+  fill: black;
+  stroke: rgba(92, 166, 170, 0.3);
+/*   stroke-dasharray: 0,2 1; */
+}
+.tsg-selected-nc{
+  stroke: rgba(255, 255, 140, 0.8);
+/*   stroke-dasharray: 0,2 1; */
+}
+text {
+	fill:#fff;
+/* 	font-size: 10px; */
+/* 	font-size: 20px; */
+/*   stroke:#EEE; */
+/*   font: 16px sans-serif bold; */
+  pointer-events: none;
 }
 
+text.shadow {
+  stroke:rgba(42, 120, 120, 0.6);
+  stroke-width: 4px;
+/*   stroke-opacity: .6; */
+}
 rect {
   fill: none;
   pointer-events: all;
@@ -15,14 +45,6 @@ path.link {
   stroke: rgba(92, 166, 170, 0.2);
   stroke-width: 1.5px;
 /*   stroke-dasharray: 0,2 1; */
-}
-
-.image-clip{
-  fill: none;
-/*   //stroke: #666; */
-  stroke: black;
-  stroke-width: 1.5px;
-	
 }
 path.dlink {
   fill: none;
@@ -56,16 +78,7 @@ circle {
   stroke-width: 1.5px;
 }
 
-text {
-  font: 16px sans-serif bold;
-  pointer-events: none;
-}
 
-text.shadow {
-  stroke: #fff;
-  stroke-width: 5px;
-  stroke-opacity: .8;
-}
 
 body {
   font-family: "Helvetica Neue", Helvetica, sans-serif;
@@ -181,4 +194,8 @@ aside,
 .javascript .class,
 .javascript .special {
   color: #e6550d;
+}
+
+#progressbar-message {
+text-align: center;
 }

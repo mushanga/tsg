@@ -13,7 +13,7 @@ import models.UserGraph;
 
 public class ClientGraph{
 	
-   public ClientGraph(UserGraph ug, int total, int completed, Set<String> visibleLinks, List<User> visibleUsers, int page,HashMap<Long, Double> userNodeSizeMap) {
+   public ClientGraph(UserGraph ug, int total, int completed, Set<String> visibleLinks, List<User> visibleUsers, int page,HashMap<Long, Double> userNodeSizeMap,HashMap<Long, Integer> userLinkSizeMap) {
 		super();
 		this.ownerId = ug.ownerId;
 		this.version = ug.version;
@@ -22,12 +22,14 @@ public class ClientGraph{
 		this.links = visibleLinks;
 		this.users = visibleUsers;
 		this.page = page;
-		this.userNodeSizeMap = userNodeSizeMap;
+      this.userNodeSizeMap = userNodeSizeMap;
+      this.userLinkSizeMap = userLinkSizeMap;
 	}
 	
 	public List<HashSet<Long>> cliques;
 	public Long ownerId;
 	public HashMap<Long, Double> userNodeSizeMap;
+	public HashMap<Long, Integer> userLinkSizeMap;
    public Long version;
 	public int total;
 	public boolean needsReload;
