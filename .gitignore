@@ -8,6 +8,7 @@ tmp
 
 # Package Files #
 *.jar
+*.pom
 *.war
 *.ear
 /t-commerce.iws
