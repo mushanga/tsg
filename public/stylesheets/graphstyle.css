@@ -1,4 +1,10 @@
 
+.tsg-info-win-rec{
+  fill: rgba(0,0,0,0.3);
+/*   //stroke: #666; */
+/*   stroke: rgba(255,50,50,0.4); */
+/*   stroke-dasharray: 0,2 1; */
+}
 .tsg-nc{
   fill: black;
 /*   //stroke: #666; */

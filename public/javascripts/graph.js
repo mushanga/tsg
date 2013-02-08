@@ -98,6 +98,8 @@ var Graph = GraphDataMgr.extend({
 		
 
 		this.vis = d3.select(el).append("svg:svg")
+		
+		.attr("xmlns", "http://www.w3.org/2000/svg")
 		.attr("width", this.w)
 		.attr("height", this.h);
 
@@ -304,30 +306,23 @@ var Graph = GraphDataMgr.extend({
 
 		this.images.exit().remove();
 		var imagesEnterc = this.images.enter();
-		
-
-//		var node_drag = d3.behavior.drag()
-//	    .on("dragstart", function(d,i){	    	
-//	    	thisObj.dragStart(d,i);
-//	    })
-//	    .on("drag", function(d,i){	    	
-//	    	thisObj.dragMove(d,i);
-//	    })
-//	    .on("dragend", function(d,i){	    	
-//	    	thisObj.dragEnd(d,i);
-//	    })
 
 		var imagesEnterg = imagesEnterc.append("svg:g")
 			.on("click",  function(d) {
 			  thisObj.nodeClicked(d.id);
 			})
 			.on("mouseover",function(d){
-				thisObj.vis.selectAll(".text"+d.id).style("display","block");
+					thisObj.vis.selectAll(".tsg-node-info-win").style("display","none");
+					thisObj.vis.selectAll("#tsg-node-info-win-"+d.id).style("display","block");
 				
+				
+//				thisObj.textGroup.selectAll(".tsg-node-info-win").style("display","none").selectAll("body").html('');
+//				thisObj.textGroup.selectAll(".info-win-"+d.id).style("display","block").selectAll("body").html("asdfasdf"
+//				 "<a class='twitter-timeline' href='https://twitter.com/"+d.screenName+"' data-widget-id='299638827767709696'>Tweets by @"+d.screenName+"</a>"+
+//					"<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src='//platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document,'script','twitter-wjs');</script>"
+//					);
 			})
-			.on("mouseout",function(d){
-				thisObj.vis.selectAll(".text"+d.id).style("display","none");
-			})
+		
 			.call(this.force.drag)
 			.style("cursor","pointer")
 		imagesEnterg.append("use")
@@ -379,33 +374,20 @@ var Graph = GraphDataMgr.extend({
 //		.attr("marker-end", function(d) { return "url(#" +  "suit" + ")"; });
 		
 		
-		function getDescription(d){
-			
-			return '@'+d.screenName+' ('+d.fullName+') '+d.id;
-		}
+	
 		
 		this.txt = this.textGroup.selectAll("g").data(this.activeNodes, function(d) { 
-												return getDescription(d);
+												return d.id;
 											});
 		this.txt.exit().remove();
 		
 		var txtEnter = this.txt.enter();
 
-		var txtCont = txtEnter.append("svg:g");
-		txtCont.append("svg:text")
-		.style("display","none")		
-		.attr("x", 8)
-		.attr("y", ".31em")
-		.attr("class", function(d) { return "shadow text"+d.id; })
-		.text(function(d) { return getDescription(d); });
-
-		txtCont.append("svg:text")
-		.style("display","none")
-		.attr("x", 8)
-		.attr("y", ".31em")
-		.attr("class", function(d) { return "text text"+d.id; })
-		.text(function(d) { return getDescription(d); });
-
+		var txtCont = txtEnter.append("svg:g").style("display","none")
+			.attr("id",function(d){return "tsg-node-info-win-"+d.id})
+			.attr("class","tsg-node-info-win")
+		this.createInfoWin(txtCont);
+		
 		this.force.on("tick",function(){
 			thisObj.tick();
 		});
@@ -419,7 +401,7 @@ var Graph = GraphDataMgr.extend({
 		if(!d.target || !d.source){
 			console.log ( 'node not found for link: '+d );
 		}
-		console.log ( 'link: '+d.source.screenName+"-"+ d.target.screenName);
+//		console.log ( 'link: '+d.source.screenName+"-"+ d.target.screenName);
 		return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x + "," + d.target.y;
 	},
 	tick : function tick() {
@@ -506,6 +488,99 @@ var Graph = GraphDataMgr.extend({
 ////		this.force.friction(0.01);
 //		this.force.resume();
 //	},
+	createInfoWin : function createInfoWin(svgEle){
+		var thisObj = this;
+//		svgEle.append("svg:text")
+//		.style("display","none")		
+//		.attr("x", 0)
+//		.attr("y", 0)
+//		.attr("class", function(d) { return "shadow text"+d.id; })
+//		.text(function(d) { return getDescription(d); });
+		
+		svgEle.on("mouseout",function(d){
+//			if(thisObj.clickedImageId != d.id){
+				thisObj.vis.selectAll(".tsg-node-info-win").style("display","none");	
+//			}
+//			thisObj.textGroup.selectAll(".tsg-node-info-win").style("display","none").selectAll("body").html('');
+			
+		})
+		var lineHeight = 20;
+		
+
+		svgEle.append("svg:rect")
+		.attr("x", -5)
+		.attr("y", -25)
+	    .attr("class","tsg-info-win-rec")
+	    .attr("width", 250)
+	    .attr("height",140)
+	    .style("stroke", "#000");
+//	    .style("stroke", "#000")
+	    	
+
+		var y = 0;
+		
+		svgEle.append("svg:text")
+		.attr("x", 0)
+		.attr("y", y)
+		.attr("class", function(d) { return "text text"+d.id; })
+		.text(function(d) { return getDescription(d); });
+		
+		y+=lineHeight;
+		
+		svgEle.append("svg:text")
+		.attr("x", 0)
+		.attr("y", y)
+		.attr("class", function(d) { return "text text"+d.id; })
+		.text(function(d) { return 'Following: '+d.friendsCount; });
+
+		y+=lineHeight;
+		
+		svgEle.append("svg:text")
+		.attr("x", 0)
+		.attr("y", y)
+		.attr("class", function(d) { return "text text"+d.id; })
+		.text(function(d) { return 'Followers: '+d.followersCount; });
+
+		y+=lineHeight;
+		
+		svgEle.append("svg:text")
+		.attr("x", 0)
+		.attr("y", y)
+		.attr("class", function(d) { return "text text"+d.id; })
+		.text(function(d) { return 'Mutual friends: '+thisObj.intersectMutualLinksOfNodes(thisObj.centerNodeId, d.id).length});
+
+		y+=lineHeight;
+		
+		svgEle.append("svg:a").style("xlink:href",function(d){getGraph(d.screenName)}).append("svg:text")
+		.attr("x", 0)
+		.attr("y", y)
+		.attr("class", function(d) { return "text text"+d.id; })
+		.text(function(d) { return 'Show Graph'});
+
+		y+=lineHeight;
+		
+		svgEle.append("svg:a").attr("xlink:href",function(d){"https://twitter.com/"+d.screenName}).append("svg:text")
+		.attr("x", 0)
+		.attr("y", y)
+		.attr("class", function(d) { return "text text"+d.id; })
+		.text(function(d) { return 'Show '+d.screenName+'\'s Profile'});
+//
+//		y+=lineHeight;
+//		
+//		svgEle.append("svg:a").attr("xlink:href",function(d){"https://twitter.com/"+d.screenName}).append("svg:text")
+//		.style("display","none")
+//		.attr("x", 0)
+//		.attr("y", y)
+//		.attr("class", function(d) { return "text text"+d.id; })
+//		.text(function(d) { return 'Go to Twitter Profile'});
+
+		function getDescription(d){
+			return '@'+d.screenName+' ('+d.fullName+') '//+d.id;	
+		}
+
+		    	
+	    
+	},	
 	nodeClicked : function nodeClicked(id){
 		if(id==-1){
 			return;
@@ -565,6 +640,8 @@ var Graph = GraphDataMgr.extend({
 					this.style.display = "none";
 				}
 			});
+			
+			
 //			this.pathGroup.selectAll(".dlink").each(function(link,i){
 //				var srcNode = link.source;
 //				var trgNode = link.target;
@@ -597,4 +674,3 @@ var Graph = GraphDataMgr.extend({
 
 });
 	
-

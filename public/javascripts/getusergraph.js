@@ -4,18 +4,15 @@ $(function() {
 	$('#graphSearchId').autocomplete({
 	      source: "/application/autocomplete",
 	      select: function( event, ui ) {
-		        window.location = getGraph(ui.item.value);
-		        return false;
+	         window.location = getGraph(ui.item.value);
+	         return false;
 	      },
 		  search: function(event, ui) {
-			  
-			  $('#autocompleteSpinnerId').show();
+			 $('#autocompleteSpinnerId').show();
 		  },
-		   response: function(event, ui) {
-			   $('#autocompleteSpinnerId').hide();
-		    },
-		  
-		  
+		  response: function(event, ui) {
+			  $('#autocompleteSpinnerId').hide();
+		  },
 	      minChars: 2,
 		  width: 200,
 		  delay: 400,
