@@ -52,8 +52,10 @@ public class GetFollowingsJob extends GraphJobBase {
 	@Override
 	public void doJob() {
 		try {
+	       Logger.info("Getting friendlist of "+ownerId);
 			getFollowings(ownerId);
 			GetFollowingsBootstrap.threadCounter--;
+         Logger.info("Finished getting friendlist of "+ownerId);
 		}
 		catch (Exception e) {
 			Logger.error(e.getMessage());
@@ -73,6 +75,7 @@ public class GetFollowingsJob extends GraphJobBase {
 		try {
 
 			TwitterProxy twitter = TwitterProxyFactory.defaultInstance();
+
 			List<Long> fwings = twitter.getFollowingIds(ownerId);
 			//Do not replace with 'isValid'... null means error here
 			if(null != fwings){
