@@ -97,13 +97,11 @@ var Graph = GraphDataMgr.extend({
 
 		
 
-		this.vis = d3.select(el).append("svg:svg")
-		
-		.attr("xmlns", "http://www.w3.org/2000/svg")
+		this.svg = d3.select(el).append("svg:svg")
 		.attr("width", this.w)
 		.attr("height", this.h);
 
-		this.vis.append("svg:rect")
+		this.svg.append("svg:rect")
 //		.attr("x",firstViewTopLeft.x)
 		.attr("y",this.firstViewTopLeft.y)
 	    .attr("width", this.w)
@@ -113,7 +111,7 @@ var Graph = GraphDataMgr.extend({
 		})
 	    .style("stroke", "#000");
 		
-		this.vis.append("svg:defs").selectAll("marker")
+		this.svg.append("svg:defs").selectAll("marker")
 		.data(["suit", "licensing", "resolved"])
 		.enter().append("svg:marker")
 		.attr("id", String)
@@ -126,11 +124,11 @@ var Graph = GraphDataMgr.extend({
 		.append("svg:path")
 		.attr("d", "M0,-5L10,0L0,5");
 		
-		this.pathGroup = this.vis.append("svg:g");
-		this.circleGroup = this.vis.append("svg:g");
+		this.pathGroup = this.svg.append("svg:g");
+		this.circleGroup = this.svg.append("svg:g");
 
-		this.bgGroup = this.vis.append("svg:g");
-		this.textGroup = this.vis.append("svg:g");
+		this.bgGroup = this.svg.append("svg:g");
+		this.textGroup = this.svg.append("svg:g");
 
 		this.visibleNodes = this.force.nodes();
 		this.visibleLinks = this.force.links();
@@ -150,7 +148,7 @@ var Graph = GraphDataMgr.extend({
 			this.nodeSizeMap[keys[key]]= parseInt((size*delta)+this.imageMin);
 		}
 	},
-	addLinkSizeMap : function addNodeSizeMap(plinkSizeMap){
+	addLinkSizeMap : function addLinkSizeMap(plinkSizeMap){
 
 		var keys=		Object.keys(plinkSizeMap);
 		
@@ -224,14 +222,9 @@ var Graph = GraphDataMgr.extend({
 		return visibleLinks;
 
 	},
-	nodesHaveARelation : function(node1Id, node2Id){
-		for(var i in this.links){
-			if(this.links[i].source.id== node1Id && this.links[i].target.id == node2Id ||
-					this.links[i].source.id== node2Id && this.links[i].target.id == node1Id 	){
-				return true;
-			}
-		}
-		return false;
+	nodesHaveARelation : function nodesHaveARelation(node1Id, node2Id){
+		
+		return this.checkMutualLink(node1Id, node2Id);
 	},
 	update : function update() {
 		
@@ -253,24 +246,59 @@ var Graph = GraphDataMgr.extend({
 		this.getVisibleLinks(this.visibleLinks,this.activeNodes);
 		this.separateLinks(this.visibleLinks);
 		
+		this.createLinks();
+		this.createNodes();
+		this.createInfoWin();
+		
+		this.force.on("tick",function(){
+			thisObj.tick();
+		});
+		this.force.start();
+		
+	},
 	
+	createLinks : function createLinks(){
+		var thisObj = this;
+
+		this.pth = this.pathGroup.selectAll(".link")
+		.data(this.uLinks, function(d) { return d.source.id + "-" + d.target.id; });
+
+		this.pth.exit().remove();
+		this.pth.enter().append("svg:path")
+		.attr("class", function(d) { return "link " + "suit"; })
+		
+//		this.dpth = this.pathGroup.selectAll(".dlink")
+//		.data(this.dLinks, function(d) { return d.source.id + "-" + d.target.id; });
+//
+//		this.dpth.exit().remove();
+//		this.dpth.enter().append("svg:path")
+//		.attr("class", function(d) { return "dlink " + "directed"; })
+//		.attr("marker-end", function(d) { return "url(#" +  "suit" + ")"; });
+		
+		
+	},
+	createNodes : function createNodes(){
+
+		var thisObj = this;
+		
 		var roundedRects= this.circleGroup.selectAll("rect")
 		.data(this.activeNodes, function(d) { return d.id;});
 		
 		var roundedRectsEnter = roundedRects.enter();
 		var defs = roundedRectsEnter.append("defs");
 		defs.append("svg:rect")
-	    .attr("class",function(d) {
-	    	
-	    	if(thisObj.centerNodeId == d.id){
-				return "tsg-root-nc";
-	    	}else
-	    		if(thisObj.checkMutualLink(thisObj.centerNodeId, d.id)){
-	    		
-				return "tsg-root-friend-nc";
-	    	}else{
-	    		return "tsg-nc";
-	    	}
+		.attr("class",function(d) {
+
+			if(thisObj.centerNodeId == d.id){
+				d.tsgClass ="tsg-root-nc"; 
+
+			}else if(thisObj.checkMutualLink(thisObj.centerNodeId, d.id)){
+
+				d.tsgClass = "tsg-root-friend-nc";
+			}else{
+				d.tsgClass = "tsg-nc";
+			}
+			return d.tsgClass;
 		})
 	    .style("stroke-width",function(d) {
 			return thisObj.nodeSizeMap[d.id]/5;
@@ -308,23 +336,17 @@ var Graph = GraphDataMgr.extend({
 		var imagesEnterc = this.images.enter();
 
 		var imagesEnterg = imagesEnterc.append("svg:g")
-			.on("click",  function(d) {
-			  thisObj.nodeClicked(d.id);
-			})
-			.on("mouseover",function(d){
-					thisObj.vis.selectAll(".tsg-node-info-win").style("display","none");
-					thisObj.vis.selectAll("#tsg-node-info-win-"+d.id).style("display","block");
-				
-				
-//				thisObj.textGroup.selectAll(".tsg-node-info-win").style("display","none").selectAll("body").html('');
-//				thisObj.textGroup.selectAll(".info-win-"+d.id).style("display","block").selectAll("body").html("asdfasdf"
-//				 "<a class='twitter-timeline' href='https://twitter.com/"+d.screenName+"' data-widget-id='299638827767709696'>Tweets by @"+d.screenName+"</a>"+
-//					"<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src='//platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document,'script','twitter-wjs');</script>"
-//					);
-			})
-		
-			.call(this.force.drag)
-			.style("cursor","pointer")
+		.call(this.force.drag)
+		.style("cursor","pointer")
+		.on("click",  function(d) {
+			thisObj.nodeClicked(d.id);
+		})
+		.on("mouseover",function(d){
+			thisObj.openInfoWin(d);	
+		})	
+		.on("mouseout",function(d){
+			thisObj.closeInfoWin(d);				
+		})	
 		imagesEnterg.append("use")
 	    .attr("xlink:href", function(d) { return '#nc-'+d.id;})
 //	    .attr("stroke","black")
@@ -358,43 +380,236 @@ var Graph = GraphDataMgr.extend({
 			rootNode.y = this.h/2;
 		}
 	
-		this.pth = this.pathGroup.selectAll(".link")
-		.data(this.uLinks, function(d) { return d.source.id + "-" + d.target.id; });
+	},	
+//	checkInfoWinPosition : function checkInfoWinPosition(parent){
+//		if(parent.attr("x")+parent.attr("width") this.w)
+//	}
+	visibleInfoWinData : null,
+	
+	openInfoWin : function openInfoWin(d){
+		this.visibleInfoWinData = d;
+//		this.svg.selectAll(".tsg-node-info-win").style("display","none");
 
-		this.pth.exit().remove();
-		this.pth.enter().append("svg:path")
-		.attr("class", function(d) { return "link " + "suit"; })
 		
-//		this.dpth = this.pathGroup.selectAll(".dlink")
-//		.data(this.dLinks, function(d) { return d.source.id + "-" + d.target.id; });
-//
-//		this.dpth.exit().remove();
-//		this.dpth.enter().append("svg:path")
-//		.attr("class", function(d) { return "dlink " + "directed"; })
-//		.attr("marker-end", function(d) { return "url(#" +  "suit" + ")"; });
+		$("#tsg-node-info-win-"+d.id).stop(true).fadeTo(300,0.3).fadeTo(500,1);
+		this.tick();
+		
+	},
+
+	persistInfoWin : function persistInfoWin(d){
+		this.visibleInfoWinData = d;
+//		this.svg.selectAll(".tsg-node-info-win").style("display","none");
+		
+		$("#tsg-node-info-win-"+d.id).stop(true).fadeTo(50,1);
+//		this.tick();
+	},
+
+	closeInfoWin : function closeInfoWin(d){
+		this.visibleInfoWinData = null;
+		$("#tsg-node-info-win-"+d.id).stop(true).fadeOut(300);
+	},
+	
+	marginInfoWin: 20,
+	setInfoWinPosition : function setInfoWinPosition(){
+
+		var thisObj = this;	
+
+		if(this.visibleInfoWinData){
+			this.txt.selectAll(".tsg-node-info-g"+this.visibleInfoWinData.id).attr("transform", function(d) {
+				var height = this.getBBox().height;
+				var width = this.getBBox().width;
+				var tx = "";
+				var ty = "";
+				var objRadius = thisObj.nodeSizeMap[d.id]/2;
+				if(d.x + objRadius + width >thisObj.w){
+					tx = -objRadius-width;
+					
+				}else{
+					tx = objRadius;
+				}
+				
+				if(d.y + objRadius + height >thisObj.h){
+					ty = -height;
+				}else{
+					ty = 0;
+				}	
+					
+				return "translate("+tx+","+ty+")";
+			
+			});
+			this.txt.selectAll(".tsg-info-win-rec"+this.visibleInfoWinData.id)
+		    .attr("width", function(d) {
+		
+			    	return this.nextSibling.getBBox().width+2*thisObj.marginInfoWin;   
+		    })
+		    .attr("height", function(d) {
+
+		    	return this.nextSibling.getBBox().height+2*thisObj.marginInfoWin;   
+		    })
+		}
 		
 		
+	},
+	createInfoWin : function createInfoWin(){
+		var thisObj = this;
 	
 		
-		this.txt = this.textGroup.selectAll("g").data(this.activeNodes, function(d) { 
+		this.txt = this.textGroup.selectAll(".tsg-node-info-win").data(this.activeNodes, function(d) { 
 												return d.id;
 											});
 		this.txt.exit().remove();
 		
 		var txtEnter = this.txt.enter();
 
-		var txtCont = txtEnter.append("svg:g").style("display","none")
-			.attr("id",function(d){return "tsg-node-info-win-"+d.id})
-			.attr("class","tsg-node-info-win")
-		this.createInfoWin(txtCont);
+		var root = txtEnter.append("svg:g")
+		.style("display","none")
+		.attr("id",function(d){return "tsg-node-info-win-"+d.id})
+		.attr("class","tsg-node-info-win")
 		
-		this.force.on("tick",function(){
-			thisObj.tick();
-		});
-		this.force.start();
+		var parent = root.append("svg:g").attr("class",function(d){return "tsg-node-info-g"+d.id})
+//		.attr("transform", function(d) {
+//			
+//	    	return "translate("+ thisObj.nodeSizeMap[d.id]/2+",0)";
+//		})
+//		
+		 parent.append("svg:rect")
+		.attr("x", 0)
+		.attr("y", 0)
+		.attr("rx", 20)
+		.attr("ry", 20)
+	    .attr("class",function(d){   
+			return d.tsgClass + " tsg-info-win-rec tsg-info-win-rec"+d.id;
+		})	
+		.on("mouseover",function(d){   
+			thisObj.persistInfoWin(d);
+		})	
+		.on("mouseout",function(d){
+			thisObj.closeInfoWin(d);
+				
+		})
 		
+		var innerg = parent.append("g")
+		.attr("transform", function(d) {
+			
+	    	return "translate("+thisObj.marginInfoWin+","+thisObj.marginInfoWin/2+")";
+		})
+//		
+		var lineHeight = this.marginInfoWin;
+		var lineIndent = 0;
+		var y = 0;
+		
+		y+=lineHeight;
+//		
+//		innerg.append("svg:text")		
+//		.attr("x", lineIndent)
+//		.attr("y", y)
+//		.attr("class", function(d) { return "shadow text"+d.id; })
+//		.text(function(d) { return getDescription(d); });
+
+		innerg.append("svg:text")
+		.attr("x", lineIndent)
+		.attr("y", y)
+		.attr("class", function(d) { return "text title text"+d.id; })
+		.text(function(d) { return getDescription(d); });
+
+		y+=lineHeight;
+		y+=lineHeight;
+		
+		innerg.append("svg:text")
+		.attr("x", lineIndent)
+		.attr("y", y)
+		.attr("class", function(d) { return "text text"+d.id; })
+		.text(function(d) { return 'Following: '+d.friendsCount; });
+
+		y+=lineHeight;
+		
+		innerg.append("svg:text")
+		.attr("x", lineIndent)
+		.attr("y", y)
+		.attr("class", function(d) { return "text text"+d.id; })
+		.text(function(d) { return 'Followers: '+d.followersCount; });
+//
+//		y+=lineHeight;
+//		
+//		innerg.append("svg:text")
+//		.attr("x", lineIndent)
+//		.attr("y", y)
+//		.attr("class", function(d) { return "text text"+d.id; })
+//		.text(function(d) { return 'Mutual friends: '+thisObj.intersectMutualLinksOfNodes(thisObj.centerNodeId, d.id).length});
+
+		y+=lineHeight;
+		
+		innerg.append("a")
+		.attr("xlink:href",function(d){
+			return getGraph(d.screenName)
+		})
+		
+		.append("text")
+		.attr("x", lineIndent)
+		.attr("y", y)
+		.attr("class", function(d) { return "text text"+d.id; })
+		.on("mouseover",function(d){
+			thisObj.persistInfoWin(d);
+		})	
+		.text(function(d) { return 'Show Graph'});
+//		.on("click", function(d) { 
+//			window.location = "/user?screenName="+d.screenName 
+//			})
+//		.style("pointer", "cursor")
+
+		y+=lineHeight;
+		
+		innerg.append("a")
+		.attr("xlink:href",function(d){
+			return "https://www.twitter.com/"+d.screenName;
+		})
+		.attr("target","_blank")
+		
+		.append("text")
+		.attr("x", lineIndent)
+		.attr("y", y)
+		.attr("class", function(d) { return "text text"+d.id; })
+		.on("mouseover",function(d){
+			thisObj.persistInfoWin(d);
+		})	
+		.text(function(d) { return 'Show '+d.screenName+'\'s Profile'});
+//
+//		y+=lineHeight;
+//		
+//		innerg.append("svg:a").attr("xlink:href",function(d){"https://twitter.com/"+d.screenName}).append("svg:text")
+//		.style("display","none")
+//		.attr("x", lineIndent)
+//		.attr("y", y)
+//		.attr("class", function(d) { return "text text"+d.id; })
+//		.text(function(d) { return 'Go to Twitter Profile'});
+
+		function getDescription(d){
+			return '@'+d.screenName+' ('+d.fullName+') '//+d.id;	
+		}
+
+		    	
+	    
+	},	
+	appendAnchor : function appendAnchor(parent,url, target, text){
+		
+		var thisObj = this;
+		var a = parent.append("a")
+		.attr("href",url)
+		.append("text")
+		.attr("class","text")
+		.on("mouseover",function(d){
+			thisObj.persistInfoWin(d);
+		})	
+		.style("cursor", "pointer")
+		.text(function(d) { return 'Show Graph'});
+		
+		if(target){
+
+			a.attr("target",target)
+		}
+		return a;
 	},
-	getPositionOfLink : function(d){
+	getPositionOfLink : function getPositionOfLink(d){
 		var dx = d.target.x - d.source.x,
 		dy = d.target.y - d.source.y,
 		dr = Math.sqrt(dx * dx + dy * dy);
@@ -404,15 +619,9 @@ var Graph = GraphDataMgr.extend({
 //		console.log ( 'link: '+d.source.screenName+"-"+ d.target.screenName);
 		return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x + "," + d.target.y;
 	},
-	tick : function tick() {
-		
+	detectCollisions : function detectCollisions(){
 		var thisObj = this;
-//	
-//		var alpha = this.force.alpha();
-//		if(alpha<0.03){
-//			this.force.stop();
-//			return;
-//		}
+
 		var rootNode = thisObj.getNodeById(thisObj.centerNodeId);
 		if(rootNode){	
 
@@ -453,15 +662,26 @@ var Graph = GraphDataMgr.extend({
 			}
 
 		}
+	},
+	
+	tick : function tick() {
+
+		var thisObj = this;
+		this.detectCollisions();
 	
 		this.pth.attr("d", this.getPositionOfLink);
 //		this.dpth.attr("d", this.getPositionOfLink);
 
 		this.txt.attr("transform", function(d) {
+			
+
 			return "translate(" + d.x + "," + d.y + ")";
 		});
 
+		this.setInfoWinPosition();
+
 		this.images.attr("transform", function(d) {
+			
 			d.x = Math.max(d.radius, Math.min(thisObj.w - d.radius, d.x));
 			d.y = Math.max(d.radius, Math.min(thisObj.thirdViewBottomLeft.y - d.radius, d.y)); 
 
@@ -469,118 +689,22 @@ var Graph = GraphDataMgr.extend({
 		});
 
 	},
-//	dragStart : function dragStart(d, i) 
-//	{
-////		this.force.friction(0);
-//	},	 
-//	dragMove : function dragMove(d, i) 
-//	{
-//		d.px += d3.event.dx;
-//		d.py += d3.event.dy;
-//		d.x += d3.event.dx;
-//		d.y += d3.event.dy; 
-//		this.tick();
-//	},	 
-//	dragEnd : function dragEnd(d, i) 
-//	{
-//		d.fixed = !d.fixed ;
-////		this.update();
-////		this.force.friction(0.01);
-//		this.force.resume();
-//	},
-	createInfoWin : function createInfoWin(svgEle){
-		var thisObj = this;
-//		svgEle.append("svg:text")
-//		.style("display","none")		
-//		.attr("x", 0)
-//		.attr("y", 0)
-//		.attr("class", function(d) { return "shadow text"+d.id; })
-//		.text(function(d) { return getDescription(d); });
-		
-		svgEle.on("mouseout",function(d){
-//			if(thisObj.clickedImageId != d.id){
-				thisObj.vis.selectAll(".tsg-node-info-win").style("display","none");	
-//			}
-//			thisObj.textGroup.selectAll(".tsg-node-info-win").style("display","none").selectAll("body").html('');
-			
-		})
-		var lineHeight = 20;
-		
 
-		svgEle.append("svg:rect")
-		.attr("x", -5)
-		.attr("y", -25)
-	    .attr("class","tsg-info-win-rec")
-	    .attr("width", 250)
-	    .attr("height",140)
-	    .style("stroke", "#000");
-//	    .style("stroke", "#000")
-	    	
-
-		var y = 0;
-		
-		svgEle.append("svg:text")
-		.attr("x", 0)
-		.attr("y", y)
-		.attr("class", function(d) { return "text text"+d.id; })
-		.text(function(d) { return getDescription(d); });
-		
-		y+=lineHeight;
-		
-		svgEle.append("svg:text")
-		.attr("x", 0)
-		.attr("y", y)
-		.attr("class", function(d) { return "text text"+d.id; })
-		.text(function(d) { return 'Following: '+d.friendsCount; });
-
-		y+=lineHeight;
-		
-		svgEle.append("svg:text")
-		.attr("x", 0)
-		.attr("y", y)
-		.attr("class", function(d) { return "text text"+d.id; })
-		.text(function(d) { return 'Followers: '+d.followersCount; });
-
-		y+=lineHeight;
-		
-		svgEle.append("svg:text")
-		.attr("x", 0)
-		.attr("y", y)
-		.attr("class", function(d) { return "text text"+d.id; })
-		.text(function(d) { return 'Mutual friends: '+thisObj.intersectMutualLinksOfNodes(thisObj.centerNodeId, d.id).length});
-
-		y+=lineHeight;
-		
-		svgEle.append("svg:a").style("xlink:href",function(d){getGraph(d.screenName)}).append("svg:text")
-		.attr("x", 0)
-		.attr("y", y)
-		.attr("class", function(d) { return "text text"+d.id; })
-		.text(function(d) { return 'Show Graph'});
-
-		y+=lineHeight;
-		
-		svgEle.append("svg:a").attr("xlink:href",function(d){"https://twitter.com/"+d.screenName}).append("svg:text")
-		.attr("x", 0)
-		.attr("y", y)
-		.attr("class", function(d) { return "text text"+d.id; })
-		.text(function(d) { return 'Show '+d.screenName+'\'s Profile'});
-//
-//		y+=lineHeight;
-//		
-//		svgEle.append("svg:a").attr("xlink:href",function(d){"https://twitter.com/"+d.screenName}).append("svg:text")
-//		.style("display","none")
-//		.attr("x", 0)
-//		.attr("y", y)
-//		.attr("class", function(d) { return "text text"+d.id; })
-//		.text(function(d) { return 'Go to Twitter Profile'});
-
-		function getDescription(d){
-			return '@'+d.screenName+' ('+d.fullName+') '//+d.id;	
+	keepObjInScreen : function keepObjInScreen(obj, boundingRect){
+		if(!boundingRect){
+			boundingRect = this.svg.node().getBBox();
 		}
+		if(!obj.radius){
 
-		    	
-	    
-	},	
+			obj.x = Math.max(obj.width, Math.min(boundingRect.width - obj.width, obj.x));
+			obj.y = Math.max(obj.height, Math.min(boundingRect.height - obj.height, obj.y));
+		}else{
+
+			obj.x = Math.max(obj.radius, Math.min(boundingRect.width - obj.radius, obj.x));
+			obj.y = Math.max(obj.radius, Math.min(boundingRect.height - obj.radius, obj.y));
+		}
+		return obj;
+	},
 	nodeClicked : function nodeClicked(id){
 		if(id==-1){
 			return;

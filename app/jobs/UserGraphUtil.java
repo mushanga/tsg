@@ -65,7 +65,8 @@ public class UserGraphUtil extends GraphUtil {
       userNodeSizeMap.put(root, 1D);
    }
    public void sort(){
-      Set<Long> rootFriends = nodeMutuallyLinkedNodesMap.get(this.root);
+      Set<Long> rootAndFriends = nodeMutuallyLinkedNodesMap.get(this.root);
+      rootAndFriends.add(this.root);
       
       friendIntersectionWithRoot.put(this.root, nodeMutuallyLinkedNodesMap.get(this.root));
      
@@ -76,7 +77,7 @@ public class UserGraphUtil extends GraphUtil {
          if(Util.isValid(friendsOfNode)){
 
             fson.addAll(friendsOfNode);
-            fson.retainAll(rootFriends);
+            fson.retainAll(rootAndFriends);
          }
          friendIntersectionWithRoot.put(node,fson);
       }

@@ -1,24 +1,24 @@
 
 .tsg-info-win-rec{
-  fill: rgba(0,0,0,0.3);
+  fill: rgba(255,255,255,0.2);
 /*   //stroke: #666; */
-/*   stroke: rgba(255,50,50,0.4); */
-/*   stroke-dasharray: 0,2 1; */
+  stroke-width: 7;
+  stroke-dasharray: 0,6 3;
 }
 .tsg-nc{
-  fill: black;
 /*   //stroke: #666; */
   stroke: rgba(255,50,50,0.4);
+  fill: rgba(255,50,50,0.4);
 /*   stroke-dasharray: 0,2 1; */
 }
 .tsg-root-nc{
-  fill: black;
-  stroke: rgba(255, 255, 255, 0.3);
+  stroke: rgba(255, 255, 255, 0.5);
+  fill: rgba(255, 255, 255, 0.4);
 /*   stroke-dasharray: 0,2 1; */
 }
 .tsg-root-friend-nc{
-  fill: black;
-  stroke: rgba(92, 166, 170, 0.3);
+  stroke: rgba(92, 166, 170, 0.5);
+  fill: rgba(92, 166, 170, 0.4);
 /*   stroke-dasharray: 0,2 1; */
 }
 .tsg-selected-nc{
@@ -26,12 +26,29 @@
 /*   stroke-dasharray: 0,2 1; */
 }
 text {
-	fill:#fff;
+	fill:#EEE;
 /* 	font-size: 10px; */
+/* 	font-weight:bold; */
 /* 	font-size: 20px; */
-/*   stroke:#EEE; */
+/*   stroke:#FFF; */
+/*   stroke-width: 1px; */
 /*   font: 16px sans-serif bold; */
   pointer-events: none;
+}
+text.title{
+	font-weight:bolder;
+	font-size: 18px;
+/*   stroke: rgba(0, 0, 0, 0.5); */
+/*   stroke-width: 2px; */
+}
+a text {
+  pointer-events: all;
+  cursor: pointer;
+  font-weight: bolder;
+  
+  stroke: rgba(0, 0, 0, 0.4);
+/*   text-decoration: underline; */
+  
 }
 
 text.shadow {
