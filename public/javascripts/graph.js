@@ -391,7 +391,7 @@ var Graph = GraphDataMgr.extend({
 		this.visibleInfoWinData = d;
 //		this.svg.selectAll(".tsg-node-info-win").style("display","none");
 
-		
+//		d3.select("#tsg-node-info-win-"+d.id).selectAll("text").style("display","block");
 		$("#tsg-node-info-win-"+d.id).stop(true).fadeTo(300,0.3).fadeTo(500,1);
 		this.tick();
 		
@@ -400,13 +400,14 @@ var Graph = GraphDataMgr.extend({
 	persistInfoWin : function persistInfoWin(d){
 		this.visibleInfoWinData = d;
 //		this.svg.selectAll(".tsg-node-info-win").style("display","none");
-		
+		d3.select("#tsg-node-info-win-"+d.id).selectAll(".details-text").style("display","block");
 		$("#tsg-node-info-win-"+d.id).stop(true).fadeTo(50,1);
-//		this.tick();
+		this.tick();
 	},
 
 	closeInfoWin : function closeInfoWin(d){
 		this.visibleInfoWinData = null;
+		d3.select("#tsg-node-info-win-"+d.id).selectAll(".details-text").style("display","none");
 		$("#tsg-node-info-win-"+d.id).stop(true).fadeOut(300);
 	},
 	
@@ -423,14 +424,14 @@ var Graph = GraphDataMgr.extend({
 				var ty = "";
 				var objRadius = thisObj.nodeSizeMap[d.id]/2;
 				if(d.x + objRadius + width >thisObj.w){
-					tx = -objRadius-width;
+					tx = thisObj.w - (d.x + objRadius+width);
 					
 				}else{
 					tx = objRadius;
 				}
 				
 				if(d.y + objRadius + height >thisObj.h){
-					ty = -height;
+					ty = thisObj.h - (d.y + objRadius + height);
 				}else{
 					ty = 0;
 				}	
@@ -497,15 +498,15 @@ var Graph = GraphDataMgr.extend({
 //		
 		var lineHeight = this.marginInfoWin;
 		var lineIndent = 0;
-		var y = 0;
+		var y = 5;
 		
 		y+=lineHeight;
 //		
-//		innerg.append("svg:text")		
-//		.attr("x", lineIndent)
-//		.attr("y", y)
-//		.attr("class", function(d) { return "shadow text"+d.id; })
-//		.text(function(d) { return getDescription(d); });
+		innerg.append("svg:text")		
+		.attr("x", lineIndent)
+		.attr("y", y)
+		.attr("class", function(d) { return "shadow title text"+d.id; })
+		.text(function(d) { return getDescription(d); });
 
 		innerg.append("svg:text")
 		.attr("x", lineIndent)
@@ -516,18 +517,34 @@ var Graph = GraphDataMgr.extend({
 		y+=lineHeight;
 		y+=lineHeight;
 		
+		innerg.append("svg:text")		
+		.attr("x", lineIndent)
+		.attr("y", y)
+		.style("display","none")
+		.attr("class", function(d) { return "shadow details-text text"+d.id; })
+		.text(function(d) {  return 'Following: '+d.friendsCount; });
+
 		innerg.append("svg:text")
 		.attr("x", lineIndent)
 		.attr("y", y)
-		.attr("class", function(d) { return "text text"+d.id; })
+		.attr("class", function(d) { return "details-text text"+d.id; })
+		.style("display","none")
 		.text(function(d) { return 'Following: '+d.friendsCount; });
 
 		y+=lineHeight;
+
+		innerg.append("svg:text")		
+		.attr("x", lineIndent)
+		.attr("y", y)
+		.style("display","none")
+		.attr("class", function(d) { return "shadow details-text text"+d.id; })
+		.text(function(d) { return 'Followers: '+d.followersCount; });
 		
 		innerg.append("svg:text")
 		.attr("x", lineIndent)
 		.attr("y", y)
-		.attr("class", function(d) { return "text text"+d.id; })
+		.attr("class", function(d) { return "details-text text"+d.id; })
+		.style("display","none")
 		.text(function(d) { return 'Followers: '+d.followersCount; });
 //
 //		y+=lineHeight;
@@ -540,19 +557,31 @@ var Graph = GraphDataMgr.extend({
 
 		y+=lineHeight;
 		
-		innerg.append("a")
+		var a = innerg.append("a")
 		.attr("xlink:href",function(d){
 			return getGraph(d.screenName)
 		})
-		
-		.append("text")
+		a.append("svg:text")		
 		.attr("x", lineIndent)
 		.attr("y", y)
-		.attr("class", function(d) { return "text text"+d.id; })
+		.style("display","none")
+		.attr("class", function(d) { return "shadow details-text text"+d.id; })
+		.text(function(d) {  return 'Show Graph' });
+		
+		a.append("text")
+		.attr("x", lineIndent)
+		.attr("y", y)
+		.style("display","none")
+		.attr("class", function(d) { return "details-text text"+d.id; })
 		.on("mouseover",function(d){
 			thisObj.persistInfoWin(d);
 		})	
 		.text(function(d) { return 'Show Graph'});
+		
+
+	
+		
+		
 //		.on("click", function(d) { 
 //			window.location = "/user?screenName="+d.screenName 
 //			})
@@ -560,20 +589,28 @@ var Graph = GraphDataMgr.extend({
 
 		y+=lineHeight;
 		
-		innerg.append("a")
+		a = innerg.append("a")
 		.attr("xlink:href",function(d){
 			return "https://www.twitter.com/"+d.screenName;
 		})
 		.attr("target","_blank")
 		
-		.append("text")
+		a.append("svg:text")		
 		.attr("x", lineIndent)
 		.attr("y", y)
-		.attr("class", function(d) { return "text text"+d.id; })
+		.style("display","none")
+		.attr("class", function(d) { return "shadow details-text text"+d.id; })
+		.text(function(d) {  return 'Show Profile'});
+		
+		a.append("text")
+		.style("display","none")
+		.attr("x", lineIndent)
+		.attr("y", y)
+		.attr("class", function(d) { return "details-text text"+d.id; })
 		.on("mouseover",function(d){
 			thisObj.persistInfoWin(d);
 		})	
-		.text(function(d) { return 'Show '+d.screenName+'\'s Profile'});
+		.text(function(d) { return 'Show Profile'});
 //
 //		y+=lineHeight;
 //		
@@ -654,7 +691,7 @@ var Graph = GraphDataMgr.extend({
 			}
 			
 			friends.push(rootNode);
-			var q = d3.geom.quadtree(friends);
+			var q = d3.geom.quadtree(this.activeNodes);
 
 			q.visit(collide(rootNode));
 
@@ -662,15 +699,21 @@ var Graph = GraphDataMgr.extend({
 
 				q.visit(collide(friends[i]));
 			}
-
-			others.push(node);
-			q = d3.geom.quadtree(others);
-			q.visit(collide(node));
-
 			for (var i in others) {
 
 				q.visit(collide(others[i]));
 			}
+			
+			others.push(node);
+			var q2 = d3.geom.quadtree(others);	
+			q2.visit(collide(node));
+			for (var i in others) {
+
+				q2.visit(collide(others[i]));
+			}
+			
+
+			
 
 		}
 	},
@@ -679,7 +722,7 @@ var Graph = GraphDataMgr.extend({
 
 		var thisObj = this;
 		this.detectCollisions();
-	
+
 		this.pth.attr("d", this.getPositionOfLink);
 //		this.dpth.attr("d", this.getPositionOfLink);
 
@@ -688,9 +731,11 @@ var Graph = GraphDataMgr.extend({
 
 			return "translate(" + d.x + "," + d.y + ")";
 		});
-
+		
+		
 		this.setInfoWinPosition();
-
+		
+		
 		this.images.attr("transform", function(d) {
 			
 			d.x = Math.max(d.radius, Math.min(thisObj.w - d.radius, d.x));
@@ -698,7 +743,7 @@ var Graph = GraphDataMgr.extend({
 
 			return "translate(" + d.x + "," + d.y + ")";
 		});
-
+	
 	},
 
 	keepObjInScreen : function keepObjInScreen(obj, boundingRect){

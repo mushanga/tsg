@@ -46,14 +46,19 @@ a text {
   cursor: pointer;
   font-weight: bolder;
   
-  stroke: rgba(0, 0, 0, 0.4);
+/*   stroke: rgba(0, 0, 0, 0.4); */
 /*   text-decoration: underline; */
   
 }
 
 text.shadow {
-  stroke:rgba(42, 120, 120, 0.6);
+  stroke:rgba(0,0,0, 0.6);
   stroke-width: 4px;
+/*   stroke-opacity: .6; */
+}
+text.shadow-small {
+  stroke:rgba(0,0,0, 0.6);
+  stroke-width: 2px;
 /*   stroke-opacity: .6; */
 }
 rect {
