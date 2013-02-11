@@ -43,7 +43,7 @@ import util.UserLookup;
 
 public class GetFollowingsJob extends GraphJobBase {
 
-	private static int BATCH_OP_SIZE = 50;
+	private static int MAX_FOLLOWING = 1000;
 	public Long ownerId;
 	
 	public GetFollowingsJob(Long ownerId) {
@@ -79,10 +79,12 @@ public class GetFollowingsJob extends GraphJobBase {
 			List<Long> fwings = twitter.getFollowingIds(ownerId);
 			//Do not replace with 'isValid'... null means error here
 			if(null != fwings){
-	         for (Long followingId : fwings) {
+			   if(fwings.size()>=MAX_FOLLOWING){
 
-	            followingList.add(followingId);
-	         }
+	            followingList = new HashSet<Long>(fwings.subList(0, MAX_FOLLOWING));
+			   }else{
+			      followingList = new HashSet<Long>(fwings);
+			   }
 	         GraphDatabase.addFriendships(ownerId,followingList);
 	         fl.setStatusSuccessful();
 			}else{
