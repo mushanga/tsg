@@ -47,12 +47,15 @@ public class FindSomeoneToRevealJob extends GraphJobBase {
    @Override
    public void doJob() {
       try {
-         List<UserGraph> graphs = UserGraph.getWaitingList();
-         if (!Util.isValid(graphs)) {
-            User someone = UserGraph.getSomeoneToReveal();
-            UserGraph ug = new UserGraph(someone.twitterId);
-            ug.save();
+         if(!Play.configuration.get("application.mode").equals("dev")){
+            List<UserGraph> graphs = UserGraph.getWaitingList();
+            if (!Util.isValid(graphs)) {
+               User someone = UserGraph.getSomeoneToReveal();
+               UserGraph ug = new UserGraph(someone.twitterId);
+               ug.save();
+            }
          }
+       
       } catch (Exception e) {
          try {
             JPA.em().getTransaction().rollback();

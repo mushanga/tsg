@@ -46,7 +46,13 @@ public class UserGraphUtil extends GraphUtil {
          if(userId==root){
             continue;
          }
-         Integer numberOfCommons = friendIntersectionWithRoot.get(userId).size();
+         Integer numberOfCommons = 0;
+         
+         try {
+            numberOfCommons = friendIntersectionWithRoot.get(userId).size();
+         } catch (Exception e) {
+            
+         }
          if(numberOfCommons>max){
             max = numberOfCommons;
          }     
@@ -55,8 +61,14 @@ public class UserGraphUtil extends GraphUtil {
       double maxSizeOverRoot = 0.75;
 
       for(Long userId: nodesList){
-         Integer intersectCount = friendIntersectionWithRoot.get(userId).size();
-         Double coefficient = (Double.valueOf(intersectCount) / (double) max)*maxSizeOverRoot;
+Integer numberOfCommons = 0;
+         
+         try {
+            numberOfCommons = friendIntersectionWithRoot.get(userId).size();
+         } catch (Exception e) {
+            
+         }
+         Double coefficient = (Double.valueOf(numberOfCommons) / (double) max)*maxSizeOverRoot;
          if(coefficient.isNaN()){
             coefficient = 0D;
          }
