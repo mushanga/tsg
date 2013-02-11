@@ -66,29 +66,32 @@ public class UserGraphUtil extends GraphUtil {
    }
    public void sort(){
       Set<Long> rootAndFriends = nodeMutuallyLinkedNodesMap.get(this.root);
-      rootAndFriends.add(this.root);
-      
-      friendIntersectionWithRoot.put(this.root, nodeMutuallyLinkedNodesMap.get(this.root));
-     
-      for(Long node : this.nodesList){
+      if(rootAndFriends!=null){
+         rootAndFriends.add(this.root);
+         
+         friendIntersectionWithRoot.put(this.root, nodeMutuallyLinkedNodesMap.get(this.root));
+        
+         for(Long node : this.nodesList){
 
-         Set<Long> friendsOfNode = nodeMutuallyLinkedNodesMap.get(node);
-         Set<Long> fson = new HashSet<Long>();
-         if(Util.isValid(friendsOfNode)){
+            Set<Long> friendsOfNode = nodeMutuallyLinkedNodesMap.get(node);
+            Set<Long> fson = new HashSet<Long>();
+            if(Util.isValid(friendsOfNode)){
 
-            fson.addAll(friendsOfNode);
-            fson.retainAll(rootAndFriends);
+               fson.addAll(friendsOfNode);
+               fson.retainAll(rootAndFriends);
+            }
+            friendIntersectionWithRoot.put(node,fson);
          }
-         friendIntersectionWithRoot.put(node,fson);
+
+
+         Collections.sort(this.nodesList, new ByCommonFriends(friendIntersectionWithRoot));
+         Collections.reverse(this.nodesList);
+         
+
+        nodesList.remove(root);
+        nodesList.add(0, root);
       }
-
-
-      Collections.sort(this.nodesList, new ByCommonFriends(friendIntersectionWithRoot));
-      Collections.reverse(this.nodesList);
-      
-
-     nodesList.remove(root);
-     nodesList.add(0, root);
+    
    }
    private class ByCommonFriends implements Comparator<Long>{
 
@@ -119,27 +122,19 @@ public class UserGraphUtil extends GraphUtil {
       }
       
    }
-   
-   public void calculateLinkStrength(){
-      if(Util.isValid(cliques)){
-         List<Long> tempNodes = new ArrayList<Long>(this.nodesList);
-         
-         for(HashSet<Long> clique : this.cliques){
-            HashSet<Long> tempClique = new HashSet<Long>(clique);
-            tempClique.retainAll(tempNodes);
-           for(Long node :tempClique){
-              userLinkSizeMap.put(node, clique.size());
-              tempNodes.remove(node);
-           }
-          
-            
+
+   public void calculateLinkStrength(){ 
+
+      for(Long id : this.nodesList){
+         int friends = 0;
+
+         try {
+            friends =  this.nodeMutuallyLinkedNodesMap.get(id).size();
+         } catch (Exception e) {
+
          }
-         for(Long node :tempNodes){
-            userLinkSizeMap.put(node, 1);
-         }
-         
+         userLinkSizeMap.put(id, friends);
       }
-    
       
    }
    

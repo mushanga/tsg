@@ -61,28 +61,29 @@ var Graph = GraphDataMgr.extend({
 		.size([this.w, this.h])
 		.gravity(0.1)
 		.charge(-300)
-		.linkDistance(function(d){			
-			var src = d.source.id;
-			var trg = d.target.id;
-//			var srcSize = thisObj.linkSizeMap[src];
-//			var trgSize = thisObj.linkSizeMap[trg];
-			var srcSize = thisObj.getMutualLinks(src).length;
-			var trgSize = thisObj.getMutualLinks(trg).length;
-			var max = (srcSize>trgSize)?srcSize:trgSize;
-			return Math.sqrt(max)*30;
-			
-		})
+//		.linkDistance(function(d){			
+//			var src = d.source.id;
+//			var trg = d.target.id;
+////			var srcSize = thisObj.linkSizeMap[src];
+////			var trgSize = thisObj.linkSizeMap[trg];
+//			var srcSize = thisObj.getMutualLinks(src).length;
+//			var trgSize = thisObj.getMutualLinks(trg).length;
+//			var max = (srcSize>trgSize)?srcSize:trgSize;
+//			return Math.sqrt(max)*30;
+//			
+//		})
 		.linkStrength(function(d){			
 			var src = d.source.id;
 			var trg = d.target.id;
-//			var srcSize = thisObj.linkSizeMap[src];
-//			var trgSize = thisObj.linkSizeMap[trg];
-			var srcSize = thisObj.getMutualLinks(src).length;
-			var trgSize = thisObj.getMutualLinks(trg).length;
+			var srcSize = thisObj.linkSizeMap[src];
+			var trgSize = thisObj.linkSizeMap[trg];
+//			var srcSize = thisObj.getMutualLinks(src).length;
+//			var trgSize = thisObj.getMutualLinks(trg).length;
 			var max = (srcSize>trgSize)?srcSize:trgSize;
 			if(!max){
 				max = 1;
 			}
+			
 			return 1.5/max;
 //			if(	
 //			thisObj.checkMutualLink(thisObj.centerNodeId,src) && thisObj.checkMutualLink(thisObj.centerNodeId,trg)
@@ -151,7 +152,7 @@ var Graph = GraphDataMgr.extend({
 	addLinkSizeMap : function addLinkSizeMap(plinkSizeMap){
 
 		var keys=		Object.keys(plinkSizeMap);
-		
+
 		for(var key in keys ){				
 			var size = plinkSizeMap[keys[key]];
 			if(!size){
@@ -363,11 +364,11 @@ var Graph = GraphDataMgr.extend({
 	    	return - thisObj.nodeSizeMap[d.id]/2;
 		})  
 		.attr("width", function(d) {
-			d.radius =  (thisObj.nodeSizeMap[d.id]*2)/3;
+			d.radius = (thisObj.nodeSizeMap[d.id]/2) * 1.5;
 	    	return thisObj.nodeSizeMap[d.id];
 		})
 		.attr("height", function(d) {
-			d.radius =  (thisObj.nodeSizeMap[d.id]*2)/3;
+			d.radius =  (thisObj.nodeSizeMap[d.id]/2) * 1.5;
 	    	return thisObj.nodeSizeMap[d.id];
 		});
 		
@@ -621,6 +622,13 @@ var Graph = GraphDataMgr.extend({
 	},
 	detectCollisions : function detectCollisions(){
 		var thisObj = this;
+//		var q = d3.geom.quadtree(this.activeNodes);
+//
+//
+//		for (var i in this.activeNodes) {
+//
+//			q.visit(collide(this.activeNodes[i]));
+//		}
 
 		var rootNode = thisObj.getNodeById(thisObj.centerNodeId);
 		if(rootNode){	
@@ -628,7 +636,7 @@ var Graph = GraphDataMgr.extend({
 			var node = {};
 			node.x = rootNode.x;
 			node.y = rootNode.y;
-			node.radius =rootNode.radius + 150+ Math.sqrt(this.getMutualLinks(rootNode.id).length) * 30 ;
+			node.radius =rootNode.radius + 200+ Math.sqrt(this.getMutualLinks(rootNode.id).length) * 50 ;
 
 
 			var friends = [];
@@ -643,6 +651,7 @@ var Graph = GraphDataMgr.extend({
 					others.push(this.activeNodes[i]);
 				}
 			}
+			
 			friends.push(rootNode);
 			var q = d3.geom.quadtree(friends);
 
@@ -653,6 +662,7 @@ var Graph = GraphDataMgr.extend({
 				q.visit(collide(friends[i]));
 			}
 
+			others.push(node);
 			q = d3.geom.quadtree(others);
 			q.visit(collide(node));
 

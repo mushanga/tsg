@@ -32,8 +32,6 @@ public class GraphUtil {
 
    public List<Long> nodesList = new ArrayList<Long>();
 
-   Map<String,List<String>> adjList = new HashMap<String,List<String>>();
-   HashMap<String,List<String>> mutualLinksMap = new HashMap<String,List<String>>();
    
    List<HashSet<Long>> cliques = new ArrayList<HashSet<Long>>();
 

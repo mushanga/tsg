@@ -85,11 +85,12 @@ public class GraphReadyJob extends GraphJobBase {
      
 	   Logger.info("Creating"+((temp)?" temp":"")+" graph for user: "+ user.screenName);
 	   
-      Logger.info("fillLinksAndNodesForUserSet for user "+ug.ownerId);
+      Logger.info("getAllNodesAndLinksForUserGraph - enter: "+user.screenName);
       UserGraphUtil ugUtil = GraphDatabase.getAllNodesAndLinksForUserGraph(ug.ownerId);
+      Logger.info("getAllNodesAndLinksForUserGraph - exit: "+user.screenName);
 //      UserGraphUtil ugUtil = fillLinksAndNodesForUserSet(ug, graphContentIdList, visibleUsers, visibleLinks, userIncomingCountMap);
       
-      Logger.info("paginateLinks for user "+ug.ownerId); 
+      Logger.info("paginateLinks for user "+user.screenName); 
 	   List<ClientGraph> graphs = paginateLinks(ug, USER_PER_PAGE, ugUtil);
 	   
 	   Gson gson = new GsonBuilder().setPrettyPrinting().create();      

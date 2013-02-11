@@ -42,6 +42,7 @@ import org.neo4j.shell.ShellSettings;
 import exception.UserDoesNotExistException;
 
 import play.Logger;
+import play.cache.Cache;
 
 import scala.collection.JavaConversions;
 import scala.collection.convert.Wrappers.SeqWrapper;
@@ -208,8 +209,9 @@ public class GraphDatabase {
          }
       }
 
-      
+      Logger.info(userId+": UserGraphUtil - enter");
       UserGraphUtil liut = new UserGraphUtil(userId, new ArrayList<Long>(nodes), new ArrayList<String>(links));
+      Logger.info(userId+": UserGraphUtil - exit");
       return liut;
    }
    public static UserGraphUtil getAllNodesAndLinksForUserGraphCypher(long userId) {
@@ -307,6 +309,23 @@ public class GraphDatabase {
 		}
 
 	}
+	private static List<Long> getCacheQuery(long userId, List<Long> userSet){
+	     List<Long> results = (List<Long>) Cache.get("gdb-"+userId+"-"+Util.getIdListAsCommaSeparatedString(userSet));
+	     return results;
+	}
+
+   private static void setCacheQuery(long userId, List<Long> userSet, Set<Long> friends) {
+      Collections.sort(userSet);
+      
+      
+      Cache.set("gdb-"+userId+"-"+Util.getIdListAsCommaSeparatedString(userSet), friends, "30mn");
+   }
+   
+   
+   
+   private static List<Long> getCacheQuery(long userId){
+      return (List<Long>) Cache.get("gdb-"+userId);
+   }
 	private  static void addNodeNoTx(long nodeId) {
 	   Node node1 = graphDatabase.createNode();
       // user.setDataToGDBNode(node1);
@@ -437,7 +456,7 @@ public class GraphDatabase {
 				Node otherNode = rel.getOtherNode(node);
 				long otherNodeId = (Long) otherNode.getProperty(USER_ID);
 				
-				if (!util.Util.isListValid(including) || (including.contains(otherNodeId))) {
+				if (!Util.isListValid(including) || (including.contains(otherNodeId))) {
 					if (!Util.isListValid(exluding) || (!exluding.contains(otherNodeId))) {
 					   if(returnNodeId){
 					      friends.add(otherNode.getId());
@@ -479,51 +498,46 @@ public class GraphDatabase {
 	      return relationships;
 
 	   }
+	  
+	public static Set<Long> convertRelationsToFriendSet(Node node, Iterable<Relationship> rels){
+	   Set<Long> friends = new HashSet<Long>();
+	   if (rels != null) {
+         for (Relationship rel : rels) {
+            
+            long id2 = (Long) rel.getOtherNode(node).getProperty(USER_ID);
+            friends.add(id2);
+            }
+      }
+	   return friends;
+	}
 	public static Set<Long> getMutualFriendsIncluding(long srcId, Collection<Long> userAndAllFollowings) {
-		Set<Long> friends = new HashSet<Long>();
+		
+
+//      Logger.info(srcId+": getMutualFriendsIncluding - enter");
+	   Set<Long> friends = new HashSet<Long>();
 
 		Index<Node> usersIndex = graphDatabase.index().forNodes(USER_ID);
 		Node node = usersIndex.get(USER_ID, srcId).getSingle();
-		Iterable<Relationship> rels = node.getRelationships(Direction.BOTH);
+		Iterable<Relationship> rels = node.getRelationships(Direction.OUTGOING);
+      Iterable<Relationship> rels2 = node.getRelationships(Direction.INCOMING);
 
-		ArrayList<String> links = new ArrayList<String>();
-		if (rels != null) {
-			for (Relationship rel : rels) {
-				
-				long id1 = (Long) rel.getStartNode().getProperty(USER_ID);
-				long id2 = (Long) rel.getEndNode().getProperty(USER_ID);
-				if (!Util.isValid(userAndAllFollowings) || (userAndAllFollowings.contains(id1) && userAndAllFollowings.contains(id2))) {
+      Set<Long> outgoingSet = convertRelationsToFriendSet(node, rels);
 
-					String startId = String.valueOf(id1);
-					String endId = String.valueOf(id2);
-					links.add(startId + "-" + endId);
-				}
-			}
-		}
+      Set<Long> incomingSet = convertRelationsToFriendSet(node, rels2);
+      
+      friends.addAll(incomingSet);
+      friends.retainAll(outgoingSet);
+		
+      friends.retainAll(userAndAllFollowings); 
+		
 
-		for (int i = 0; i < links.size(); i++) {
-			String link = links.get(i);
-			Long id1 = Long.valueOf(link.split("-")[0]);
-			Long id2 = Long.valueOf(link.split("-")[1]);
-			String mirrored = id2 + "-" + id1;
 
-			if (links.contains(mirrored)) {
-
-				if (srcId == id1) {
-					friends.add(id2);
-				} else {
-					friends.add(id1);
-				}
-
-				links.remove(mirrored);
-			}
-
-		}
-
+//      Logger.info(srcId+": getMutualFriendsIncluding - exit");
 		return friends;
 
 	}
-	public static Set<Long> getMutualFriends(long srcId) {
+
+   public static Set<Long> getMutualFriends(long srcId) {
 		return getMutualFriendsIncluding(srcId, null);
 
 	}
