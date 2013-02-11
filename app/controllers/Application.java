@@ -327,6 +327,8 @@ public class Application extends Controller {
             user = TwitterProxyFactory.defaultInstance().searchUser(screenName).get(0);
          } catch (NoAvailableTokenException e1) {
             Logger.error(e1, e1.getMessage());
+         } catch (IndexOutOfBoundsException e1) {
+            Logger.error(e1, e1.getMessage());
          }
       }
   

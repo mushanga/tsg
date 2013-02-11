@@ -636,7 +636,8 @@ var Graph = GraphDataMgr.extend({
 			var node = {};
 			node.x = rootNode.x;
 			node.y = rootNode.y;
-			node.radius =rootNode.radius + 200+ Math.sqrt(this.getMutualLinks(rootNode.id).length) * 50 ;
+			var srcSize = thisObj.linkSizeMap[rootNode.id];
+			node.radius =rootNode.radius + 100+ Math.sqrt(srcSize) * 20 ;
 
 
 			var friends = [];
