@@ -84,7 +84,7 @@ var Graph = GraphDataMgr.extend({
 				max = 1;
 			}
 			
-			return 1.5/max;
+			return 0.5/max;
 //			if(	
 //			thisObj.checkMutualLink(thisObj.centerNodeId,src) && thisObj.checkMutualLink(thisObj.centerNodeId,trg)
 //			){

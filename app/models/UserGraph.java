@@ -83,10 +83,22 @@ public class UserGraph extends TSGModel {
    public static String SUCCESSFUL = "Successful";
    public static String COMPLETED = "Completed";
 
-	public static UserGraph getReadyToBeFinalized(){
-		return UserGraph.find("select ug from UserGraph ug where " +
-				" ug.status = ?", READY_TO_CONSTRUCT).first();
-	}
+   public static UserGraph getReadyToBeFinalized(){
+      return UserGraph.find("select ug from UserGraph ug where " +
+            " ug.status = ?", READY_TO_CONSTRUCT).first();
+   }
+   public static User getSomeoneToReveal(){
+      return User.find("select u from User u where " +
+            " friendsCount < 250 and " +
+            " followersCount>1000000 and " +
+            " u.twitterId not in (select ug.ownerId from UserGraph ug) order by u.followersCount desc ").first();
+   }
+   public static List<User> getCelebrityGraphs(){
+      return User.find("select u from User u where " +
+            " friendsCount < 250 and " +
+            " followersCount>1000000 and " +
+            " u.twitterId in (select ug.ownerId from UserGraph ug where status=?) order by u.followersCount desc",SUCCESSFUL).fetch(100);
+   }
    public static UserGraph getWaiting(){
       return UserGraph.find("byStatus", WAITING).first();
    }

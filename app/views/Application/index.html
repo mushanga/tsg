@@ -1,7 +1,16 @@
 #{extends 'main.html' /}
 #{set title:'Twitter Social Graph' /}
 
-
+#{list users, as:'user'}
+        <div class="userWindow" onclick="window.location='/user?screenName=${user.screenName}'"
+            style='cursor: pointer;'>
+            <a href="/user?screenName=${user.screenName}">
+            	${user.screenName}: ${user.friendsCount}, ${user.followersCount}
+            </a>
+            
+        </div>
+      
+#{/list}
    
 <!-- <script> 
  	$("ul#topNav li:nth-child(1)").addClass('active');

@@ -10,7 +10,7 @@ import play.Logger;
 import play.jobs.Every;
 import util.Util;
 
-@Every("10s")
+//@Every("10s")
 public class TempGraphJob extends GraphReadyJob {
 //private static Long versionDiffToCreateNew = 100L;
 private static double newVersionOverOldVersion = 1.2;

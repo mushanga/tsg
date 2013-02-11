@@ -49,12 +49,12 @@ import exception.UserProtectedException;
 @With({ Auth.class })
 public class Application extends Controller {
 	public static void index() {
-		List<Item> items = Item.findAll();
+		List<User> users = UserGraph.getCelebrityGraphs();
 		Long userId = Cache.get(session.getId(), Long.class);
 		if (userId != null) {
 			renderArgs.put("user", User.findById(userId));
 		}
-		render(items);
+		render(users);
 	}
 
 	public static void showItem(Long itemId) {
