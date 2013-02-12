@@ -52,10 +52,10 @@ public class GetFollowingsJob extends GraphJobBase {
 	@Override
 	public void doJob() {
 		try {
-	       Logger.info("Getting friendlist of "+ownerId);
+//	       Logger.info("Getting friendlist of "+ownerId);
 			getFollowings(ownerId);
 			GetFollowingsBootstrap.threadCounter--;
-         Logger.info("Finished getting friendlist of "+ownerId);
+//         Logger.info("Finished getting friendlist of "+ownerId);
 		}
 		catch (Exception e) {
 			Logger.error(e.getMessage());

@@ -294,7 +294,7 @@ public class GraphDatabase {
 	}
 
 	public static synchronized void addFriendships(long src, Set<Long> followingList) {
-	   Logger.info("Adding "+followingList.size()+" followings of "+src);
+//	   Logger.info("Adding "+followingList.size()+" followings of "+src);
 		Transaction tx = graphDatabase.beginTx();
 		try {
 		   addNodeNoTx(src);
@@ -307,7 +307,7 @@ public class GraphDatabase {
 
 		} finally {
 			tx.finish();
-			Logger.info("Finished adding "+followingList.size()+" followings of "+src);
+//			Logger.info("Finished adding "+followingList.size()+" followings of "+src);
 		}
 
 	}
