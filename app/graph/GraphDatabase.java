@@ -104,13 +104,15 @@ public class GraphDatabase {
       });
    }
    public static void main(String[] args){
-//      
-//      startGraphDatabase();
+      
+      startGraphDatabase();
+      
+//      addFriendships(src, followingList);
 //      GraphUtil lin = getAllNodesAndLinksForUserGraph(73930194);
-//      int a = 0;
-//      a++;
-//      
-//      
+      int a = 0;
+      a++;
+      
+      
    }
    private static List<Relationship> processResults(Object obj){
                List<Relationship> rels = new ArrayList<Relationship>();
