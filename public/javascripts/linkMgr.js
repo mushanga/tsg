@@ -125,6 +125,11 @@ var LinkMgr = Class.extend({
 		
 		return 0.5/max;
 	},
+	getLengthOfLink	: function getLengthOfLink(d){	
+		var delegateObj = this.delegate;
+		var thisObj = this;
+		return 1 / thisObj.getStrengthOfLink(d);
+	},
 	getPositionOfLink : function getPositionOfLink(d){
 
 		var delegateObj = this.delegate;

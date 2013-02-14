@@ -65,6 +65,10 @@ var Graph = GraphDataMgr.extend({
 			return thisObj.linkMgr.getStrengthOfLink(d);
 		})
 		
+		.linkDistance(function(d){			
+			return thisObj.linkMgr.getLengthOfLink(d);
+		})
+		
 
 		this.svg = d3.select(el).append("svg:svg")
 		.attr("width", this.w)
