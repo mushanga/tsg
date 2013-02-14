@@ -31,8 +31,6 @@ public class ClientUserGraph extends ClientGraph{
 	public int page;
 	public int completed;
 	
-	Set<String> links = new HashSet<String>();
-	List<User> users = new ArrayList<User>();
 	
 	
 }

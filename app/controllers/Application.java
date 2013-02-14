@@ -314,7 +314,7 @@ public class Application extends Controller {
 		ClientUserGraph cg = new ClientUserGraph(ug, total, 0, visibleLinks, visibleUsers, 0,  nodeSizeMap,linkSizeMap);
 		cg.needsReload = true;
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		String content = gson.toJson(cg, ClientGraph.class);
+		String content = gson.toJson(cg, ClientUserGraph.class);
 			
 		GraphJobBase.saveGraphJson(ug.ownerId+"-temp", content);
 		return GraphJobBase.getGraphJson(ug.ownerId+"-temp");

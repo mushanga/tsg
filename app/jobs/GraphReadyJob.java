@@ -26,6 +26,7 @@ import org.apache.commons.io.FileUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import models.ClientUser;
 import models.FollowingList;
 import models.Item;
 import models.Link;
@@ -99,7 +100,7 @@ public class GraphReadyJob extends GraphJobBase {
 	         cg.needsReload = true;
 	      }
 
-	      String content = gson.toJson(cg, ClientGraph.class);
+	      String content = gson.toJson(cg, ClientUserGraph.class);
 	      saveGraphJson(ug.ownerId+((temp)?"-temp":"-"+ cg.page), content);
 	      if(temp){
 	         break;
@@ -131,7 +132,7 @@ public class GraphReadyJob extends GraphJobBase {
 			}
 			User user = users.get(i);
 			ids.add(String.valueOf(user.twitterId));
-         cg.users.add(user);
+         cg.users.add(new ClientUser(user));
          cg.userNodeSizeMap.put(user.twitterId,lu.userNodeSizeMap.get(user.twitterId));
          cg.userLinkSizeMap.put(user.twitterId,lu.userLinkSizeMap.get(user.twitterId));
 			
