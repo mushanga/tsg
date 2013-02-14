@@ -45,10 +45,11 @@ public class ClientGraph{
 	      }
 		   for(User user : users){
 		      this.userNodeSizeMap.put(user.twitterId, user.followersCount/max);
-         }
-		   
-		   
-		}
+         }		   
+		}else{
+         this.userNodeSizeMap = nodeSizeMap;
+         
+      }
      
 	}	
 	Set<String> links = new HashSet<String>();
