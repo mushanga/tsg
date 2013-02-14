@@ -91,10 +91,10 @@ public class GraphReadyJob extends GraphJobBase {
 //      UserGraphUtil ugUtil = fillLinksAndNodesForUserSet(ug, graphContentIdList, visibleUsers, visibleLinks, userIncomingCountMap);
       
       Logger.info("paginateLinks for user "+user.screenName); 
-	   List<ClientGraph> graphs = paginateLinks(ug, USER_PER_PAGE, ugUtil);
+	   List<ClientUserGraph> graphs = paginateLinks(ug, USER_PER_PAGE, ugUtil);
 	   
 	   Gson gson = new GsonBuilder().setPrettyPrinting().create();      
-	   for(ClientGraph cg : graphs){
+	   for(ClientUserGraph cg : graphs){
 	      if(temp){
 	         cg.needsReload = true;
 	      }
@@ -109,7 +109,7 @@ public class GraphReadyJob extends GraphJobBase {
 
 	}
 
-	protected List<ClientGraph> paginateLinks(UserGraph ug, int recPerPage,UserGraphUtil lu){
+	protected List<ClientUserGraph> paginateLinks(UserGraph ug, int recPerPage,UserGraphUtil lu){
 	    int total = ug.total;
 	    int completed= ug.completed;
       
@@ -118,14 +118,14 @@ public class GraphReadyJob extends GraphJobBase {
 
 		List<String> ids = new ArrayList<String>();
 		
-		List<ClientGraph> graphs = new ArrayList<ClientGraph>();
+		List<ClientUserGraph> graphs = new ArrayList<ClientUserGraph>();
 		
-		ClientGraph cg = null;
+		ClientUserGraph cg = null;
 		for(int i =0; i<users.size(); i++){
 			
 			if(i%recPerPage == 0){
 				
-				cg = new ClientGraph(ug, total, completed, new HashSet() , new ArrayList(), (i/recPerPage) + 1,new HashMap<Long, Double>(),new HashMap<Long, Integer>());
+				cg = new ClientUserGraph(ug, total, completed, new HashSet() , new ArrayList(), (i/recPerPage) + 1,new HashMap<Long, Double>(),new HashMap<Long, Integer>());
 				cg.cliques = cliques;
 				graphs.add(cg);
 			}

@@ -17,11 +17,11 @@ import edu.uci.ics.jung.graph.UndirectedGraph;
 import edu.uci.ics.jung.graph.UndirectedSparseGraph;
 
 public class UserGraphUtil extends GraphUtil {
-   
+
    public Long root;
 
    HashMap<Long, Double> userNodeSizeMap = new HashMap<Long, Double>();
-   
+
    public HashMap<Long,Set<Long>> friendIntersectionWithRoot = new HashMap<Long, Set<Long>>();
    public HashMap<Long,Integer> userLinkSizeMap = new HashMap<Long, Integer>();
 
@@ -40,33 +40,33 @@ public class UserGraphUtil extends GraphUtil {
 
    protected void normalizeAndGetSizeCoefficient() {
       sort();
-      
+
       int max = 0;
       for(Long userId: nodesList){
          if(userId==root){
             continue;
          }
          Integer numberOfCommons = 0;
-         
+
          try {
             numberOfCommons = friendIntersectionWithRoot.get(userId).size();
          } catch (Exception e) {
-            
+
          }
          if(numberOfCommons>max){
             max = numberOfCommons;
          }     
       }
-      
+
       double maxSizeOverRoot = 0.75;
 
       for(Long userId: nodesList){
-Integer numberOfCommons = 0;
-         
+         Integer numberOfCommons = 0;
+
          try {
             numberOfCommons = friendIntersectionWithRoot.get(userId).size();
          } catch (Exception e) {
-            
+
          }
          Double coefficient = (Double.valueOf(numberOfCommons) / (double) max)*maxSizeOverRoot;
          if(coefficient.isNaN()){
@@ -80,9 +80,9 @@ Integer numberOfCommons = 0;
       Set<Long> rootAndFriends = nodeMutuallyLinkedNodesMap.get(this.root);
       if(rootAndFriends!=null){
          rootAndFriends.add(this.root);
-         
+
          friendIntersectionWithRoot.put(this.root, nodeMutuallyLinkedNodesMap.get(this.root));
-        
+
          for(Long node : this.nodesList){
 
             Set<Long> friendsOfNode = nodeMutuallyLinkedNodesMap.get(node);
@@ -98,12 +98,12 @@ Integer numberOfCommons = 0;
 
          Collections.sort(this.nodesList, new ByCommonFriends(friendIntersectionWithRoot));
          Collections.reverse(this.nodesList);
-         
 
-        nodesList.remove(root);
-        nodesList.add(0, root);
+
+         nodesList.remove(root);
+         nodesList.add(0, root);
       }
-    
+
    }
    private class ByCommonFriends implements Comparator<Long>{
 
@@ -118,7 +118,7 @@ Integer numberOfCommons = 0;
       public int compare(Long o1, Long o2) {
          int c1 = 0;
          int c2 = 0;
-         
+
 
          try {
             c1 = this.friendIntersectionWithRoot.get(o1).size();
@@ -132,24 +132,24 @@ Integer numberOfCommons = 0;
          }
          return c1-c2;
       }
-      
+
    }
 
    public void calculateLinkStrength(){ 
 
       for(Long id : this.nodesList){
-         int friends = 0;
+         int friendCount = 0;
 
          try {
-            friends =  this.nodeMutuallyLinkedNodesMap.get(id).size();
+            friendCount =  this.nodeMutuallyLinkedNodesMap.get(id).size();
          } catch (Exception e) {
 
          }
-         userLinkSizeMap.put(id, friends);
+         userLinkSizeMap.put(id, friendCount);
       }
-      
+
    }
-   
-   
-   
+
+
+
 }

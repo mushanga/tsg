@@ -68,7 +68,7 @@ var InfoWinMgr = Class.extend({
 				var width = this.getBBox().width;
 				var tx = "";
 				var ty = "";
-				var objRadius = delegateObj.nodeSizeMap[d.id]/2;
+				var objRadius = delegateObj.nodeMgr.nodeSizeMap[d.id]/2;
 				if(d.x + objRadius + width >delegateObj.w){
 					tx = delegateObj.w - (d.x + objRadius+width);
 					
@@ -194,14 +194,6 @@ var InfoWinMgr = Class.extend({
 		.attr("class", function(d) { return "details-text text"+d.id; })
 		.style("display","none")
 		.text(function(d) { return 'Followers: '+d.followersCount; });
-//
-//		y+=thisObj.lineHeight;
-//		
-//		innerg.append("svg:text")
-//		.attr("x", lineIndent)
-//		.attr("y", y)
-//		.attr("class", function(d) { return "text text"+d.id; })
-//		.text(function(d) { return 'Mutual friends: '+thisObj.intersectMutualLinksOfNodes(thisObj.centerNodeId, d.id).length});
 
 		y+=thisObj.lineHeight;
 		

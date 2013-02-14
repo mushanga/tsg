@@ -1,21 +1,21 @@
 var GraphDataMgr = Class.extend({
-	
-  init: function(){
 
-	  	this.nodes = new Array();
+	init: function(){
+
+		this.nodes = new Array();
 		this.links= new Array();		
 		this.nodeIncomingMap = {};
 		this.nodeOutgoingMap = {};
-  },
-  clear : function () {
-	  this.nodes.length = 0;
-	  this.links.length = 0;
-	  this.nodeIncomingMap = {};
-	  this.nodeOutgoingMap = {};
+	},
+	clear : function () {
+		this.nodes.length = 0;
+		this.links.length = 0;
+		this.nodeIncomingMap = {};
+		this.nodeOutgoingMap = {};
 
-  },
-  addNode : function (obj) {
-		
+	},
+	addNode : function addNode(obj) {
+	
 		var existing = this.getNodeById(obj.id);
 		if(!existing){
 			
@@ -27,7 +27,13 @@ var GraphDataMgr = Class.extend({
 			existing.followers_count= obj.followers_count;
 		}
 	},	
-	retainNodes : function (list) {
+	addNodes : function addNodes(nodes) {
+
+		for(var i in nodes){
+			this.addNode(nodes[i]);
+		}
+	},	
+	retainNodes : function retainNodes(list) {
 		var missingList = [];
 		for(var i in this.nodes){
 			var missing = true;
@@ -39,34 +45,26 @@ var GraphDataMgr = Class.extend({
 			if(missing){
 				missingList.push(this.nodes[i].id);
 			}
-		
+
 		}
 		for(var i in missingList){
 			this.removeNode(missingList[i]);
-		
+
 		}
-	
-	
+
+
 	},
-	addNodes : function (objList) {
-		
-		for(var i = 0; i<objList.length; i++){				
-			var obj = objList[i];
-			this.addNode(obj);
-			
-		}		
-	},
-	removeNode : function (id) {
-		
+	removeNode : function removeNode(id) {
+
 		var n = this.getNodeById(id);
-	
+
 		var linkArr = this.getLinksBySrcOrTrg(id);
 		for(var i in linkArr){
 			this.removeLink(linkArr[i].source.id, linkArr[i].target.id);
 		}
 		this.nodes.splice(this.findNodeIndex(id),1);
 	},
-	removeLink : function (sourceId,targetId) {
+	removeLink : function removeLink(sourceId,targetId) {
 		var i = 0;
 		var trg = this.getNodeById(targetId);
 		var src = this.getNodeById(sourceId);
@@ -77,7 +75,7 @@ var GraphDataMgr = Class.extend({
 				var trgIncomingArr = this.nodeIncomingMap[trg.id];
 				var iSrc = trgIncomingArr.indexOf(src.id);
 				trgIncomingArr.splice(iSrc,1);
-				
+
 				var srcOutgoingArr = this.nodeOutgoingMap[src.id];
 				iSrc = srcOutgoingArr.indexOf(trg.id);
 				srcOutgoingArr.splice(iSrc,1);
@@ -87,9 +85,9 @@ var GraphDataMgr = Class.extend({
 				i++;
 			}
 		}
-		
+
 	},
-	addLink : function (sourceId, targetId) {
+	addLink : function addLink(sourceId, targetId) {
 
 		if (!this.getLinkBySrcTrgId(sourceId, targetId)) {
 			var srcObj = this.getNodeById(sourceId);
@@ -98,17 +96,17 @@ var GraphDataMgr = Class.extend({
 				"source" : srcObj,
 				"target" : trgObj
 			});
-if(!srcObj || !trgObj){
-	console.log ( 'node not found for link\n src: '+sourceId+'/'+srcObj+'\n trg: '+targetId+'/'+trgObj );
-}
+			if(!srcObj || !trgObj){
+				console.log ( 'node not found for link\n src: '+sourceId+'/'+srcObj+'\n trg: '+targetId+'/'+trgObj );
+			}
 			this.nodeOutgoingMap[srcObj.id].push(trgObj.id);
 			this.nodeIncomingMap[trgObj.id].push(srcObj.id);
 		}
 
 	},
-	addLinks : function(srcDashTrgList) {
-		
-		for(var i = 0; i<srcDashTrgList.length; i++){
+	addLinks : function addLinks(srcDashTrgList) {
+
+		for(var i in srcDashTrgList){
 			var srcDashTrg = srcDashTrgList[i];
 			var src = srcDashTrg.split("-")[0];
 			var trg = srcDashTrg.split("-")[1];
@@ -129,30 +127,30 @@ if(!srcObj || !trgObj){
 			}
 		}
 	},
-	getLinksBySrcId : function(srcId) {
+	getLinksBySrcId : function getLinksBySrcId(srcId) {
 		var ls = [];
 		for (var i in this.links) {
-			
+
 			if (this.links[i].source["id"] === srcId){
 				ls.push(this.links[i]);
 			}
 		}
 		return ls;
 	},
-	getLinksByTrgId : function(trgId) {
+	getLinksByTrgId : function getLinksByTrgId(trgId) {
 		var ls = [];
 		for (var i in this.links) {
-			
+
 			if (this.links[i].target["id"] === trgId){
 				ls.push(this.links[i]);
 			}
 		}
 		return ls;
 	},
-	getLinksBySrcOrTrg : function(id) {
+	getLinksBySrcOrTrg : function getLinksBySrcOrTrg(id) {
 		var ls = [];
 		for (var i in this.links) {
-			
+
 			if (this.links[i].target["id"] === id || this.links[i].source["id"] === id ){
 				ls.push(this.links[i]);
 			}
@@ -167,13 +165,35 @@ if(!srcObj || !trgObj){
 
 		return intersect(this.nodeIncomingMap[id1], this.nodeOutgoingMap[id1]);
 	},
-	intersectMutualLinksOfNodes : function(id1,id2) {
+	intersectMutualLinksOfNodes : function intersectMutualLinksOfNodes(id1,id2) {
 		var mls1 = this.getMutualLinks(id1);
 		var mls2 = this.getMutualLinks(id2);
 		return intersect(mls1, mls2);
 	},
-	findNodeIndex : function(id) {
+	findNodeIndex : function findNodeIndex(id) {
 		for (var i in this.nodes) {if (this.nodes[i]["id"] === id) return i};
-	}
+	},
+	nodesHaveARelation : function nodesHaveARelation(node1Id, node2Id){
+
+		return this.checkMutualLink(node1Id, node2Id);
+	},
+	addAll : function addAll(from,to){
+
+
+		for(var i = 0; i<from.length; i++){				
+			var item = from[i];
+			var found = false;
+			for(var j = 0; j<to.length; j++){				
+				var it = to[j];
+				if(it.id==item.id){
+					found = true;
+				}
+
+			}
+			if(!found){
+				to.push(item);
+			}
+		}
+	},
 
 });

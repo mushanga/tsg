@@ -1,6 +1,9 @@
 var NodeMgr = Class.extend({
 	delegate: null,
 	clickedImageId : -1,
+	imageMin : 32,		
+	imageMax : 60,	
+	nodeSizeMap : {},	
 	init: function(delegate){
 		this.delegate = delegate;
 	},
@@ -8,6 +11,7 @@ var NodeMgr = Class.extend({
 		var thisObj = this;
 
 		thisObj.clickedImageId = -1;
+		this.nodeSizeMap = {};	
 
 	},
 
@@ -27,11 +31,26 @@ var NodeMgr = Class.extend({
 		});
 	
 	},
-	createNodes : function createNodes(){
-
+	addNodeSizeMap : function addNodeSizeMap(pnodeSizeMap){
 		var delegateObj = this.delegate;
 		var thisObj = this;
+		
 
+		var keys=		Object.keys(pnodeSizeMap);
+		
+		var delta = thisObj.imageMax - thisObj.imageMin;
+		for(var key in keys ){				
+			var size = pnodeSizeMap[keys[key]];
+			if(!size){
+				size = 0;
+			}
+			thisObj.nodeSizeMap[keys[key]]= parseInt((size*delta)+thisObj.imageMin);
+		}
+	},
+	createRoundedClips :function createRoundedClips(){
+		var delegateObj = this.delegate;
+		var thisObj = this;
+		
 		var roundedRects= delegateObj.circleGroup.selectAll("rect")
 		.data(delegateObj.activeNodes, function(d) { return d.id;});
 
@@ -39,36 +58,40 @@ var NodeMgr = Class.extend({
 		var defs = roundedRectsEnter.append("defs");
 		defs.append("svg:rect")
 		.attr("class",function(d) {
+			if(delegateObj.centerNodeId > 0){
+				if(delegateObj.centerNodeId == d.id){
+					d.tsgClass ="tsg-root-nc"; 
 
-			if(delegateObj.centerNodeId == d.id){
-				d.tsgClass ="tsg-root-nc"; 
+				}else if(delegateObj.checkMutualLink(delegateObj.centerNodeId, d.id)){
 
-			}else if(delegateObj.checkMutualLink(delegateObj.centerNodeId, d.id)){
+					d.tsgClass = "tsg-root-friend-nc";
+				}else{
+					d.tsgClass = "tsg-nc";
+				}
 
-				d.tsgClass = "tsg-root-friend-nc";
 			}else{
 				d.tsgClass = "tsg-nc";
 			}
 			return d.tsgClass;
 		})
 		.style("stroke-width",function(d) {
-			return delegateObj.nodeSizeMap[d.id]/5;
+			return thisObj.nodeSizeMap[d.id]/5;
 		})
 		.attr("id",function(d) { return 'nc-'+d.id;})	 
 		.attr("x", function(d) {
-			return - delegateObj.nodeSizeMap[d.id]/2;
+			return - thisObj.nodeSizeMap[d.id]/2;
 		})
 		.attr("y",function(d) {
-			return - delegateObj.nodeSizeMap[d.id]/2;
+			return - thisObj.nodeSizeMap[d.id]/2;
 		})
 		.attr("width", function(d) {
-			return delegateObj.nodeSizeMap[d.id];
+			return thisObj.nodeSizeMap[d.id];
 		})
 		.attr("height", function(d) {
-			return delegateObj.nodeSizeMap[d.id];
+			return thisObj.nodeSizeMap[d.id];
 		})		
 		.attr("rx", function(d) {
-			return delegateObj.nodeSizeMap[d.id]/2;
+			return thisObj.nodeSizeMap[d.id]/2;
 		});
 
 		roundedRects.exit().remove();
@@ -79,6 +102,13 @@ var NodeMgr = Class.extend({
 		.append("svg:use")
 		.attr("xlink:href", function(d) { return '#nc-'+d.id;})
 
+	},
+	createNodes : function createNodes(){
+
+		var delegateObj = this.delegate;
+		var thisObj = this;
+
+		thisObj.createRoundedClips();
 
 		delegateObj.images = delegateObj.circleGroup.selectAll("g")
 		.data(delegateObj.activeNodes, function(d) { return d.id;});
@@ -108,18 +138,18 @@ var NodeMgr = Class.extend({
 		.attr("clip-path",function(d) { return 'url(#nc-path-'+d.id+')';})
 		.attr("xlink:href", function(d) { return d.picture;})
 		.attr("x", function(d) {
-			return - delegateObj.nodeSizeMap[d.id]/2;
+			return - thisObj.nodeSizeMap[d.id]/2;
 		})
 		.attr("y",function(d) {
-			return - delegateObj.nodeSizeMap[d.id]/2;
+			return - thisObj.nodeSizeMap[d.id]/2;
 		})  
 		.attr("width", function(d) {
-			d.radius = (delegateObj.nodeSizeMap[d.id]/2) * 1.5;
-			return delegateObj.nodeSizeMap[d.id];
+			d.radius = (thisObj.nodeSizeMap[d.id]/2) * 1.5;
+			return thisObj.nodeSizeMap[d.id];
 		})
 		.attr("height", function(d) {
-			d.radius =  (delegateObj.nodeSizeMap[d.id]/2) * 1.5;
-			return delegateObj.nodeSizeMap[d.id];
+			d.radius =  (thisObj.nodeSizeMap[d.id]/2) * 1.5;
+			return thisObj.nodeSizeMap[d.id];
 		});
 
 		if(delegateObj.centerNodeId>0){
@@ -231,7 +261,7 @@ var NodeMgr = Class.extend({
 			var node = {};
 			node.x = rootNode.x;
 			node.y = rootNode.y;
-			var srcSize = delegateObj.linkSizeMap[rootNode.id];
+			var srcSize = delegateObj.linkMgr.linkSizeMap[rootNode.id];
 			node.radius =rootNode.radius + 100+ Math.sqrt(srcSize) * 20 ;
 
 
@@ -269,10 +299,15 @@ var NodeMgr = Class.extend({
 
 				q2.visit(collide(others[i]));
 			}
+		}else{	
 			
+			var q = d3.geom.quadtree(delegateObj.activeNodes);
 
 			
-
+			for (var i in delegateObj.activeNodes) {
+			
+				q.visit(collide(delegateObj.activeNodes[i]));
+			}
 		}
 	},
 });

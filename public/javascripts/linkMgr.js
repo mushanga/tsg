@@ -2,6 +2,7 @@ var LinkMgr = Class.extend({
 	delegate: null,
 	uLinks : [],
 	dLinks : [],
+	linkSizeMap : {},	
 	init: function(delegate){
 		this.delegate = delegate;
 	},
@@ -10,6 +11,7 @@ var LinkMgr = Class.extend({
 		
 		thisObj.uLinks.length=0;
 		thisObj.dLinks.length=0;
+		this.linkSizeMap = {};
 
 		
 	},
@@ -20,6 +22,20 @@ var LinkMgr = Class.extend({
 		delegateObj.pth.attr("d", thisObj.getPositionOfLink);
 		
 	
+	},
+	addLinkSizeMap : function addLinkSizeMap(plinkSizeMap){
+		var delegateObj = this.delegate;
+		var thisObj = this;
+
+		var keys=		Object.keys(plinkSizeMap);
+
+		for(var key in keys ){				
+			var size = plinkSizeMap[keys[key]];
+			if(!size){
+				size = 1;
+			}
+			thisObj.linkSizeMap[keys[key]]= plinkSizeMap[keys[key]];
+		}
 	},
 	separateLinks : function separateLinks(visibleLinks){
 		
@@ -59,13 +75,12 @@ var LinkMgr = Class.extend({
 		
 		for(var i = 0; i<delegateObj.links.length; i++){				
 			var link = delegateObj.links[i];
-			
+
 			if(visibleNodeIds.indexOf(link.source.id)>-1 && visibleNodeIds.indexOf(link.target.id)>-1){
 				if(delegateObj.getLinkBySrcTrgId(link.target.id,link.source.id)){
-//					if(link.source.id!=delegateObj.centerNodeId && link.target.id!=delegateObj.centerNodeId ){
-						visibleLinks.push(link);
-						
-//					}
+
+					visibleLinks.push(link);
+
 				}
 			}
 		}
@@ -94,6 +109,21 @@ var LinkMgr = Class.extend({
 //		.attr("marker-end", function(d) { return "url(#" +  "suit" + ")"; });
 		
 		
+	},
+	getStrengthOfLink	: function getStrengthOfLink(d){	
+		var delegateObj = this.delegate;
+		var thisObj = this;
+		
+		var src = d.source.id;
+		var trg = d.target.id;
+		var srcSize = thisObj.linkSizeMap[src];
+		var trgSize = thisObj.linkSizeMap[trg];
+		var max = (srcSize>trgSize)?srcSize:trgSize;
+		if(!max){
+			max = 1;
+		}
+		
+		return 0.5/max;
 	},
 	getPositionOfLink : function getPositionOfLink(d){
 

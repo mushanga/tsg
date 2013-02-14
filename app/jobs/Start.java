@@ -28,6 +28,9 @@ public class Start extends Job {
 		GraphDatabase.startGraphDatabase();
 		createFileFolders();
 		fixStuckInProgressObjects();
+		
+		new HomePageGraphJob().now();
+		
 //	    configS3();
 //		createImageFolder();
 //		if(!Play.configuration.get("application.mode").equals("dev")){

@@ -14,7 +14,9 @@ import java.util.Set;
 import java.util.UUID;
 
 import jobs.ClientGraph;
+import jobs.ClientUserGraph;
 import jobs.GraphJobBase;
+import jobs.HomePageGraphJob;
 import jobs.Start;
 import models.Comment;
 import models.Item;
@@ -147,11 +149,19 @@ public class Application extends Controller {
 		File file = new File(Start.getImagePath() + imageName);
 		renderBinary(file);
 	}
-	public static void displayGraphData(String name) {
-		File file = new File(Start.getGraphJSONDataPath() + name+".json");
-		renderBinary(file);
-	}
-	
+   public static void displayGraphData(String name) {
+      File file = GraphJobBase.getGraphJson(name);      
+      renderBinary(file);
+   }
+
+   public static void mainGraph() {
+
+         File file = GraphJobBase.getGraphJson(HomePageGraphJob.MAIN_GRAPH);      
+         renderBinary(file);
+      
+
+   }
+   
 	public static String readFileAsString(String filePath) throws java.io.IOException
 	{
 	    BufferedReader reader = new BufferedReader(new FileReader(filePath));
@@ -210,6 +220,11 @@ public class Application extends Controller {
       }else{
          displayGraphData(String.valueOf(ug.ownerId)+"-temp");
       }
+   }
+   public static void showHomeGraph(){
+    
+         displayGraphData("homePage");
+     
    }
 //   public static void getById(String query, String page) {
 //      if(page==null){
@@ -296,7 +311,7 @@ public class Application extends Controller {
 		}
 		nodeSizeMap.put(ug.ownerId, 1D);
 		
-		ClientGraph cg = new ClientGraph(ug, total, 0, visibleLinks, visibleUsers, 0,  nodeSizeMap,linkSizeMap);
+		ClientUserGraph cg = new ClientUserGraph(ug, total, 0, visibleLinks, visibleUsers, 0,  nodeSizeMap,linkSizeMap);
 		cg.needsReload = true;
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		String content = gson.toJson(cg, ClientGraph.class);

@@ -1,16 +1,39 @@
-#{extends 'main.html' /}
-#{set title:'Twitter Social Graph' /}
+#{extends 'main.html' /} #{set title:'Twitter Social Graph' /}
 
-#{list users, as:'user'}
-        <div class="userWindow">
-            <a href="/user?screenName=${user.screenName}">
-            	${user.screenName}: ${user.friendsCount}, ${user.followersCount}
-            </a>
-            
-        </div>
-      
-#{/list}
-   
+
+<div id="main-graph-screen" style="width: 100%; height: 100%"></div>
+<script>
+$(function() {
+	var graph = new Graph("#main-graph-screen");
+	$.ajax({
+
+		url : '/mainGraph',
+		dataType : "json",
+		success :  function(data)
+		{
+			graph.addNodeSizeMap(data.userNodeSizeMap);
+			graph.addLinkSizeMap(data.userLinkSizeMap);
+			graph.addNodes(data.users);
+			graph.addLinks(data.links);
+			graph.update();
+		},
+		error : function(er)
+		{
+			
+		},
+
+	});
+})
+</script>
+<!-- #{list users, as:'user'} -->
+<!-- <div class="userWindow"> -->
+<!-- 	<a href="/user?screenName=${user.screenName}"> ${user.screenName}: -->
+<!-- 		${user.friendsCount}, ${user.followersCount} </a> -->
+
+<!-- </div> -->
+
+<!-- #{/list} -->
+
 <!-- <script> 
  	$("ul#topNav li:nth-child(1)").addClass('active');
  </script> -->

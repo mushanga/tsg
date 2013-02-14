@@ -44,7 +44,26 @@ public class User extends TSGModel {
    public int followersCount;
 	
 
-	
+   public User(User user) {
+      super();
+      
+      this.screenName = user.screenName;
+      this.twitterId = user.twitterId;
+      this.authToken = user.authToken;
+      this.authTokenSecret = user.authTokenSecret;
+      this.picture = user.picture;
+      this.fullName = user.fullName;
+      this.description = user.description;
+      this.webSite = user.webSite;
+      this.location = user.location;
+      this.lastUsed = user.lastUsed;
+      this.lastAds = user.lastAds;
+      this.firstLogin = user.firstLogin;
+      this.lastLogin = user.lastLogin;
+      this.lastResponded = user.lastResponded;
+      this.friendsCount = user.friendsCount;
+      this.followersCount = user.followersCount;
+   }
 	public User(twitter4j.User twUser){
 		updateTwData(twUser,null,null);
 	}
@@ -57,7 +76,10 @@ public class User extends TSGModel {
       updateTwData(twUser, authToken, authTokenSecret);
    }
 
-	private void updateTwData(UserJSONImpl twUser, String authToken, String authTokenSecret) {
+	public User() {
+   }
+
+   private void updateTwData(UserJSONImpl twUser, String authToken, String authTokenSecret) {
 	   
 
       this.screenName = twUser.screenName;

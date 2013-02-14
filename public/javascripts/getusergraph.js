@@ -1,3 +1,4 @@
+var graph = null;
 
 $(function() {
 	
@@ -44,7 +45,7 @@ $(function() {
     
 	$("#slider").hide();
 	
-    graph = new Graph("#screen");
+    graph = new Graph("#user-graph-screen");
 //    util = new Util(); 
     var slider;
   });

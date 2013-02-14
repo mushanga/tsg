@@ -2,10 +2,6 @@
 var Graph = GraphDataMgr.extend({
 	centerNodeId : -1,
 	cliques : [],	
-	nodeSizeMap : {},	
-	linkSizeMap : {},	
-	imageMin : 32,		
-	imageMax : 60,	
 	userPerPage : 50,	
 	nodeMgr : null,
 	infoWinMgr : null,
@@ -20,8 +16,6 @@ var Graph = GraphDataMgr.extend({
 		 
 		this.centerNodeId = -1;
 		this.cliques.length=0;
-		this.nodeSizeMap = {};	
-		this.linkSizeMap = {};
 		
 		this.update();
 	},
@@ -67,28 +61,8 @@ var Graph = GraphDataMgr.extend({
 		.size([this.w, this.h])
 		.gravity(0.1)
 		.charge(-300)
-//		.linkDistance(function(d){			
-//			var src = d.source.id;
-//			var trg = d.target.id;
-////			var srcSize = thisObj.linkSizeMap[src];
-////			var trgSize = thisObj.linkSizeMap[trg];
-//			var srcSize = thisObj.getMutualLinks(src).length;
-//			var trgSize = thisObj.getMutualLinks(trg).length;
-//			var max = (srcSize>trgSize)?srcSize:trgSize;
-//			return Math.sqrt(max)*30;
-//			
-//		})
 		.linkStrength(function(d){			
-			var src = d.source.id;
-			var trg = d.target.id;
-			var srcSize = thisObj.linkSizeMap[src];
-			var trgSize = thisObj.linkSizeMap[trg];
-			var max = (srcSize>trgSize)?srcSize:trgSize;
-			if(!max){
-				max = 1;
-			}
-			
-			return 0.5/max;
+			return thisObj.linkMgr.getStrengthOfLink(d);
 		})
 		
 
@@ -132,59 +106,19 @@ var Graph = GraphDataMgr.extend({
 	},
 	addNodeSizeMap : function addNodeSizeMap(pnodeSizeMap){
 
-		var keys=		Object.keys(pnodeSizeMap);
-		
-		var delta = this.imageMax - this.imageMin;
-		for(var key in keys ){				
-			var size = pnodeSizeMap[keys[key]];
-			if(!size){
-				size = 0;
-			}
-			this.nodeSizeMap[keys[key]]= parseInt((size*delta)+this.imageMin);
-		}
+		this.nodeMgr.addNodeSizeMap(pnodeSizeMap);
 	},
 	addLinkSizeMap : function addLinkSizeMap(plinkSizeMap){
 
-		var keys=		Object.keys(plinkSizeMap);
-
-		for(var key in keys ){				
-			var size = plinkSizeMap[keys[key]];
-			if(!size){
-				size = 1;
-			}
-			this.linkSizeMap[keys[key]]= plinkSizeMap[keys[key]];
-		}
-	},
-	addAll : function(from,to){
-
-		
-		for(var i = 0; i<from.length; i++){				
-			var item = from[i];
-			var found = false;
-			for(var j = 0; j<to.length; j++){				
-				var it = to[j];
-				if(it.id==item.id){
-					found = true;
-				}
-				
-			}
-			if(!found){
-				to.push(item);
-			}
-		}
+		this.linkMgr.addLinkSizeMap(plinkSizeMap);
 	},
 	
-	nodesHaveARelation : function nodesHaveARelation(node1Id, node2Id){
-		
-		return this.checkMutualLink(node1Id, node2Id);
-	},
 	update : function update() {
 		
 		var thisObj = this;
 		
 		var maxUser = $('#slider').slider("option", "value");
 		
-		var visibleNodeIds = new Array();
 		this.visibleNodes.length = 0;
 		this.visibleLinks.length = 0;
 
