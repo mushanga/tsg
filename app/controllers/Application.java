@@ -52,7 +52,7 @@ import exception.UserProtectedException;
 @With({ Auth.class })
 public class Application extends Controller {
 	public static void index() {
-		List<User> users = UserGraph.getCelebrityGraphs();
+		List<User> users = UserGraph.getCelebrityGraphs(HomePageGraphJob.CELEBRITY_FOLLOWER_THRESHOLD);
 		Long userId = Cache.get(session.getId(), Long.class);
 		if (userId != null) {
 			renderArgs.put("user", User.findById(userId));

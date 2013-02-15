@@ -17,7 +17,7 @@ import util.Util;
 @Every("1h")
 public class HomePageGraphJob extends GraphReadyJob {
 
-   public int CELEBRITY_FOLLOWER_THRESHOLD = 1000000;
+   public static int CELEBRITY_FOLLOWER_THRESHOLD = 1000000;
    public static String MAIN_GRAPH = "mainGraph";
    @Override
    public void doJob() {
