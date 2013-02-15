@@ -44,7 +44,6 @@ import util.Util;
 @Every("10s")
 public class FindSomeoneToRevealJob extends GraphJobBase {
 
-   public int MAX_FOLLOWING = 200;
    public int MIN_FOLLOWER = 1000000;
    
    @Override
@@ -53,10 +52,11 @@ public class FindSomeoneToRevealJob extends GraphJobBase {
          if(!Play.configuration.get("application.mode").equals("dev")){
             List<UserGraph> graphs = UserGraph.getWaitingList();
             if (!Util.isValid(graphs)) {
-               User someone = UserGraph.getSomeoneToReveal(MAX_FOLLOWING, MIN_FOLLOWER);
+               User someone = UserGraph.getSomeoneToReveal(MIN_FOLLOWER);
                if(someone==null){
-                  Logger.info("Couldn't find someone to reveal.\nMAX_FOLLOWING: "+MAX_FOLLOWING+"\nMIN_FOLLOWER: "+MIN_FOLLOWER+" \nIncreasing MAX_FOLLOWING...");
-                  MAX_FOLLOWING ++;
+                  Logger.info("Couldn't find someone to reveal.\nMIN_FOLLOWER: "+MIN_FOLLOWER);
+                  MIN_FOLLOWER = (int) (0.75 * MIN_FOLLOWER);
+                
                }else{
 
                   UserGraph ug = new UserGraph(someone.twitterId);

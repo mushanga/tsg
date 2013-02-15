@@ -87,12 +87,11 @@ public class UserGraph extends TSGModel {
       return UserGraph.find("select ug from UserGraph ug where " +
             " ug.status = ?", READY_TO_CONSTRUCT).first();
    }
-   public static User getSomeoneToReveal(int maxFollowing, int minFollower){
+   public static User getSomeoneToReveal(int minFollower){
       return User.find("select u from User u where " +
-            " friendsCount <= ? and " +
             " followersCount>=? and " +
             " u.twitterId not in (select ug.ownerId from UserGraph ug) order by u.followersCount desc "
-            ,maxFollowing, minFollower  )
+            , minFollower  )
             
             .first();
    }
