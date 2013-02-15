@@ -24,18 +24,21 @@ import util.PropsConfigMgrImpl;
 
 public class TSGHiddenPropsPlugin extends PlayPlugin {
 	PropsConfigMgrImpl props = PropsConfigMgrImpl.getInstance();
+
+   public static final String TWITSTREET_CONSUMER_KEY = "twitstreetConsumerKey"; 
+   public static final String TWITSTREET_CONSUMER_SECRET = "twitstreetConsumerSecret"; 
+   public static final String TWITTER_CONSUMER_KEY = "consumerKey"; 
+   public static final String TWITTER_CONSUMER_SECRET = "consumerSecret";  
 	
 	@Override
 	public void onConfigurationRead() {
 		super.onConfigurationRead();
-	     Play.configuration.setProperty("db.user", props.getDbUserName());
-
-	     Logger.info("TSGHiddenPropsPlugin: props.getDbUserName(): "+props.getDbUserName());
+	     Play.configuration.setProperty("db.user", props.getDbUserName());	     
 	     Play.configuration.setProperty("db.pass", props.getDbPassword());
-	     Play.configuration.setProperty("consumerKey", props.getApiKey());
-	     Play.configuration.setProperty("consumerSecret", props.getApiSecret());
-	     Play.configuration.setProperty("twitstreetConsumerKey", props.getTwitstreetApiKey());
-	     Play.configuration.setProperty("twitstreetConsumerSecret", props.getTwitstreetApiSecret());
+	     Play.configuration.setProperty(TWITTER_CONSUMER_KEY, props.getApiKey());
+	     Play.configuration.setProperty(TWITTER_CONSUMER_SECRET, props.getApiSecret());
+	     Play.configuration.setProperty(TWITSTREET_CONSUMER_KEY, props.getTwitstreetApiKey());
+	     Play.configuration.setProperty(TWITSTREET_CONSUMER_SECRET, props.getTwitstreetApiSecret());
 	}
 
 }

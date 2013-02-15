@@ -15,6 +15,7 @@ import org.apache.http.message.BasicNameValuePair;
 import play.Logger;
 import play.Play;
 import play.cache.Cache;
+import plugins.TSGHiddenPropsPlugin;
 import twitter4j.ResponseList;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -63,7 +64,9 @@ public class TwitterProxyImpl implements TwitterProxy {
 	public TwitterProxyImpl() throws NoAvailableTokenException {
 		
 		twitter = new TwitterFactory().getInstance();
-		twitter.setOAuthConsumer(Play.configuration.getProperty("twitstreetConsumerKey"), Play.configuration.getProperty("twitstreetConsumerSecret"));
+		twitter.setOAuthConsumer(
+		      Play.configuration.getProperty(TSGHiddenPropsPlugin.TWITSTREET_CONSUMER_KEY), 
+		      Play.configuration.getProperty(TSGHiddenPropsPlugin.TWITSTREET_CONSUMER_SECRET));
 		findAvailableToken();
 	}
 

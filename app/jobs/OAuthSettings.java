@@ -3,6 +3,7 @@ package jobs;
 import play.Play;
 import play.jobs.Job;
 import play.jobs.OnApplicationStart;
+import plugins.TSGHiddenPropsPlugin;
 
 
 public class OAuthSettings extends Job{
@@ -11,8 +12,8 @@ public class OAuthSettings extends Job{
 	
 	
 	public void doJob(){
-		consumerKey = Play.configuration.getProperty("consumerKey");
-		consumerSecret = Play.configuration.getProperty("consumerSecret");
+		consumerKey = Play.configuration.getProperty(TSGHiddenPropsPlugin.TWITTER_CONSUMER_KEY);
+		consumerSecret = Play.configuration.getProperty(TSGHiddenPropsPlugin.TWITTER_CONSUMER_SECRET);
 	}
 	
 	public static String getConsumerKey(){return consumerKey;}

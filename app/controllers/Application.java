@@ -19,6 +19,7 @@ import jobs.GraphJobBase;
 import jobs.HomePageGraphJob;
 import jobs.Start;
 import models.Comment;
+import models.FollowingList;
 import models.Item;
 import models.Reply;
 import models.ReplyJson;
@@ -208,14 +209,27 @@ public class Application extends Controller {
 
       }
    }
-   public static void showGraph(Long twitterId, String page){
+   public static void showGraph(Long twitterId, String page) throws UserProtectedException, UserDoesNotExistException{
       UserGraph ug = UserGraph.getByOwnerId(twitterId);
 
+      FollowingList fl = FollowingList.getByOwnerId(twitterId);
+      if(fl!= null && fl.isProtected()){
+         User user = UserLookup.getUser(twitterId);
+         throw new UserProtectedException(user.screenName);
+      }
+            
       if(ug==null){
          ug = new UserGraph(twitterId);
          ug.save();
-         renderBinary(constructBasicGraphJSON(ug));
+         try {
+            renderBinary(constructBasicGraphJSON(ug));
+         } catch (UserProtectedException e) {
+            Logger.error(e, e.getMessage());
+         } catch (UserDoesNotExistException e) {
+            Logger.error(e, e.getMessage());
+         }
       }else if(ug.isCompleted()){
+         
          displayGraphData(String.valueOf(ug.ownerId)+"-"+page);
       }else{
          displayGraphData(String.valueOf(ug.ownerId)+"-temp");
@@ -259,7 +273,7 @@ public class Application extends Controller {
        
    }
 
-	public static File constructBasicGraphJSON(UserGraph ug){
+	public static File constructBasicGraphJSON(UserGraph ug) throws UserProtectedException, UserDoesNotExistException{
 
 	   
 	   TwitterProxy twitter = null;
@@ -282,11 +296,8 @@ public class Application extends Controller {
 			total = followings.size();
 		} catch (NoAvailableTokenException e) {
 			Logger.error(e, e.getMessage());
-		} catch (UserProtectedException e) {
-			Logger.error(e, e.getMessage());
-		} catch (UserDoesNotExistException e) {
-         Logger.error(e, e.getMessage());
-      }
+		} 
+		
 		if(Util.isListValid(followings) && followings.size()>=GraphJobBase.USER_PER_PAGE){
 		   followings = followings.subList(0, GraphJobBase.USER_PER_PAGE);
 
