@@ -95,11 +95,10 @@ public class UserGraph extends TSGModel {
             
             .first();
    }
-   public static List<User> getCelebrityGraphs(){
+   public static List<User> getCelebrityGraphs(int minFollower){
       return User.find("select u from User u where " +
-            " friendsCount < 250 and " +
-            " followersCount>1000000 and " +
-            " u.twitterId in (select ug.ownerId from UserGraph ug where status=?) order by u.followersCount desc",SUCCESSFUL).fetch(100);
+            " followersCount>=? and " +
+            " u.twitterId in (select ug.ownerId from UserGraph ug where status=?) order by u.followersCount desc",SUCCESSFUL, minFollower).fetch(100);
    }
    public static UserGraph getWaiting(){
       return UserGraph.find("byStatus", WAITING).first();
