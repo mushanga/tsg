@@ -24,7 +24,7 @@ public class HomePageGraphJob extends GraphReadyJob {
       try {
          
 
-         List<User> users = UserGraph.getCelebrityGraphs(CELEBRITY_FOLLOWER_THRESHOLD);
+         List<User> users = UserGraph.getCelebrityGraphs(CELEBRITY_FOLLOWER_THRESHOLD, 150);
          
          ClientGraph cg = new ClientGraph(users, null, null, null);
         
