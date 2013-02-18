@@ -41,7 +41,7 @@ import util.LinkShortener;
 import util.UserLookup;
 import util.Util;
 
-@Every("10s")
+//@Every("10s")
 public class FindSomeoneToRevealJob extends GraphJobBase {
 
    public int MIN_FOLLOWER = 1000000;
