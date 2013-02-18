@@ -102,7 +102,6 @@ public class GraphReadyJob extends GraphJobBase {
 	    int completed= ug.completed;
       
       List<User> users = UserLookup.getUsers(lu.nodesList);
-	   List<HashSet<Long>> cliques = lu.findMaxCliques();
 
 		List<String> ids = new ArrayList<String>();
 		
@@ -114,7 +113,7 @@ public class GraphReadyJob extends GraphJobBase {
 			if(i%recPerPage == 0){
 				
 				cg = new ClientUserGraph(ug, total, completed, new HashSet() , new ArrayList(), (i/recPerPage) + 1,new HashMap<Long, Double>(),new HashMap<Long, Integer>());
-				cg.cliques = cliques;
+//				cg.cliques = lu.cliques;
 				graphs.add(cg);
 			}
 			User user = users.get(i);
