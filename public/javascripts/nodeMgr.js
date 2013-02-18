@@ -285,7 +285,7 @@ var NodeMgr = Class.extend({
 			node.x = rootNode.x;
 			node.y = rootNode.y;
 			var srcSize = delegateObj.linkMgr.linkSizeMap[rootNode.id];
-			node.radius =rootNode.radius + 100+ Math.sqrt(srcSize) * 20 ;
+			node.radius =rootNode.radius + 100+ Math.sqrt(Math.sqrt(srcSize)) * 20 ;
 
 
 			var friends = [];
