@@ -25,7 +25,7 @@ public class Start extends Job {
 	private static String GRAPH_DATA_PATH = null;
 	private static final String FS = System.getProperty("file.separator");
 	public void doJob(){
-		GraphDatabase.startGraphDatabase();
+//		GraphDatabase.startGraphDatabase();
 		createFileFolders();
 		fixStuckInProgressObjects();
 		

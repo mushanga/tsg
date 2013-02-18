@@ -127,9 +127,7 @@ var InfoWinMgr = Class.extend({
 		.attr("y", 0)
 		.attr("rx", 20)
 		.attr("ry", 20)
-	    .attr("class",function(d){   
-			return d.tsgClass + " tsg-info-win-rec tsg-info-win-rec"+d.id;
-		})	
+	    .attr("class","tsg-info-win-rec")
 		.on("mouseover",function(d){   
 			thisObj.persistInfoWin(d);
 		})	
@@ -265,9 +263,21 @@ var InfoWinMgr = Class.extend({
 			return '@'+d.screenName+' ('+d.fullName+') '//+d.id;	
 		}
 
+		
+		thisObj.updateInfoWin();
 		    	
 	    
 	},	
+	updateInfoWin : function updateInfoWin(){
+		var delegateObj = this.delegate;
+		var thisObj = this;
+		
+		var rects = delegateObj.textGroup.selectAll(".tsg-info-win-rec");
+
+	    rects.attr("class",function(d){   
+			return d.tsgClass + " tsg-info-win-rec tsg-info-win-rec"+d.id;
+		})	
+	},
 	appendAnchor : function appendAnchor(parent,url, target, text){
 		var delegateObj = this.delegate;
 		var thisObj = this;

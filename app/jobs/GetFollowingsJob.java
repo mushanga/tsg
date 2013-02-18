@@ -51,14 +51,14 @@ public class GetFollowingsJob extends GraphJobBase {
 	}
 	@Override
 	public void doJob() {
-		try {
-//	       Logger.info("Getting friendlist of "+ownerId);
-			getFollowings(ownerId);
-			GetFollowingsBootstrap.threadCounter--;
-//         Logger.info("Finished getting friendlist of "+ownerId);
-		}
-		catch (Exception e) {
-			Logger.error(e.getMessage());
+	   try {
+//	      Logger.info("Getting friendlist of "+ownerId);
+	      getFollowings(ownerId);
+	      GetFollowingsBootstrap.threadCounter--;
+//	      Logger.info("Finished getting friendlist of "+ownerId);
+	   }
+	   catch (Exception e) {
+	      Logger.error(e.getMessage(),e);
 		}
 
 	}
@@ -69,7 +69,7 @@ public class GetFollowingsJob extends GraphJobBase {
 		Set<Long> followingList = new HashSet<Long>();
 
 
-		GraphDatabase.clearFollowings(ownerId);
+//		GraphDatabase.clearFollowings(ownerId);
 		followingList = new HashSet<Long>();
 
 		try {
@@ -91,6 +91,7 @@ public class GetFollowingsJob extends GraphJobBase {
 			   fl.setStatusWaiting();
 			}
 
+
 		} catch (NoAvailableTokenException e) {	
 			fl.setStatusWaiting();
 			Logger.error(e, e.getMessage());
@@ -104,16 +105,18 @@ public class GetFollowingsJob extends GraphJobBase {
       }
 
 		catch (Exception e1) {
-			fl.setStatusWaiting();
-			Logger.error(e1, e1.getMessage());
+		   fl.setStatusWaiting();
+		   Logger.error(e1, e1.getMessage());
 
 		}finally{
-	      try {
-            fl.save();
-         } catch (Exception e) {
-            Logger.error(e, e.getMessage());
-         }
-		   
+
+		   try {  
+		     
+		      fl.save();
+		   } catch (Exception e) {
+		      Logger.error(e, e.getMessage());
+		   }
+
 		}
 		return followingList;
 	}

@@ -14,6 +14,7 @@ import jobs.GraphUtil;
 import jobs.UserGraphUtil;
 import jobs.GraphJobBase.UserComparator;
 
+import models.Link;
 import models.User;
 import models.UserGraph;
 
@@ -189,31 +190,43 @@ public class GraphDatabase {
       }
       return relationships;
    }
+//   public static UserGraphUtil getAllNodesAndLinksForUserGraph(long userId){
+//      Set<Long> followings = getFollowings(userId);
+//      Set<Long>  ownerAndFollowing =new HashSet<Long>(followings);
+//      ownerAndFollowing.add(userId);
+//
+//      Set<Long> nodes = new HashSet();
+//      Set<String> links = new HashSet<String>();
+//
+//      nodes.add(userId);
+//      for (Long following : followings) {
+//
+//         nodes.add(following);         
+//         links.add(userId+"-"+following);
+//         
+//         Set<Long> friendsOfFollowing = getMutualFriendsIncluding(following,ownerAndFollowing);
+//
+//         for (Long friendOfFollowing : friendsOfFollowing) {
+//            links.add(friendOfFollowing+"-"+following);
+//            links.add(following+"-"+friendOfFollowing);
+//         }
+//      }
+//
+//      Logger.info(userId+": UserGraphUtil - enter");
+//      UserGraphUtil liut = new UserGraphUtil(userId, new ArrayList<Long>(nodes), new ArrayList<String>(links));
+//      Logger.info(userId+": UserGraphUtil - exit");
+//      return liut;
+//   }
    public static UserGraphUtil getAllNodesAndLinksForUserGraph(long userId){
-      Set<Long> followings = getFollowings(userId);
-      Set<Long>  ownerAndFollowing =new HashSet<Long>(followings);
-      ownerAndFollowing.add(userId);
+      List<Long> ownerAndFollowings = Link.getTargetsBySrc(userId);
+      ownerAndFollowings.add(userId);
 
-      Set<Long> nodes = new HashSet();
-      Set<String> links = new HashSet<String>();
+      List<String> links =  Link.getLinksRelatedTo(ownerAndFollowings);
+      
 
-      nodes.add(userId);
-      for (Long following : followings) {
-
-         nodes.add(following);         
-         links.add(userId+"-"+following);
-         
-         Set<Long> friendsOfFollowing = getMutualFriendsIncluding(following,ownerAndFollowing);
-
-         for (Long friendOfFollowing : friendsOfFollowing) {
-            links.add(friendOfFollowing+"-"+following);
-            links.add(following+"-"+friendOfFollowing);
-         }
-      }
-
-      Logger.info(userId+": UserGraphUtil - enter");
-      UserGraphUtil liut = new UserGraphUtil(userId, new ArrayList<Long>(nodes), new ArrayList<String>(links));
-      Logger.info(userId+": UserGraphUtil - exit");
+      Logger.debug(userId+": UserGraphUtil - enter");
+      UserGraphUtil liut = new UserGraphUtil(userId, ownerAndFollowings, links);
+      Logger.debug(userId+": UserGraphUtil - exit");
       return liut;
    }
    public static UserGraphUtil getAllNodesAndLinksForUserGraphCypher(long userId) {
@@ -295,24 +308,37 @@ public class GraphDatabase {
 		}
 	}
 
-	public static synchronized void addFriendships(long src, Set<Long> followingList) {
-//	   Logger.info("Adding "+followingList.size()+" followings of "+src);
-		Transaction tx = graphDatabase.beginTx();
-		try {
-		   addNodeNoTx(src);
-			for (Long trg : followingList) {
+//   public static synchronized void addFriendships(long src, Set<Long> followingList) {
+////    Logger.info("Adding "+followingList.size()+" followings of "+src);
+//      Transaction tx = graphDatabase.beginTx();
+//      try {
+//         addNodeNoTx(src);
+//         for (Long trg : followingList) {
+//
+//            addFriendshipNoTx(src, trg);
+//         }
+//
+//         tx.success();
+//
+//      } finally {
+//         tx.finish();
+////       Logger.info("Finished adding "+followingList.size()+" followings of "+src);
+//      }
+//
+//   }
+   public static synchronized void addFriendships(long src, Set<Long> followingList) {
+//    Logger.info("Adding "+followingList.size()+" followings of "+src);
+     
+      try {
+         Link.add(src, new ArrayList<Long>(followingList));
+         
 
-				addFriendshipNoTx(src, trg);
-			}
+      } finally {
+   
+//       Logger.info("Finished adding "+followingList.size()+" followings of "+src);
+      }
 
-			tx.success();
-
-		} finally {
-			tx.finish();
-//			Logger.info("Finished adding "+followingList.size()+" followings of "+src);
-		}
-
-	}
+   }
 	private static List<Long> getCacheQuery(long userId, List<Long> userSet){
 	     List<Long> results = (List<Long>) Cache.get("gdb-"+userId+"-"+Util.getIdListAsCommaSeparatedString(userSet));
 	     return results;
@@ -433,9 +459,14 @@ public class GraphDatabase {
 
 	}
 
-	public static Set<Long> getFollowings(long srcId) {
-		return getFollowings(srcId, null,null);
-	}
+//   public static Set<Long> getFollowings(long srcId) {
+//      return getFollowings(srcId, null,null);
+//   }
+
+   public static Set<Long> getFollowings(long srcId) {
+      return new HashSet<Long>(Link.getTargetsBySrc(srcId));
+     
+   }
 	public static Set<Long> getFollowings(long srcId, List<Long> including, List<Long> exluding) {
 		return getRelatedNodes(srcId, Direction.OUTGOING,including,exluding,false);
 	}
@@ -581,7 +612,10 @@ public class GraphDatabase {
 
 	
 	}
-	public static void clearFollowings(long id) {
-		clearRelations(id, Direction.OUTGOING, null, null);
-	}
+//   public static void clearFollowings(long id) {
+//      clearRelations(id, Direction.OUTGOING, null, null);
+//   }
+   public static void clearFollowings(long id) {
+      Link.clearBySrc(id);
+   }
 }

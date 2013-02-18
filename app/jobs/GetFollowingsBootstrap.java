@@ -77,7 +77,7 @@ if(threadCounter>=MAX_THREAD){
 
       }
       catch (Exception e) {
-         Logger.error(e.getMessage());
+         Logger.error(e.getMessage(),e);
       }
 
    }

@@ -22,7 +22,7 @@ var NodeMgr = Class.extend({
 		
 		thisObj.detectCollisions();
 
-		delegateObj.images.attr("transform", function(d) {
+		thisObj.images.attr("transform", function(d) {
 			
 			d.x = Math.max(d.radius, Math.min(delegateObj.w - d.radius, d.x));
 			d.y = Math.max(d.radius, Math.min(delegateObj.thirdViewBottomLeft.y - d.radius, d.y)); 
@@ -57,7 +57,25 @@ var NodeMgr = Class.extend({
 		var roundedRectsEnter = roundedRects.enter();
 		var defs = roundedRectsEnter.append("defs");
 		defs.append("svg:rect")
-		.attr("class",function(d) {
+		.attr("class","tsg-rect-nc");
+
+		roundedRects.exit().remove();
+
+
+		defs.append("svg:clipPath")
+		.attr("id", function(d) { return 'nc-path-'+d.id;})
+		.append("svg:use")
+		.attr("xlink:href", function(d) { return '#nc-'+d.id;});
+		
+		thisObj.updateRoundedClips();
+
+	},
+	updateRoundedClips :function updateRoundedClips(){
+		var delegateObj = this.delegate;
+		var thisObj = this;
+
+		var roundedRects= delegateObj.circleGroup.selectAll(".tsg-rect-nc");
+		roundedRects.attr("class",function(d) {
 			if(delegateObj.centerNodeId > 0){
 				if(delegateObj.centerNodeId == d.id){
 					d.tsgClass ="tsg-root-nc"; 
@@ -70,8 +88,9 @@ var NodeMgr = Class.extend({
 				}
 
 			}else{
-				d.tsgClass = "tsg-nc";
+				d.tsgClass = "tsg-root-nc";
 			}
+			d.tsgClass = d.tsgClass + " tsg-rect-nc";
 			return d.tsgClass;
 		})
 		.style("stroke-width",function(d) {
@@ -94,13 +113,7 @@ var NodeMgr = Class.extend({
 			return thisObj.nodeSizeMap[d.id]/2;
 		});
 
-		roundedRects.exit().remove();
 
-
-		defs.append("svg:clipPath")
-		.attr("id", function(d) { return 'nc-path-'+d.id;})
-		.append("svg:use")
-		.attr("xlink:href", function(d) { return '#nc-'+d.id;})
 
 	},
 	createNodes : function createNodes(){
@@ -110,11 +123,12 @@ var NodeMgr = Class.extend({
 
 		thisObj.createRoundedClips();
 
-		delegateObj.images = delegateObj.circleGroup.selectAll("g")
+		thisObj.images = delegateObj.circleGroup.selectAll("g")
 		.data(delegateObj.activeNodes, function(d) { return d.id;});
 
-		delegateObj.images.exit().remove();
-		var imagesEnterc = delegateObj.images.enter();
+		thisObj.images.exit().remove();
+		
+		var imagesEnterc = thisObj.images.enter();
 
 		var imagesEnterg = imagesEnterc.append("svg:g")
 		.call(delegateObj.force.drag)
@@ -130,13 +144,29 @@ var NodeMgr = Class.extend({
 		})	
 		imagesEnterg.append("use")
 		.attr("xlink:href", function(d) { return '#nc-'+d.id;})
-//		.attr("stroke","black")
-//		.attr("stroke-width","6")
 
 		imagesEnterg.append("image")
-//		.style("border-color","black").style("border-width","5px")
 		.attr("clip-path",function(d) { return 'url(#nc-path-'+d.id+')';})
 		.attr("xlink:href", function(d) { return d.picture;})
+
+		if(delegateObj.centerNodeId>0){
+
+			var rootNode = delegateObj.getNodeById(delegateObj.centerNodeId);
+
+			rootNode.fixed = true;
+			rootNode.x = delegateObj.w/2;
+			rootNode.y = delegateObj.h/2;
+		}
+
+		
+		thisObj.updateNodes();
+	},	
+	updateNodes : function updateNodes(){
+
+		var delegateObj = this.delegate;
+		var thisObj = this;
+
+		delegateObj.circleGroup.selectAll("image")
 		.attr("x", function(d) {
 			return - thisObj.nodeSizeMap[d.id]/2;
 		})
@@ -152,14 +182,7 @@ var NodeMgr = Class.extend({
 			return thisObj.nodeSizeMap[d.id];
 		});
 
-		if(delegateObj.centerNodeId>0){
-
-			var rootNode = delegateObj.getNodeById(delegateObj.centerNodeId);
-
-			rootNode.fixed = true;
-			rootNode.x = delegateObj.w/2;
-			rootNode.y = delegateObj.h/2;
-		}
+	
 
 	},	
 	deselectNode : function deselectNode(){

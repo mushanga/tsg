@@ -68,30 +68,17 @@ public class GraphReadyJob extends GraphJobBase {
 		
 	}
 		
-	
-	
-	protected List<Long> getUserListForGraph(UserGraph ug, boolean temp){
-	
-      List<Long> idList = new ArrayList<Long>(GraphDatabase.getFollowings(ug.ownerId));
-      idList.add(0, ug.ownerId);
-//      if(temp && idList.size()>50){
-//         idList = idList.subList(0, 50);
-//      }
-      return idList;
-      
-	}
-
 	public void createGraphForUser(UserGraph ug, boolean temp) throws UserDoesNotExistException {
 	   User user = UserLookup.getUser(ug.ownerId);
      
 	   Logger.info("Creating"+((temp)?" temp":"")+" graph for user: "+ user.screenName);
 	   
-      Logger.info("getAllNodesAndLinksForUserGraph - enter: "+user.screenName);
+      Logger.debug("getAllNodesAndLinksForUserGraph - enter: "+user.screenName);
       UserGraphUtil ugUtil = GraphDatabase.getAllNodesAndLinksForUserGraph(ug.ownerId);
-      Logger.info("getAllNodesAndLinksForUserGraph - exit: "+user.screenName);
+      Logger.debug("getAllNodesAndLinksForUserGraph - exit: "+user.screenName);
 //      UserGraphUtil ugUtil = fillLinksAndNodesForUserSet(ug, graphContentIdList, visibleUsers, visibleLinks, userIncomingCountMap);
       
-      Logger.info("paginateLinks for user "+user.screenName); 
+      Logger.debug("paginateLinks for user "+user.screenName); 
 	   List<ClientUserGraph> graphs = paginateLinks(ug, USER_PER_PAGE, ugUtil);
 	   
 	   Gson gson = new GsonBuilder().setPrettyPrinting().create();      
