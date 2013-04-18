@@ -17,4 +17,4 @@ rm $TSG_PROD/build.sh
 cd $TSG_PROD
 $PLAY deps --sync
 $PLAY mvn:update
-$PLAY start -Dpidfile.path=$TCOMMERCE_PROD/server.pid --%prod
+$PLAY start -Dpidfile.path=$TSG_PROD/server.pid --%prod
