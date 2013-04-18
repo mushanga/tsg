@@ -13,10 +13,6 @@ import play.test.Fixtures;
 @OnApplicationStart
 public class DataFill extends Job {
 	public void doJob(){
-//		if(User.count() == 0) {
-//            Fixtures.deleteDatabase();
-//            Logger.info("Loading datafill");
-//            Fixtures.loadModels("datafill.yml");
-//		}
+//            Fixtures.loadModels("data.yml");
 	}
 }
