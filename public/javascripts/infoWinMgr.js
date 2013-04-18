@@ -64,8 +64,8 @@ var InfoWinMgr = Class.extend({
 		
 		if(thisObj.visibleInfoWinData){
 			delegateObj.txt.selectAll(".tsg-node-info-g"+thisObj.visibleInfoWinData.id).attr("transform", function(d) {
-				var height = this.getBBox().height;
-				var width = this.getBBox().width;
+				var height = this.getBoundingClientRect().height;
+				var width = this.getBoundingClientRect().width;
 				var tx = "";
 				var ty = "";
 				var objRadius = delegateObj.nodeMgr.nodeSizeMap[d.id]/2;
@@ -88,11 +88,11 @@ var InfoWinMgr = Class.extend({
 			delegateObj.txt.selectAll(".tsg-info-win-rec"+thisObj.visibleInfoWinData.id)
 		    .attr("width", function(d) {
 		
-			    	return this.nextSibling.getBBox().width+2*thisObj.margin;   
+			    	return this.nextSibling.getBoundingClientRect().width+2*thisObj.margin;   
 		    })
 		    .attr("height", function(d) {
 
-		    	return this.nextSibling.getBBox().height+2*thisObj.margin;   
+		    	return this.nextSibling.getBoundingClientRect().height+2*thisObj.margin;   
 		    })
 		}
 		
