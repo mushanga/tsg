@@ -267,6 +267,17 @@ var NodeMgr = Class.extend({
 		}
 	
 	},
+	pinNode : function pinNode(d){
+
+		if(d==null)return;
+		
+		var thisObj = this;
+		var delegateObj = this.delegate;
+		
+		d.fixed = !d.fixed;
+		return d.fixed;
+	
+	},
 	detectCollisions : function detectCollisions(){
 		var thisObj = this;
 		var delegateObj = this.delegate;

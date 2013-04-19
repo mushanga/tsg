@@ -148,17 +148,52 @@ var InfoWinMgr = Class.extend({
 		
 		y+=thisObj.lineHeight;
 //		
-		innerg.append("svg:text")		
+		var pinSize = 20;
+		innerg.append("svg:image")
+		.attr("xlink:href",function(d){
+			var iconUrl = "";
+			if(d.fixed){
+				iconUrl = "/public/images/pinned.png";
+			}else{
+				iconUrl = "/public/images/unpinned.png";
+			}
+			return iconUrl;
+		})
 		.attr("x", lineIndent)
+		.attr("y", y-thisObj.lineHeight)
+		.attr("width", pinSize)
+		.attr("height", pinSize)
+		.on("mouseover",function(d){
+			thisObj.persistInfoWin(d);
+		})	
+		.on("click",function(d){
+			var pinned = delegateObj.nodeMgr.pinNode(d);
+			if(pinned){
+				d3.selectAll('.pinimg-'+d.id).attr("xlink:href","/public/images/pinned.png");
+			}else{
+				d3.selectAll('.pinimg-'+d.id).attr("xlink:href","/public/images/unpinned.png");
+			}
+			delegateObj.tick();
+		})
+		.attr("class", function(d) { return "pinimg-"+d.id; })	
+		.style("cursor","pointer");
+		
+		
+		
+		innerg.append("svg:text")
+		.attr("x", lineIndent+ pinSize)
 		.attr("y", y)
 		.attr("class", function(d) { return "shadow title text"+d.id; })
 		.text(function(d) { return getDescription(d); });
 
 		innerg.append("svg:text")
-		.attr("x", lineIndent)
+		.attr("x", lineIndent + pinSize)
 		.attr("y", y)
 		.attr("class", function(d) { return "text title text"+d.id; })
 		.text(function(d) { return getDescription(d); });
+	
+//		.attr("class", function(d) { return "text title text"+d.id; })
+//		.text(function(d) { return getDescription(d); });
 
 		y+=thisObj.lineHeight;
 		y+=thisObj.lineHeight;
