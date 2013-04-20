@@ -15,8 +15,16 @@ import models.UserGraph;
 
 
 public class ClientGraph{
-	
+   Set<String> links = new HashSet<String>();
+   List<ClientUser> users = new ArrayList<ClientUser>();
+
+   public HashMap<Long, Double> userNodeSizeMap = new HashMap<Long, Double>();
+   public HashMap<Long, Integer> userLinkSizeMap = new HashMap<Long, Integer>();
+   
+   public String message;
+   
    public ClientGraph( List<User> users, Set<String> links, HashMap<Long, Double> nodeSizeMap, HashMap<Long, Integer> linkSizeMap) {
+      
 		super();
 		
 		this.links = links;      
@@ -52,10 +60,5 @@ public class ClientGraph{
       }
      
 	}	
-	Set<String> links = new HashSet<String>();
-	List<ClientUser> users = new ArrayList<ClientUser>();
-
-   public HashMap<Long, Double> userNodeSizeMap = new HashMap<Long, Double>();
-   public HashMap<Long, Integer> userLinkSizeMap = new HashMap<Long, Integer>();
 	
 }

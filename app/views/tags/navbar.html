@@ -19,6 +19,18 @@
 						  $("#graphSearchId").focus();
 						});
 					</script>	
+					<script>
+						function showMessage(ele, styleClass){
+							$("#message-screen").html("");
+							$("#message-screen").append(ele);
+							if(styleClass){
+								$("#message-screen").prop("class", styleClass);	
+							}
+							$("#message-screen").show();
+							
+						}
+					</script>
+					
 
 <div class="navbar">
 	<div class="navbar-inner">
@@ -32,7 +44,7 @@
 				<div class="input-append">
 				
 					<div class="pull-right" >
-						<img id="autocompleteSpinnerId" height="28px" width="28px" src="https://si0.twimg.com/a/1359060104/images/bigger_spinner.gif" style="display:none;"/>
+						<img id="autocompleteSpinnerId" height="28px" width="28px" src="http://static.bbci.co.uk/cbeebies/2.6.2//img/loading.gif" style="display:none;"/>
 			
 					</div>	
 					
@@ -49,16 +61,18 @@
 			</div>
 		</div>
 		<div class="pull-right"  style="margin-top: 8px;margin-left: 10px">
-			<img id="spinnerId" height="20px" width="20px" src="https://si0.twimg.com/a/1359060104/images/bigger_spinner.gif" style="display:none;"/>
+			<img id="spinnerId" height="20px" width="20px" src="http://static.bbci.co.uk/cbeebies/2.6.2//img/loading.gif" style="display:none;"/>
 		</div>
 		<div class="pull-right"  style="margin-top: 8px;">
-			<div id="progressbar" style="width: 400px; height: 20px">
+			<div id="progressbar" style="width: 200px;height: 20px">
 			
 			</div>
 			
 		</div>
 	</div>
 </div>
+<div id="message-screen" style="display:none; width: 100%; text-align:center;"></div>
+
 <!-- <a href="@{Application.index()}"> -->
 <!-- 	<img src = "/public/images/logo_bird.png" style="position:absolute;height:150px;right:0;top:-25px"> -->
 <!-- </a> -->

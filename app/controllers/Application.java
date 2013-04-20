@@ -209,13 +209,18 @@ public class Application extends Controller {
 
       }
    }
+   
+   @play.mvc.Util
+   private static String getErrorJson(String message){
+      return "{\"error\":\""+message+"\"}";
+   }
    public static void showGraph(Long twitterId, String page) throws UserProtectedException, UserDoesNotExistException{
       UserGraph ug = UserGraph.getByOwnerId(twitterId);
 
       FollowingList fl = FollowingList.getByOwnerId(twitterId);
       if(fl!= null && fl.isProtected()){
          User user = UserLookup.getUser(twitterId);
-         throw new UserProtectedException(user.screenName);
+         renderJSON(getErrorJson(user.screenName+"'s account is protected."));
       }
             
       if(ug==null){
@@ -262,6 +267,9 @@ public class Application extends Controller {
       
       List<User> users=  t.searchUser(term);
       
+      if(users.size()<0){
+         renderJSON(getErrorJson("No results found for "+term));
+      }
       
       Type listOfUsers = new TypeToken<List<User>>() {
       }.getType();
@@ -269,6 +277,7 @@ public class Application extends Controller {
       Gson gson = new GsonBuilder().setPrettyPrinting().create();
       String content = gson.toJson(users, listOfUsers);
       content = content.replaceAll("\"screenName\"", "\"value\"");
+      
       renderJSON(content);
        
    }

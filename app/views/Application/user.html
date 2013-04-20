@@ -5,10 +5,15 @@
 		<script>
 
 		
-			#{if user!= null}
-					$('#graphSearchId').val('${user.screenName}');
-					getUserGraph(${user.twitterId});
-			#{/if}
+		#{if user!= null}
+				$('#graphSearchId').val('${user.screenName}');
+				getUserGraph(${user.twitterId});
+		#{/if}
+			
+		#{else}
+				
+				showMessage("User not found.", "error");
+		#{/else}
 
 		</script>
 <div id="user-graph-screen" style="width:100%; height:100%"></div>

@@ -89,7 +89,9 @@ function getUserGraph(id){
 		dataType : "json",
 		success :  function(data)
 		{
-			
+		if(data.error){
+			showMessage(data.error,"error");
+		}
 			var switchedFromTempToPermanent = ginfo.needsReload && !data.needsReload;
 			ginfo.needsReload = data.needsReload;
 			
@@ -156,6 +158,7 @@ function getUserGraph(id){
 		error : function(er)
 		{
 			expanding = false;
+			showMessage(JSON.parse(er.responseText).error);
 		},
 
 	});
