@@ -27,7 +27,7 @@ public class Start extends Job {
 	public void doJob(){
 //		GraphDatabase.startGraphDatabase();
 	   
-	   new GetFreeDay().now();
+//	   new GetFreeDay().now();
 	   
 		createFileFolders();
 		fixStuckInProgressObjects();

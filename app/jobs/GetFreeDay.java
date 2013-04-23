@@ -21,7 +21,7 @@ import play.jobs.Job;
 import play.libs.Mail;
 import util.PropsConfigMgrImpl;
 
-@Every("1mn")
+//@Every("1mn")
 public class GetFreeDay extends Job {
    
    private static HashMap<String,Integer> monthVals = new HashMap<String, Integer>();
