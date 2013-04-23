@@ -169,6 +169,10 @@ public class GetFreeDay extends Job {
                   WebElement next = driver.findElement(By.id("txtNextpage"));
                   next.click();
                   
+                  WebElement send = driver.findElement(By.id("txtSenden"));
+                  send.click();
+                  
+                  
                   ct.currentDate = score;
                   ct.save();
                   
