@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import jobs.ClientGraph;
 import jobs.ClientUserGraph;
 import jobs.GraphJobBase;
 import jobs.HomePageGraphJob;
@@ -28,6 +27,13 @@ import models.TweetJson;
 import models.User;
 import models.UserGraph;
 import models.Visitor;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.htmlunit.HtmlUnitDriver;
+import org.openqa.selenium.support.ui.Select;
+
 import play.Logger;
 import play.Play;
 import play.cache.Cache;
@@ -51,6 +57,8 @@ import exception.UserProtectedException;
 
 @With({ Auth.class })
 public class Application extends Controller {
+ 
+   
 	public static void index() {
 //		List<User> users = UserGraph.getCelebrityGraphs(HomePageGraphJob.CELEBRITY_FOLLOWER_THRESHOLD);
 //		Long userId = Cache.get(session.getId(), Long.class);

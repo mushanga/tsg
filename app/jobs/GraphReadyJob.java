@@ -39,7 +39,6 @@ import play.db.jpa.JPA;
 import play.db.jpa.NoTransaction;
 import play.jobs.Every;
 import play.jobs.Job;
-import scala.Array;
 import twitter.TwitterProxy;
 import twitter.TwitterProxyFactory;
 import util.LinkShortener;

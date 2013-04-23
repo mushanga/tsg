@@ -158,7 +158,8 @@ function getUserGraph(id){
 		error : function(er)
 		{
 			expanding = false;
-			showMessage(JSON.parse(er.responseText).error);
+
+			showMessage(er.error,"error");
 		},
 
 	});

@@ -33,8 +33,10 @@ public class TSGHiddenPropsPlugin extends PlayPlugin {
 	@Override
 	public void onConfigurationRead() {
 		super.onConfigurationRead();
-	     Play.configuration.setProperty("db.user", props.getDbUserName());	     
-	     Play.configuration.setProperty("db.pass", props.getDbPassword());
+      Play.configuration.setProperty("db.user", props.getDbUserName());       
+      Play.configuration.setProperty("db.pass", props.getDbPassword());
+      Play.configuration.setProperty("mail.smtp.user", props.getMailDealer());       
+      Play.configuration.setProperty("mail.smtp.pass", props.getMailDealerPassword());
 	     Play.configuration.setProperty(TWITTER_CONSUMER_KEY, props.getApiKey());
 	     Play.configuration.setProperty(TWITTER_CONSUMER_SECRET, props.getApiSecret());
 	     Play.configuration.setProperty(TWITSTREET_CONSUMER_KEY, props.getTwitstreetApiKey());

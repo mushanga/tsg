@@ -1,8 +1,6 @@
 package twitter;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-import org.neo4j.graphdb.Node;
-
 import models.User;
 
 import com.google.gson.annotations.Expose;

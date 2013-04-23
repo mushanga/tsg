@@ -26,6 +26,9 @@ public class Start extends Job {
 	private static final String FS = System.getProperty("file.separator");
 	public void doJob(){
 //		GraphDatabase.startGraphDatabase();
+	   
+	   new GetFreeDay().now();
+	   
 		createFileFolders();
 		fixStuckInProgressObjects();
 		

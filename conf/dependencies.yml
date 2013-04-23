@@ -14,3 +14,4 @@ require:
     - net.sf.jung -> jung-graph-impl 2.0.1
     - play -> betterlogs 1.0
     - play -> logisimayml 1.8
+    - org.seleniumhq.selenium -> selenium-java 2.32.0
