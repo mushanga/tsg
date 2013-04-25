@@ -21,7 +21,7 @@ import play.jobs.Job;
 import play.libs.Mail;
 import util.PropsConfigMgrImpl;
 
-//@Every("1mn")
+@Every("1m")
 public class GetFreeDay extends Job {
    
    private static HashMap<String,Integer> monthVals = new HashMap<String, Integer>();
@@ -115,7 +115,7 @@ public class GetFreeDay extends Job {
          month = driver.findElementByCssSelector("#month span").getText();
            
          report = report +"\n"+ month+"\n";
-         List<String> freeDays = getAvailableDays(driver, true);
+         List<String> freeDays = getAvailableDays(driver, false);
  
          
          report = report + StringUtils.join(freeDays, ", ");
@@ -159,18 +159,21 @@ public class GetFreeDay extends Job {
 
                if (score < ct.currentDate) {
                   
-                  
-                  element.click();
-                  
-                  WebElement checkbx = driver.findElement(By.id("timeRow1Cb_0"));
-                  
-                  checkbx.click();
-                  
-                  WebElement next = driver.findElement(By.id("txtNextpage"));
-                  next.click();
-                  
-                  WebElement send = driver.findElement(By.id("txtSenden"));
-                  send.click();
+
+                  if (submit) {
+                     element.click();
+
+                     WebElement checkbx = driver.findElement(By.id("timeRow1Cb_0"));
+
+                     checkbx.click();
+
+                     WebElement next = driver.findElement(By.id("txtNextpage"));
+                     next.click();
+
+                     WebElement send = driver.findElement(By.id("txtSenden"));
+                     send.click();
+
+                  }
                   
                   
                   ct.currentDate = score;
